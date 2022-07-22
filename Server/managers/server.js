@@ -9,6 +9,13 @@
 ----------------------------------------------------------------*/
 
 
+/*-----------
+-- Imports --
+-----------*/
+
+const CUtility = require("../utilities/index")
+
+
 /*------------------
 -- Class: CServer --
 ------------------*/
@@ -53,4 +60,4 @@ CServer.connect = function(port) {
 -- Exports  --
 ------------*/
 
-module.exports = CServer
+module.exports = CUtility.createAPIs(CServer)

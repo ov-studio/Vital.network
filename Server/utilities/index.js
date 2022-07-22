@@ -15,7 +15,7 @@
 
 const CUtility = {}
 
-CUtility.createAPI = function(buffer, blacklist) {
+CUtility.createAPIs = function(buffer, blacklist) {
     if (!buffer || (typeof(buffer) != "object")) return false
     blacklist = (blacklist && (typeof(blacklist) == "object") && blacklist) || false
     const result = {}
