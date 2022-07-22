@@ -3,7 +3,10 @@ const expressServer = require("express")().use(require("cors")())
 const httpServer = require("http").Server(expressServer).listen(serverPort, () => {
     console.log(`━ vNetworify (Server) | Launched [Port: ${serverPort}]`)
 })
-expressWs(expressServer, httpServer)
+
+// TODO: REPLACE LATER
+const expressWS = require("express-ws")
+expressWS(expressServer, httpServer)
 
 
 /*
