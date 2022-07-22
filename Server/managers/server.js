@@ -54,7 +54,7 @@ CServer.isRestAPIVoid = function(type, route) {
 CServer.createRestAPI = function(type, route, exec) {
     if (!CServer.isRestAPIVoid(type, route) || !CUtility.isFunction(exec)) return false
     CServer.route[type][route] = exec
-    CServer.instance.CExpress.get(`/${route}`, exec)
+    CServer.instance.CExpress[type](`/${route}`, exec)
     return true
 }
 
@@ -76,7 +76,7 @@ CServer.connect = function(port, options) {
         CServer.config.isAwaiting = null
         CServer.config.isConnected = true
         CResolver(CServer.config.isConnected)
-        CUtility.log(`━ vNetworify (Server) | Launched [Port: ${CServer.config.port}]`)
+        CUtility.print(`━ vNetworify (Server) | Launched [Port: ${CServer.config.port}]`)
     })
     return true
 }
