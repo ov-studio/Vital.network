@@ -14,4 +14,5 @@
 -----------*/
 
 require("./managers/server")
+require("./managers/socket")
 require("./test")
