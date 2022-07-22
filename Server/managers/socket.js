@@ -22,6 +22,6 @@ CServer = require("./server")(true)
 
 CServer.CSocket = {
     config: {},
-    instances = {},
-    rooms = {}
+    instances: {},
+    rooms: {}
 }
