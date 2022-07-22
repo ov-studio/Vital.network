@@ -63,5 +63,4 @@ CUtility.createAPIs = function(buffer, blacklist) {
 -- Exports  --
 ------------*/
 
-
 module.exports = CUtility

@@ -52,9 +52,7 @@ CServer.isRestAPIVoid = function(type, route) {
 }
 
 CServer.createRestAPI = function(type, route, exec) {
-    console.log("ATTACHED 1")
     if (!CServer.isRestAPIVoid(type, route) || !CUtility.isFunction(exec)) return false
-    console.log("ATTACHED")
     CServer.route[type][route] = exec
     CServer.instance.CExpress.get(`/${route}`, exec)
     return true
