@@ -14,7 +14,7 @@
 -- Imports --
 -----------*/
 
-CServer = require("./managers/server")
+CServer = require("./managers/server")()
 
 
 // Rest API Example
