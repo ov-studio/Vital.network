@@ -9,8 +9,6 @@ let port = 3000
 expressWs(app, server);
 
 
-// Apply expressWs
-
 /*
 // TODO: IMPLEMENT REST API CLASS
 app.get('/', (req, res) => {
@@ -18,8 +16,9 @@ app.get('/', (req, res) => {
 })
 */
 
-app.ws('/', async function(ws, req) {
-    ws.on('message', async function(msg) {
+// TODO: IMPLEMENT WS WRAPPER
+app.ws("/", async function(ws, req) {
+    ws.on("message", async function(msg) {
         console.log("WS TEST: " + toString(msg))
         ws.send("WS RETURN VALUE?");
     });
