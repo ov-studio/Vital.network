@@ -18,11 +18,11 @@ CServer = require("./managers/server")()
 
 
 // Rest API Example
-CServer.createRestAPI("", function(request, response) {
+CServer.createRestAPI("get", "", function(request, response) {
     response.status(200).send("Some status message")
 })
 
-CServer.createRestAPI("", function(request, response) {
+CServer.createRestAPI("get", "", function(request, response) {
     response.status(200).send("Some status message 2")
 })
 
