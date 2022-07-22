@@ -17,13 +17,7 @@
 CServer = require("./managers/server")()
 
 
-// Rest API Example
 
-/*
-CServer.createRestAPI("get", "", function(request, response) {
-    response.status(200).send("Some status message 2")
-})
-*/
 // TODO: ...
 async function test() {
     var test = await(CServer.connect(33001, {
