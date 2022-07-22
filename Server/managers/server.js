@@ -48,13 +48,16 @@ CServer.isConnected = function() {
 }
 
 CServer.isRestAPIVoid = function(type, route) {
-    return (CUtility.isString(type) && CUtility.isString(route) && CServer.route[type] && !CServer.route[type][route] && true) || false
+    return (CUtility.isString(type) && CUtility.isString(route) && CServer.route[type] && (!CServer.route[type][route] || !CServer.route[type][route].handler) && true) || false
 }
 
 CServer.createRestAPI = function(type, route, exec) {
     if (!CServer.isRestAPIVoid(type, route) || !CUtility.isFunction(exec)) return false
-    CServer.route[type][route] = exec
-    CServer.instance.CExpress[type](`/${route}`, exec)
+    CServer.route[type][route] = CServer.route[type][route] || {}
+    CServer.route[type][route].manager = CServer.route[type][route].manager || function(...cArgs) {
+        CUtility.exec(CServer.route[type][route].handler, ...cArgs)
+    }
+    CServer.instance.CExpress[type](`/${route}`, CServer.route[type][route].manager)
     return true
 }
 
