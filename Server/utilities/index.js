@@ -17,9 +17,29 @@ const CUtility = {}
 
 CUtility.log = console.log
 
+CUtility.isNull = function(data) {
+    return data == null
+}
+
+CUtility.isType = function(data, type) {
+    return (!CUtility.isNull(data) && !CUtility.isNull(type) && (typeof(type) == "string") && (typeof(data) == type) && true) || false
+}
+
+CUtility.isString = function(data) {
+    return CUtility.isType(data, "string")
+}
+
+CUtility.isNumber = function(data) {
+    return CUtility.isType(data, "number")
+}
+
+CUtility.isObject = function(data) {
+    return CUtility.isType(data, "object")
+}
+
 CUtility.createAPIs = function(buffer, blacklist) {
-    if (!buffer || (typeof(buffer) != "object")) return false
-    blacklist = (blacklist && (typeof(blacklist) == "object") && blacklist) || false
+    if (!CUtility.isObject(buffer)) return false
+    blacklist = (CUtility.isObject(blacklist) && blacklist) || false
     const result = {}
     for (const i in buffer) {
         const j = buffer[i]
