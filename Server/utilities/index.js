@@ -25,6 +25,10 @@ CUtility.isType = function(data, type) {
     return (!CUtility.isNull(data) && !CUtility.isNull(type) && (typeof(type) == "string") && (typeof(data) == type) && true) || false
 }
 
+CUtility.isBool = function(data) {
+    return CUtility.isType(data, "boolean")
+}
+
 CUtility.isString = function(data) {
     return CUtility.isType(data, "string")
 }
