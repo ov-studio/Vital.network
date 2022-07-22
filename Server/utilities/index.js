@@ -13,9 +13,10 @@
 -- Class: Utility --
 ------------------*/
 
-const CUtility = {}
-
-CUtility.log = console.log
+const CUtility = {
+    print = console.log,
+    loadstring = eval
+}
 
 CUtility.isNull = function(data) {
     return data == null
