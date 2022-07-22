@@ -26,7 +26,6 @@ async function test() {
 
     // @Rest API Example
     CServer.createRestAPI("get", "", function(request, response) {
-        console.log("Wew 1")
         response.status(200).send("Some status message")
     })
     CServer.destroyRestAPI("get", "")
