@@ -76,7 +76,7 @@ CServer.connect = function(port, options) {
         CServer.config.isAwaiting = null
         CServer.config.isConnected = true
         CResolver(CServer.config.isConnected)
-        console.log(`━ vNetworify (Server) | Launched [Port: ${CServer.config.port}]`)
+        CUtility.log(`━ vNetworify (Server) | Launched [Port: ${CServer.config.port}]`)
     })
     return true
 }
