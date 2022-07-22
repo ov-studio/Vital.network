@@ -14,8 +14,8 @@
 ------------------*/
 
 const CUtility = {
-    print = console.log,
-    loadstring = eval
+    print: console.log,
+    loadstring: eval
 }
 
 CUtility.isNull = function(data) {
