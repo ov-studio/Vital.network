@@ -29,15 +29,13 @@ async function test() {
     var test = await(CServer.connect(33001, {
         isCaseSensitive: true
     }))
+
+    // @Rest API Example
     CServer.createRestAPI("get", "", function(request, response) {
         console.log("Wew 1")
         response.status(200).send("Some status message")
     })
     CServer.destroyRestAPI("get", "")
-    CServer.createRestAPI("get", "", function(request, response) {
-        console.log("Wew 2")
-        response.status(200).send("Some status message 2")
-    })
 }
 test()
 
