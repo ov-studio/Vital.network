@@ -22,7 +22,12 @@ const CUtility = require("../utilities/index")
 
 const CServer = {
     config: {},
-    route: {},
+    route: {
+        post: {},
+        get: {},
+        put: {},
+        delete: {}
+    },
     instance: {}
 }
 
@@ -38,13 +43,13 @@ CServer.isConnected = function() {
     return CServer.config.isAwaiting || CServer.config.isConnected || false
 }
 
-CServer.isRestAPIVoid = function(route) {
-    return (route && (typeof(route) == "string") && !CServer.route[route] && true) || false
+CServer.isRestAPIVoid = function(type, route) {
+    return (route && (typeof(route) == "string") && CServer.route[type] && !CServer.route[type][route] && true) || false
 }
 
-CServer.createRestAPI = function(route, exec) {
-    if (!CServer.isRestAPIVoid(route) || !exec || (typeof(exec) != "function")) return false
-    CServer.route[route] = exec
+CServer.createRestAPI = function(type, route, exec) {
+    if (!CServer.isRestAPIVoid(type, route) || !exec || (typeof(exec) != "function")) return false
+    CServer.route[type][route] = exec
     CServer.instance.CExpress.get(`/${route}`, exec)
     return true
 }
