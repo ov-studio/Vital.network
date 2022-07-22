@@ -47,7 +47,7 @@ CUtility.createAPIs = function(buffer, blacklist) {
     const result = {}
     for (const i in buffer) {
         const j = buffer[i]
-        if (j && (typeof(j) == "function") && (!blacklist || !blacklist[j])) {
+        if (CUtility.isFunction(j) && (!blacklist || !blacklist[j])) {
             result[i] = j
         }
     }
