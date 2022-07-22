@@ -24,16 +24,18 @@ async function test() {
 test()
 
 
+// Rest API Example
+CServer.createRestAPI("", function(request, response) {
+    response.status(200).send("Some status message")
+})
+
+
 // TODO: REPLACE LATER
 /*
 const expressWS = require("express-ws")
 expressWS(CServer.fetchServer("CExpress"), CServer.fetchServer("CHTTP"))
 
 // TODO: IMPLEMENT REST API CLASS
-CServer.instance.CExpress.get('/', (req, res) => {
-    res.status(200).send("Some status message");
-})
-
 // TODO: IMPLEMENT WS WRAPPER
 CServer.fetchServer("CExpress").ws("/", async function(ws, req) {
     ws.on("message", async function(msg) {
