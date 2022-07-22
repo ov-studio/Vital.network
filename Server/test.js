@@ -18,19 +18,26 @@ CServer = require("./managers/server")()
 
 
 // Rest API Example
-CServer.createRestAPI("get", "", function(request, response) {
-    response.status(200).send("Some status message")
-})
 
+/*
 CServer.createRestAPI("get", "", function(request, response) {
     response.status(200).send("Some status message 2")
 })
-
+*/
 // TODO: ...
 async function test() {
     var test = await(CServer.connect(33001, {
         isCaseSensitive: true
     }))
+    CServer.createRestAPI("get", "", function(request, response) {
+        console.log("Wew 1")
+        response.status(200).send("Some status message")
+    })
+    CServer.destroyRestAPI("get", "")
+    CServer.createRestAPI("get", "", function(request, response) {
+        console.log("Wew 2")
+        response.status(200).send("Some status message 2")
+    })
 }
 test()
 
