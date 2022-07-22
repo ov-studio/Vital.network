@@ -38,12 +38,12 @@ CServer.isConnected = function() {
     return CServer.config.isAwaiting || CServer.config.isConnected || false
 }
 
-CServer.isRouteVoid = function(route) {
+CServer.isRestAPIVoid = function(route) {
     return (route && (typeof(route) == "string") && !CServer.route[route] && true) || false
 }
 
 CServer.createRestAPI = function(route, exec) {
-    if (!CServer.isRouteVoid(route) || !exec || (typeof(exec) != "function")) return false
+    if (!CServer.isRestAPIVoid(route) || !exec || (typeof(exec) != "function")) return false
     CServer.route[route] = exec
     CServer.instance.CExpress.get(`/${route}`, exec)
     return true
