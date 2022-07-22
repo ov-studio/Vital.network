@@ -1,23 +1,20 @@
-
-import express from 'express'
-import expressWs from 'express-ws'
-import http from 'http'
-
-let app = express();
-let server = http.createServer(app).listen(port);
-let port = 3000
-expressWs(app, server);
+const serverPort = process.env.PORT || 3001
+const expressServer = require("express")().use(require("cors")())
+const httpServer = require("http").Server(expressServer).listen(serverPort, () => {
+    console.log(`━ vNetworify (Server) | Launched [Port: ${serverPort}]`)
+})
+expressWs(expressServer, httpServer)
 
 
 /*
 // TODO: IMPLEMENT REST API CLASS
-app.get('/', (req, res) => {
+expressServer.get('/', (req, res) => {
     res.status(200).send("Some status message");
 })
 */
 
 // TODO: IMPLEMENT WS WRAPPER
-app.ws("/", async function(ws, req) {
+expressServer.ws("/", async function(ws, req) {
     ws.on("message", async function(msg) {
         console.log("WS TEST: " + toString(msg))
         ws.send("WS RETURN VALUE?");
