@@ -57,7 +57,14 @@ CServer.createRestAPI = function(type, route, exec) {
     CServer.route[type][route].manager = CServer.route[type][route].manager || function(...cArgs) {
         CUtility.exec(CServer.route[type][route].handler, ...cArgs)
     }
+    CServer.route[type][route].handler = exec
     CServer.instance.CExpress[type](`/${route}`, CServer.route[type][route].manager)
+    return true
+}
+
+CServer.destroyRestAPI = function(type, route) {
+    if (CServer.isRestAPIVoid(type, route)) return false
+    CServer.route[type][route].handler = null
     return true
 }
 
