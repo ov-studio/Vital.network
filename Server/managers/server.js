@@ -48,19 +48,21 @@ CServer.isConnected = function() {
 }
 
 CServer.isRestAPIVoid = function(type, route) {
-    return (route && (typeof(route) == "string") && CServer.route[type] && !CServer.route[type][route] && true) || false
+    return (CUtility.isString(type) && CUtility.isString(route) && CServer.route[type] && !CServer.route[type][route] && true) || false
 }
 
 CServer.createRestAPI = function(type, route, exec) {
-    if (!CServer.isRestAPIVoid(type, route) || !exec || (typeof(exec) != "function")) return false
+    console.log("ATTACHED 1")
+    if (!CServer.isRestAPIVoid(type, route) || !CUtility.isFunction(exec)) return false
+    console.log("ATTACHED")
     CServer.route[type][route] = exec
     CServer.instance.CExpress.get(`/${route}`, exec)
     return true
 }
 
 CServer.connect = function(port, options) {
-    port = (port && (typeof(port) == "number") && port) || false
-    options = (options && (typeof(options) == "object") && options) || {}
+    port = (CUtility.isNumber(port) && port) || false
+    options = (CUtility.isObject(options) && options) || {}
     if (!port || CServer.isConnected()) return false
     var CResolver = false
     CServer.config.isAwaiting = new Promise((resolver) => CResolver = resolver)
