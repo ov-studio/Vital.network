@@ -57,6 +57,7 @@ CServer.connect = function(port) {
     CServer.config.port = port
     CServer.instance.CExpress = require("express")()
     CServer.instance.CHTTP = require("http").Server(CServer.instance.CExpress)
+    CServer.instance.CEvent = new (require("events")).EventEmitter()
     CServer.instance.CExpress.use(require("cors")())
     CServer.instance.CHTTP.listen(CServer.config.port, () => {
         CServer.config.isAwaiting = null
