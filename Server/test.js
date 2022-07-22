@@ -17,17 +17,17 @@
 CServer = require("./managers/server")
 
 
+// Rest API Example
+CServer.createRestAPI("", function(request, response) {
+    response.status(200).send("Some status message")
+})
+
 // TODO: ...
 async function test() {
     var test = await(CServer.connect(33001))
 }
 test()
 
-
-// Rest API Example
-CServer.createRestAPI("", function(request, response) {
-    response.status(200).send("Some status message")
-})
 
 
 // TODO: REPLACE LATER
