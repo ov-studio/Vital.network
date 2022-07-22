@@ -23,9 +23,10 @@ async function test() {
 }
 test()
 
+
 // TODO: REPLACE LATER
 const expressWS = require("express-ws")
-expressWS(CServer.instance.CExpress, CServer.instance.CHTTP)
+expressWS(CServer.fetchServer("CExpress"), CServer.fetchServer("CHTTP"))
 
 /*
 // TODO: IMPLEMENT REST API CLASS
@@ -35,7 +36,7 @@ CServer.instance.CExpress.get('/', (req, res) => {
 */
 
 // TODO: IMPLEMENT WS WRAPPER
-CServer.instance.CExpress.ws("/", async function(ws, req) {
+CServer.fetchServer("CExpress").ws("/", async function(ws, req) {
     ws.on("message", async function(msg) {
         console.log("WS TEST: " + toString(msg))
         ws.send("WS RETURN VALUE?")
