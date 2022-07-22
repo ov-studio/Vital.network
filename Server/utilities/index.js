@@ -18,14 +18,14 @@ const CUtility = {}
 CUtility.createAPIs = function(buffer, blacklist) {
     if (!buffer || (typeof(buffer) != "object")) return false
     blacklist = (blacklist && (typeof(blacklist) == "object") && blacklist) || false
-    const cAPIs = {}
+    const result = {}
     for (const i in buffer) {
         const j = buffer[i]
         if (j && (typeof(j) == "function") && (!blacklist || !blacklist[j])) {
-            cAPIs[i] = j
+            result[i] = j
         }
     }
-    return cAPIs
+    return result
 }
 
 
