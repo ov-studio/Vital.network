@@ -37,6 +37,10 @@ CUtility.isObject = function(data) {
     return CUtility.isType(data, "object")
 }
 
+CUtility.isFunction = function(data) {
+    return CUtility.isType(data, "function")
+}
+
 CUtility.createAPIs = function(buffer, blacklist) {
     if (!CUtility.isObject(buffer)) return false
     blacklist = (CUtility.isObject(blacklist) && blacklist) || false
