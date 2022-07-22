@@ -49,7 +49,7 @@ CServer.createRestAPI = function(route, exec) {
     return true
 }
 
-CServer.connect = function(port) {
+CServer.connect = function(port, isCaseSensitive = true) {
     port = (port && (typeof(port) == "number") && port) || false
     if (!port || CServer.isConnected()) return false
     var CResolver = false
@@ -59,6 +59,7 @@ CServer.connect = function(port) {
     CServer.instance.CHTTP = require("http").Server(CServer.instance.CExpress)
     CServer.instance.CEvent = new (require("events")).EventEmitter()
     CServer.instance.CExpress.use(require("cors")())
+    CServer.instance.CExpress.set("case sensitive routing", isCaseSensitive)
     CServer.instance.CHTTP.listen(CServer.config.port, () => {
         CServer.config.isAwaiting = null
         CServer.config.isConnected = true
