@@ -1,27 +1,17 @@
-const serverPort = process.env.PORT || 3001
-const expressServer = require("express")().use(require("cors")())
-const httpServer = require("http").Server(expressServer).listen(serverPort, () => {
-    console.log(`━ vNetworify (Server) | Launched [Port: ${serverPort}]`)
-})
 
-// TODO: REPLACE LATER
-const expressWS = require("express-ws")
-expressWS(expressServer, httpServer)
+/*----------------------------------------------------------------
+     Resource: vNetworify
+     Script: loader.js
+     Author: vStudio
+     Developer(s): Aviril, Mario, Tron
+     DOC: 22/07/2022
+     Desc: Module Loader
+----------------------------------------------------------------*/
 
 
-/*
-// TODO: IMPLEMENT REST API CLASS
-expressServer.get('/', (req, res) => {
-    res.status(200).send("Some status message");
-})
-*/
+/*-----------
+-- Imports --
+-----------*/
 
-// TODO: IMPLEMENT WS WRAPPER
-expressServer.ws("/", async function(ws, req) {
-    ws.on("message", async function(msg) {
-        console.log("WS TEST: " + toString(msg))
-        ws.send("WS RETURN VALUE?");
-    });
-});
-
-console.log("Booted Networkify: Server")
+require("./managers/server")
+require("./test")
