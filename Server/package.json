@@ -1,0 +1,13 @@
+{
+    "name": "networkify",
+    "version": "1.0.0",
+    "author": "ᴏᴠ <crazynuggets@outlook.com> (https://github.com/ov-studio)",
+    "license": "GPLV3",
+    "scripts": {
+      "start": "node ./loader"
+    },
+    "dependencies": {
+        "express": "^4.17.1",
+        "express-ws": "^4.0.0"
+    }
+  }
