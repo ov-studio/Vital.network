@@ -24,7 +24,9 @@ CServer.createRestAPI("", function(request, response) {
 
 // TODO: ...
 async function test() {
-    var test = await(CServer.connect(33001))
+    var test = await(CServer.connect(33001, {
+        isCaseSensitive: true
+    }))
 }
 test()
 
