@@ -24,7 +24,6 @@ const CTypes = [
     {handler: "isString", type: "string"},
     {handler: "isNumber", type: "number"},
     {handler: "isObject", type: "object", middleware: function(data, isArray) {return (!isArray && true) || Array.isArray(data)}},
-    {handler: "isClass", type: "class"},
     {handler: "isFunction", type: "function"}
 ]
 CTypes.forEach(function(j) {
@@ -49,21 +48,26 @@ CUtility.isArray = function(data) {
     return CUtility.isObject(data, true)
 }
 
+CUtility.isClass = function(data) {
+    return (CUtility.isFunction(data, "function") && data.isClass && true) || false
+}
+
 CUtility.exec = function(exec, ...cArgs) {
     if (!CUtility.isFunction(exec)) return false
     return exec(...cArgs)
 }
 
 CUtility.createAPIs = function(buffer, blacklist) {
-    if (!CUtility.isObject(buffer)) return false
+    if (!CUtility.isObject(buffer) && !CUtility.isClass(buffer)) return false
     blacklist = (CUtility.isObject(blacklist) && blacklist) || false
     var isVoid = true
     const result = {}
     for (const i in buffer) {
         const j = buffer[i]
-        if (CUtility.isObject(j)) {
+        if (CUtility.isObject(j) || CUtility.isClass(j)) {
             const __result = CUtility.createAPIs(j)
             if (__result) {
+                isVoid = false
                 result[i] = __result
             }
         } else {

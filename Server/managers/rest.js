@@ -26,6 +26,7 @@ class CRest {
     // Static Mmebers //
     ////////////////////
 
+    static isClass = true
     static route = {
         post: {},
         get: {},
@@ -33,11 +34,11 @@ class CRest {
         delete: {}
     }
 
-    static isVoid(type, route) {
+    static isVoid = function(type, route) {
         return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CServer.rest.route[type]) && (!CUtility.isObject(CServer.rest.route[type][route]) || !CServer.rest.route[type][route].handler) && true) || false
     }
 
-    static create(type, route, exec) {
+    static create = function(type, route, exec) {
         if (!CServer.isConnected() || !CServer.rest.isVoid(type, route) || !CUtility.isFunction(exec)) return false
         CServer.rest.route[type][route] = CServer.rest.route[type][route] || {}
         CServer.rest.route[type][route].manager = CServer.rest.route[type][route].manager || function(...cArgs) {
@@ -49,13 +50,13 @@ class CRest {
         return true
     }
     
-    static destroy(type, route) {
+    static destroy = function(type, route) {
         if (CServer.rest.isVoid(type, route)) return false
         delete CServer.rest.route[type][route].handler
         return true
     }
 
-    static onMiddleware(request, response, next) {
+    static onMiddleware = function(request, response, next) {
         const type = request.method.toLowerCase()
         const route = request.url.slice(1)
         if (CServer.rest.isVoid(type, route)) {
