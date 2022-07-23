@@ -73,13 +73,11 @@ class CSocket {
         self.server.on("connection", function(socket, request) {
             var [_, query] = request.url.split("?")
             query = CUtility.queryString.parse(query)
-            socket.on("message", function(buffer) {
-                buffer = JSON.parse(buffer)
-                if (!CUtility.isObject(buffer) || !self.isNetwork(buffer.networkName)) return false
-                // TODO: ADD EMIT HANDLER
-                for (const i in self.network[(buffer.networkName)].handlers) {
-                    //socket.send(JSON.stringify({message: "There be gold in them thar hills."}))
-                }
+            socket.on("message", function(payload) {
+                payload = JSON.parse(payload)
+                if (!CUtility.isObject(payload) || !self.isNetwork(payload.networkName)) return false
+                payload.processArgs = (CUtility.isArray(payload.processArgs) && payload.processArgs) || []
+                self.emit(payload.networkName, ...(payload.processArgs))
             })
         })
     }
@@ -99,7 +97,7 @@ class CSocket {
 
     isNetwork(name) {
         const self = this
-        return (self.isInstance() && CUtility.isString(name) && self.network[name]) || false
+        return (self.isInstance() && CUtility.isString(name) && self.network[name] && true) || false
     }
 
     createNetwork(name) {
@@ -115,6 +113,15 @@ class CSocket {
         const self = this
         if (!self.isNetwork(name)) return false
         delete self.network[name]
+        return true
+    }
+
+    emit(name, value) {
+        if (!self.isNetwork(name)) return false
+        for (const i in self.network[name].handlers) {
+            const j = self.network[name].handlers[i]
+            j(value)
+        }
         return true
     }
 
