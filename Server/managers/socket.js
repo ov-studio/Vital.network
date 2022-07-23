@@ -94,49 +94,5 @@ class CSocket {
         self.server.close()
         return true
     }
-
-    isNetwork(name) {
-        const self = this
-        return (self.isInstance() && CUtility.isString(name) && self.network[name] && true) || false
-    }
-
-    createNetwork(name) {
-        const self = this
-        if (self.isNetwork(name)) return false
-        self.network[name] = {
-            handlers: {}
-        }
-        return true
-    }
-
-    destroyNetwork(name) {
-        const self = this
-        if (!self.isNetwork(name)) return false
-        delete self.network[name]
-        return true
-    }
-
-    on(name, exec) {
-        const self = this
-        if (!self.isNetwork(name) || !CUtility.isFunction(exec) || self.network[name].handlers[exec]) return false
-        self.network[name].handlers[exec] = {}
-        return true
-    }
-
-    off(name, exec) {
-        const self = this
-        if (!self.isNetwork(name) || !CUtility.isFunction(exec) || !self.network[name].handlers[exec]) return false
-        delete self.network[name].handlers[exec]
-        return true
-    }
-
-    emit(name, ...cArgs) {
-        if (!self.isNetwork(name)) return false
-        for (const i in self.network[name].handlers) {
-            const j = self.network[name].handlers[i]
-            j(...cArgs)
-        }
-        return true
-    }
 }
 CServer.socket = CSocket
