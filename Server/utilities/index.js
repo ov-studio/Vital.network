@@ -64,16 +64,19 @@ CUtility.createAPIs = function(buffer, blacklist) {
     const result = {}
     for (const i in buffer) {
         const j = buffer[i]
-        if (CUtility.isObject(j) || CUtility.isClass(j)) {
-            const __result = CUtility.createAPIs(j)
-            if (__result) {
-                isVoid = false
-                result[i] = __result
+        if (!blacklist || !blacklist[i]) {
+            if (CUtility.isObject(j) || CUtility.isClass(j)) {
+                const __result = CUtility.createAPIs(j)
+                if (__result) {
+                    isVoid = false
+                    result[i] = __result
+                }
             }
-        } else {
-            if (CUtility.isFunction(j) && (!blacklist || !blacklist[j])) {
-                isVoid = false
-                result[i] = j
+            else {
+                if (CUtility.isFunction(j)) {
+                    isVoid = false
+                    result[i] = j
+                }
             }
         }
     }
