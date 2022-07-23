@@ -50,6 +50,13 @@ class CNetwork {
         return true
     }
 
+    static emit = function(name, ...cArgs) {
+        const cInstance = CServer.network.fetch(name)
+        if (!cInstance) return false
+        cInstance.emit(...cArgs)
+        return true
+    }
+
 
     ///////////////////////
     // Instance Mmebers //
