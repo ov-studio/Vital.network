@@ -54,7 +54,8 @@ class CSocket {
 
     constructor(route) {
         const self = this
-        self.uid = CUtility.genUID.v4(), self.route = route
+        self.uid = CUtility.genUID.v4()
+        self.route = route
         self.instance = {}, self.room = {}
         self.server = new CWS.Server({
             noServer: true,
