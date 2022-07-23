@@ -28,7 +28,7 @@ class CSocket {
     ////////////////////
 
     static isClass = true
-    static route = {}
+    static buffer = {}
 
     static isVoid = function(route) {
         return (CUtility.isString(route) && !CUtility.isObject(CServer.socket.buffer[route]) && true) || false
