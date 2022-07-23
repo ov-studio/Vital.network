@@ -84,7 +84,7 @@ class CSocket {
 
     isInstance() {
         const self = this
-        return (!self.isUnloaded && self.route && CSocket.route[(self.route)] && true) || false
+        return (!self.isUnloaded && self.route && CServer.socket.route[(self.route)] && true) || false
     }
 
     destroy() {
