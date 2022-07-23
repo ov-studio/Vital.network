@@ -37,9 +37,9 @@ class CNetwork {
         return (!CServer.network.isVoid(name) && CServer.network.buffer[name]) || false
     }
 
-    static create = function(name, isCallback) {
+    static create = function(name, ...cArgs) {
         if (!CServer.isConnected(true) || !CServer.network.isVoid(name)) return false
-        CServer.network.buffer[name] = new CServer.network(name)
+        CServer.network.buffer[name] = new CServer.network(name, ...cArgs)
         return CServer.network.buffer[name]
     }
 
@@ -73,10 +73,11 @@ class CNetwork {
     // Instance Mmebers //
     //////////////////////
 
-    constructor(name) {
+    constructor(name, isCallback) {
         const self = this
         self.name = name
-        self.handler = {}
+        self.isCallback = (CUtility.isBool(isCallback) && true) || false
+        self.handler = (!self.isCallback && {}) || false
     }
 
     isInstance() {
@@ -102,9 +103,17 @@ class CNetwork {
                 writable: false
             })
         }
-        if (self.handler[(exec.prototype.uid)]) return false
-        self.handler[(exec.prototype.uid)] = {
-            exec: exec
+        if (!self.isCallback) {
+            if (self.handler[(exec.prototype.uid)]) return false
+            self.handler[(exec.prototype.uid)] = {
+                exec: exec
+            }
+        }
+        else {
+            if (self.handler) return false
+            self.handler = {
+                exec: exec
+            }
         }
         return true
     }
