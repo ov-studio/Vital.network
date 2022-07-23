@@ -76,7 +76,7 @@ class CNetwork {
     constructor(name) {
         const self = this
         self.name = name
-        self.handlers = {}
+        self.handler = {}
         console.log("CREATED NETWORK")
     }
 
@@ -87,24 +87,29 @@ class CNetwork {
 
     on(exec) {
         const self = this
-        if (!self.isInstance() || !CUtility.isFunction(exec) || self.handlers[exec]) return false
-        self.handlers[exec] = {}
+        if (!self.isInstance() || !CUtility.isFunction(exec)) return false
+        exec.uid = exec.uid || CUtility.genUID.v4()
+        if (self.handler[(exec.uid)]) return false
+        self.handler[(exec.uid)] = {
+            exec: exec
+        }
         return true
     }
 
     off(exec) {
         const self = this
-        if (!self.isInstance() || !CUtility.isFunction(exec) || !self.handlers[exec]) return false
-        delete self.handlers[exec]
+        if (!self.isInstance() || !CUtility.isFunction(exec)) return false
+        if (!exec.uid || !self.handler[(exec.uid)]) return false
+        delete self.handler[(exec.uid)]
         return true
     }
 
     emit(...cArgs) {
         const self = this
         if (!self.isInstance()) return false
-        for (const i in self.handlers) {
-            const j = self.handlers[i]
-            j(...cArgs)
+        for (const i in self.handler) {
+            const j = self.handler[i]
+            j.exec(...cArgs)
         }
         return true
     }
