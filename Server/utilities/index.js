@@ -19,6 +19,7 @@ const CUtility = {
     genUID: require("uuid"),
     queryString: require("querystring")
 }
+
 const CTypes = [
     {handler: "isBool", type: "boolean"},
     {handler: "isString", type: "string"},
