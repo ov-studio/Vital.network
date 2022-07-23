@@ -65,7 +65,7 @@ class CSocket {
         self.server.on("connection", function(socket, request) {
             socket.uid = CUtility.genUID.v4()
             self.instance[socket] = {
-                uid: socket.uid,
+                uid: socket.uid
             }
         })
         CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
