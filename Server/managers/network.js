@@ -121,8 +121,15 @@ class CNetwork {
     off(exec) {
         const self = this
         if (!self.isInstance() || !CUtility.isFunction(exec)) return false
-        if (!exec.prototype.uid || !self.handler[(exec.prototype.uid)]) return false
-        delete self.handler[(exec.prototype.uid)]
+        if (!exec.prototype.uid) return false
+        if (!self.isCallback) {
+            if (!self.handler[(exec.prototype.uid)]) return false
+            delete self.handler[(exec.prototype.uid)]
+        }
+        else {
+            if (!self.handler || (self.handler.prototype.uid != exec.prototype.uid)) return false
+            self.handler = false
+        }
         return true
     }
 
