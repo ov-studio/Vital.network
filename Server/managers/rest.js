@@ -37,17 +37,6 @@ class CRest {
         return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CServer.rest.route[type]) && (!CUtility.isObject(CServer.rest.route[type][route]) || !CServer.rest.route[type][route].handler) && true) || false
     }
 
-    static onMiddleware(request, response, next) {
-        const type = request.method.toLowerCase()
-        const route = request.url.slice(1)
-        if (CServer.rest.isVoid(type, route)) {
-            response.status(404).send({isAuthorized: false, type: type, route: route})
-            return false
-        }
-        next()
-        return true
-    }
-    
     static create(type, route, exec) {
         if (!CServer.isConnected() || !CServer.rest.isVoid(type, route) || !CUtility.isFunction(exec)) return false
         CServer.rest.route[type][route] = CServer.rest.route[type][route] || {}
@@ -63,6 +52,17 @@ class CRest {
     static destroy(type, route) {
         if (CServer.rest.isVoid(type, route)) return false
         CServer.rest.route[type][route].handler = null
+        return true
+    }
+
+    static onMiddleware(request, response, next) {
+        const type = request.method.toLowerCase()
+        const route = request.url.slice(1)
+        if (CServer.rest.isVoid(type, route)) {
+            response.status(404).send({isAuthorized: false, type: type, route: route})
+            return false
+        }
+        next()
         return true
     }
 }
