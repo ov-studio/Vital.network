@@ -94,7 +94,7 @@ class CSocket {
         const self = this
         if (self.isNetwork(name)) return false
         self.network[name] = {
-            handlers = {}
+            handlers: {}
         }
         return true
     }
