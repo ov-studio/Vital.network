@@ -95,13 +95,13 @@ CServer.connect = function(port, options) {
     CServer.instance.CExpress.use(CExpress.urlencoded({ extended: true}))
     CServer.instance.CExpress.set("case sensitive routing", (options.isCaseSensitive && true) || false)
     CServer.instance.CExpress.all("*", CServer.onVisitRestAPI)
-    options.socket = CUtility.isObject(options.socket) || {}
-    options.socket.server = CServer.instance.CHTTP
     CServer.instance.CHTTP.listen(CServer.config.port, () => {
         CServer.config.isAwaiting = null
         CServer.config.isConnected = true
         CResolver(CServer.config.isConnected)
         CUtility.print(`━ vNetworify (Server) | Launched [Port: ${CServer.config.port}]`)
+        // TODO: TESTING
+        CServer.socket.create("test")
     })
     return true
 }
