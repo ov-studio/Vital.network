@@ -14,7 +14,7 @@
 -----------*/
 
 const CNetworkify = require("./managers/server")()
-console.log(CNetworkify)
+
 
 /*--------
 -- Test --
@@ -28,9 +28,9 @@ async function test() {
     CNetworkify.socket.create("test")
 
     // @Rest API Example
-    CNetworkify.createRestAPI("get", "", function(request, response) {
+    CNetworkify.rest.create("get", "", function(request, response) {
         response.status(200).send("Some status message")
     })
-    CNetworkify.destroyRestAPI("get", "")
+    CNetworkify.rest.destroy("get", "")
 }
 test()
