@@ -99,6 +99,7 @@ CServer.connect = function(port, options) {
     options.socket = CUtility.isObject(options.socket) || {}
     options.socket.server = CServer.instance.CHTTP
     CServer.instance.CWS = new CWS.Server(options.socket)
+    CServer.socket.connect()
     CServer.instance.CHTTP.listen(CServer.config.port, () => {
         CServer.config.isAwaiting = null
         CServer.config.isConnected = true
