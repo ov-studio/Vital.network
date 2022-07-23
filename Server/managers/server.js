@@ -20,9 +20,9 @@ const CEvent = require("events")
 const CUtility = require("../utilities/index")
 
 
-/*------------------
--- Class: CServer --
-------------------*/
+/*-----------------
+-- Class: Server --
+-----------------*/
 
 const CServer = {
     config: {},
@@ -51,35 +51,6 @@ CServer.isRestAPIVoid = function(type, route) {
     return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CServer.route[type]) && (!CUtility.isObject(CServer.route[type][route]) || !CServer.route[type][route].handler) && true) || false
 }
 
-CServer.onVisitRestAPI = function(request, response, next) {
-    const type = request.method.toLowerCase()
-    const route = request.url.slice(1)
-    if (CServer.isRestAPIVoid(type, route)) {
-        response.status(404).send({isAuthorized: false, type: type, route: route})
-        return false
-    }
-    next()
-    return true
-}
-
-CServer.createRestAPI = function(type, route, exec) {
-    if (!CServer.isRestAPIVoid(type, route) || !CUtility.isFunction(exec)) return false
-    CServer.route[type][route] = CServer.route[type][route] || {}
-    CServer.route[type][route].manager = CServer.route[type][route].manager || function(...cArgs) {
-        CUtility.exec(CServer.route[type][route].handler, ...cArgs)
-        return true
-    }
-    CServer.route[type][route].handler = exec
-    CServer.instance.CExpress[type](`/${route}`, CServer.route[type][route].manager)
-    return true
-}
-
-CServer.destroyRestAPI = function(type, route) {
-    if (CServer.isRestAPIVoid(type, route)) return false
-    CServer.route[type][route].handler = null
-    return true
-}
-
 CServer.connect = function(port, options) {
     port = (CUtility.isNumber(port) && port) || false
     options = (CUtility.isObject(options) && options) || {}
@@ -94,7 +65,7 @@ CServer.connect = function(port, options) {
     CServer.instance.CExpress.use(CExpress.json())
     CServer.instance.CExpress.use(CExpress.urlencoded({ extended: true}))
     CServer.instance.CExpress.set("case sensitive routing", (options.isCaseSensitive && true) || false)
-    CServer.instance.CExpress.all("*", CServer.onVisitRestAPI)
+    CServer.instance.CExpress.all("*", CServer.rest.onMiddleware)
     CServer.instance.CHTTP.listen(CServer.config.port, () => {
         CServer.config.isAwaiting = null
         CServer.config.isConnected = true

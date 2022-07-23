@@ -18,9 +18,9 @@ const CUtility = require("../utilities")
 const CServer = require("./server")(true)
 
 
-/*------------------
--- Class: CSocket --
-------------------*/
+/*-----------------
+-- Class: Socket --
+-----------------*/
 
 class CSocket {
     /////////////////////
