@@ -13,7 +13,6 @@
 -- Imports --
 -----------*/
 
-const CWS = require("ws")
 const CCors = require("cors")
 const CHTTP = require("http")
 const CExpress = require("express")
@@ -49,7 +48,7 @@ CServer.isConnected = function() {
 }
 
 CServer.isRestAPIVoid = function(type, route) {
-    return (CUtility.isString(type) && CUtility.isString(route) && CServer.route[type] && (!CServer.route[type][route] || !CServer.route[type][route].handler) && true) || false
+    return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CServer.route[type]) && (!CUtility.isObject(CServer.route[type][route]) || !CServer.route[type][route].handler) && true) || false
 }
 
 CServer.onVisitRestAPI = function(request, response, next) {
@@ -98,8 +97,6 @@ CServer.connect = function(port, options) {
     CServer.instance.CExpress.all("*", CServer.onVisitRestAPI)
     options.socket = CUtility.isObject(options.socket) || {}
     options.socket.server = CServer.instance.CHTTP
-    CServer.instance.CWS = new CWS.Server(options.socket)
-    CServer.socket.connect()
     CServer.instance.CHTTP.listen(CServer.config.port, () => {
         CServer.config.isAwaiting = null
         CServer.config.isConnected = true
