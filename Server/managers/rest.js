@@ -33,14 +33,14 @@ class CRest {
         delete: {}
     }
 
-    static isRestAPIVoid(type, route) {
+    static isVoid(type, route) {
         return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CServer.rest.route[type]) && (!CUtility.isObject(CServer.rest.route[type][route]) || !CServer.rest.route[type][route].handler) && true) || false
     }
 
-    CServer.rest.onMiddleware = function(request, response, next) {
+    static onMiddleware(request, response, next) {
         const type = request.method.toLowerCase()
         const route = request.url.slice(1)
-        if (CServer.isRestAPIVoid(type, route)) {
+        if (CServer.rest.isVoid(type, route)) {
             response.status(404).send({isAuthorized: false, type: type, route: route})
             return false
         }
@@ -49,7 +49,7 @@ class CRest {
     }
     
     CServer.createRestAPI = function(type, route, exec) {
-        if (!CServer.isRestAPIVoid(type, route) || !CUtility.isFunction(exec)) return false
+        if (!CServer.rest.isVoid(type, route) || !CUtility.isFunction(exec)) return false
         CServer.rest.route[type][route] = CServer.rest.route[type][route] || {}
         CServer.rest.route[type][route].manager = CServer.rest.route[type][route].manager || function(...cArgs) {
             CUtility.exec(CServer.rest.route[type][route].handler, ...cArgs)
@@ -61,7 +61,7 @@ class CRest {
     }
     
     CServer.destroyRestAPI = function(type, route) {
-        if (CServer.isRestAPIVoid(type, route)) return false
+        if (CServer.rest.isVoid(type, route)) return false
         CServer.rest.route[type][route].handler = null
         return true
     }
