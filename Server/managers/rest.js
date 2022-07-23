@@ -27,7 +27,7 @@ class CRest {
     ////////////////////
 
     static isClass = true
-    static route = {
+    static buffer = {
         post: {},
         get: {},
         put: {},
@@ -35,24 +35,24 @@ class CRest {
     }
 
     static isVoid = function(type, route) {
-        return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CServer.rest.route[type]) && (!CUtility.isObject(CServer.rest.route[type][route]) || !CServer.rest.route[type][route].handler) && true) || false
+        return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CServer.rest.buffer[type]) && (!CUtility.isObject(CServer.rest.buffer[type][route]) || !CServer.rest.buffer[type][route].handler) && true) || false
     }
 
     static create = function(type, route, exec) {
         if (!CServer.isConnected() || !CServer.rest.isVoid(type, route) || !CUtility.isFunction(exec)) return false
-        CServer.rest.route[type][route] = CServer.rest.route[type][route] || {}
-        CServer.rest.route[type][route].manager = CServer.rest.route[type][route].manager || function(...cArgs) {
-            CUtility.exec(CServer.rest.route[type][route].handler, ...cArgs)
+        CServer.rest.buffer[type][route] = CServer.rest.buffer[type][route] || {}
+        CServer.rest.buffer[type][route].manager = CServer.rest.buffer[type][route].manager || function(...cArgs) {
+            CUtility.exec(CServer.rest.buffer[type][route].handler, ...cArgs)
             return true
         }
-        CServer.rest.route[type][route].handler = exec
-        CServer.instance.CExpress[type](`/${route}`, CServer.rest.route[type][route].manager)
+        CServer.rest.buffer[type][route].handler = exec
+        CServer.instance.CExpress[type](`/${route}`, CServer.rest.buffer[type][route].manager)
         return true
     }
     
     static destroy = function(type, route) {
         if (CServer.rest.isVoid(type, route)) return false
-        delete CServer.rest.route[type][route].handler
+        delete CServer.rest.buffer[type][route].handler
         return true
     }
 
