@@ -47,7 +47,7 @@ class CNetwork {
     }
 
     static fetchInstance = function(name) {
-        return (CServer.network.isVoid(name) && CServer.network.network[name]) || false
+        return (!CServer.network.isVoid(name) && CServer.network.network[name]) || false
     }
 
 
@@ -64,7 +64,7 @@ class CNetwork {
 
     isInstance() {
         const self = this
-        return (!self.isUnloaded && self.name && CServer.network.buffer[(self.name)] && true) || false
+        return (!self.isUnloaded && !CServer.network.isVoid(self.name) && true) || false
     }
 
     on(name, exec) {
