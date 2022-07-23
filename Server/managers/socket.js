@@ -54,7 +54,7 @@ class CSocket {
     constructor(route) {
         const self = this
         self.route = route
-        self.instance = {}, self.room = {}
+        self.instance = {}, self.network = {}, self.room = {}
         self.server = new CWS.Server({
             noServer: true,
             path: "/" + self.route
@@ -74,7 +74,7 @@ class CSocket {
             var [_, query] = request.url.split("?")
             query = CUtility.queryString.parse(query)
             socket.on("message", function(data) {
-                console.log(data)
+                data = JSON.parse(data)
                 socket.send(JSON.stringify({message: "There be gold in them thar hills."}))
             })
         })
@@ -83,6 +83,31 @@ class CSocket {
     isValid() {
         const self = this
         return (!self.isUnloaded && self.route && CSocket.route[(self.route)] && true) || false
+    }
+
+    isNetwork(name) {
+        const self = this
+        return (self.isValid() && CUtility.isString(name) && self.network[name]) || false
+    }
+
+    createNetwork(name) {
+        const self = this
+        if (self.isNetwork(name)) return false
+        self.network[name] = {
+            handlers = {}
+        }
+        return true
+    }
+
+    destroyNetwork(name) {
+        const self = this
+        if (!self.isNetwork(name)) return false
+        delete self.network[name]
+        return true
+    }
+
+    on(name) {
+       // TODO: ATTACH 
     }
 
     destroy() {
