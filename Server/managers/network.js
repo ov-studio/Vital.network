@@ -38,7 +38,7 @@ class CNetwork {
     }
 
     static create = function(name) {
-        if (!CServer.isConnected() || !CServer.network.isVoid(name)) return false
+        if (!CServer.isConnected(true) || !CServer.network.isVoid(name)) return false
         CServer.network.buffer[name] = new CServer.network(name)
         return CServer.network.buffer[name]
     }

@@ -35,7 +35,7 @@ class CSocket {
     }
 
     static create = function(route) {
-        if (!CServer.isConnected() || !CServer.socket.isVoid(route)) return false
+        if (!CServer.isConnected(true) || !CServer.socket.isVoid(route)) return false
         CServer.socket.buffer[route] = new CServer.socket(route)
         return CServer.socket.buffer[route]
     }
