@@ -73,11 +73,9 @@ CUtility.createAPIs = function(buffer, blacklist) {
                     result[i] = __result
                 }
             }
-            else {
-                if (CUtility.isFunction(j)) {
-                    isVoid = false
-                    result[i] = j
-                }
+            else if (CUtility.isFunction(j)) {
+                isVoid = false
+                result[i] = j
             }
         }
     }
