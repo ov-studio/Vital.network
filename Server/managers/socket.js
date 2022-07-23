@@ -106,8 +106,11 @@ class CSocket {
         return true
     }
 
-    on(name) {
-       // TODO: ATTACH 
+    on(name, exec) {
+        const self = this
+        if (!self.isNetwork(name) || !CUtility.isFunction(exec) || self.network[name].handlers[exec]) return false
+        self.network[name].handlers[exec] = {}
+        return true
     }
 
     destroy() {
