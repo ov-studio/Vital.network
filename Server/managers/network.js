@@ -128,7 +128,7 @@ class CNetwork {
 
     emit(...cArgs) {
         const self = this
-        if (!self.isInstance()) return false
+        if (!self.isInstance() || self.isCallback) return false
         for (const i in self.handler) {
             const j = self.handler[i]
             j.exec(...cArgs)
