@@ -55,13 +55,12 @@ class CSocket {
     constructor(route) {
         const self = this
         self.uid = CUtility.genUID.v4()
-        self.route = route
+        self.route = route, self.network = {}
         self.instance = {}, self.room = {}
         self.server = new CWS.Server({
             noServer: true,
             path: `/${self.route}`
         })
-        self.network = CServer.network.create(`Socket:${self.uid}`)
         self.server.on("connection", function(socket, request) {
             socket.uid = CUtility.genUID.v4()
             self.instance[socket] = {
@@ -95,6 +94,19 @@ class CSocket {
         CServer.socket.destroy(this.route)
         self.server.close()
         return true
+    }
+
+    isNetwork(name) {
+        const self = this
+        if (!self.isInstance()) return false
+        return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && self.network[name].isInstance() && true) || false
+    }
+
+    createNetwork(name) {
+        const self = this
+        if (!self.isInstance() || self.isNetwork(name)) return false
+        self.network[name] = CServer.network.create(`Socket:${self.uid}:${name}`)
+        return self.network[name]
     }
 }
 CServer.socket = CSocket
