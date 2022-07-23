@@ -26,12 +26,6 @@ const CUtility = require("../utilities/index")
 
 const CServer = {
     config: {},
-    route: {
-        post: {},
-        get: {},
-        put: {},
-        delete: {}
-    },
     instance: {}
 }
 
@@ -45,10 +39,6 @@ CServer.fetchServer = function(index) {
 
 CServer.isConnected = function() {
     return CServer.config.isAwaiting || CServer.config.isConnected || false
-}
-
-CServer.isRestAPIVoid = function(type, route) {
-    return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CServer.route[type]) && (!CUtility.isObject(CServer.route[type][route]) || !CServer.route[type][route].handler) && true) || false
 }
 
 CServer.connect = function(port, options) {
