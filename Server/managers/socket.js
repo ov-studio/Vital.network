@@ -80,14 +80,22 @@ class CSocket {
         })
     }
 
-    isValid() {
+    isInstance() {
         const self = this
         return (!self.isUnloaded && self.route && CSocket.route[(self.route)] && true) || false
     }
 
+    destroy() {
+        const self = this
+        if (!self.isInstance()) return false
+        CServer.socket.destroy(this.route)
+        self.server.close()
+        return true
+    }
+
     isNetwork(name) {
         const self = this
-        return (self.isValid() && CUtility.isString(name) && self.network[name]) || false
+        return (self.isInstance() && CUtility.isString(name) && self.network[name]) || false
     }
 
     createNetwork(name) {
@@ -117,14 +125,6 @@ class CSocket {
         const self = this
         if (!self.isNetwork(name) || !CUtility.isFunction(exec) || !self.network[name].handlers[exec]) return false
         delete self.network[name].handlers[exec]
-        return true
-    }
-
-    destroy() {
-        const self = this
-        if (!self.isValid()) return false
-        CServer.socket.destroy(this.route)
-        self.server.close()
         return true
     }
 }
