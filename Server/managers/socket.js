@@ -31,19 +31,19 @@ class CSocket {
     static route = {}
 
     static isVoid = function(route) {
-        return (CUtility.isString(route) && !CUtility.isObject(CServer.socket.route[route]) && true) || false
+        return (CUtility.isString(route) && !CUtility.isObject(CServer.socket.buffer[route]) && true) || false
     }
 
     static create = function(route) {
         if (!CServer.isConnected() || !CServer.socket.isVoid(route)) return false
-        CServer.socket.route[route] = new CServer.socket(route)
-        return CServer.socket.route[route]
+        CServer.socket.buffer[route] = new CServer.socket(route)
+        return CServer.socket.buffer[route]
     }
 
     static destroy = function(route) {
         if (CServer.socket.isVoid(route)) return false
-        CServer.socket.route[route].isUnloaded = true
-        delete CServer.socket.route[route]
+        CServer.socket.buffer[route].isUnloaded = true
+        delete CServer.socket.buffer[route]
         return true
     }
 
