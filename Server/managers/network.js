@@ -33,6 +33,10 @@ class CNetwork {
         return (CUtility.isString(name) && !CUtility.isObject(CServer.network.buffer[name]) && true) || false
     }
 
+    static fetch = function(name) {
+        return (!CServer.network.isVoid(name) && CServer.network.network[name]) || false
+    }
+
     static create = function(name) {
         if (!CServer.isConnected() || !CServer.network.isVoid(name)) return false
         CServer.network.buffer[name] = new CServer.network(name)
@@ -44,10 +48,6 @@ class CNetwork {
         CServer.network.buffer[name].isUnloaded = true
         delete CServer.network.buffer[name]
         return true
-    }
-
-    static fetchInstance = function(name) {
-        return (!CServer.network.isVoid(name) && CServer.network.network[name]) || false
     }
 
 
