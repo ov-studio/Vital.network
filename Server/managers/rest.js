@@ -48,7 +48,7 @@ class CRest {
         return true
     }
     
-    CServer.createRestAPI = function(type, route, exec) {
+    CServer.createRestAPI(type, route, exec) {
         if (!CServer.rest.isVoid(type, route) || !CUtility.isFunction(exec)) return false
         CServer.rest.route[type][route] = CServer.rest.route[type][route] || {}
         CServer.rest.route[type][route].manager = CServer.rest.route[type][route].manager || function(...cArgs) {
@@ -60,26 +60,9 @@ class CRest {
         return true
     }
     
-    CServer.destroyRestAPI = function(type, route) {
+    CServer.destroyRestAPI(type, route) {
         if (CServer.rest.isVoid(type, route)) return false
         CServer.rest.route[type][route].handler = null
-        return true
-    }
-
-    static isVoid(route) {
-        return (CUtility.isString(route) && !CUtility.isObject(CServer.rest.route[route]) && true) || false
-    }
-
-    static create(route) {
-        if (!CServer.isConnected() || !CServer.rest.isVoid(route)) return false
-        CServer.rest.route[route] = new CServer.rest(route)
-        return CServer.rest.route[route]
-    }
-
-    static destroy(route) {
-        if (CServer.rest.isVoid(route)) return false
-        CServer.rest.route[route].isUnloaded = true
-        delete CServer.rest.route[route]
         return true
     }
 }
