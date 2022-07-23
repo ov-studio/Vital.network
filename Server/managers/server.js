@@ -37,15 +37,15 @@ CServer.fetchServer = function(index) {
     return (index && CServer.instance[index]) || false
 }
 
-// TODO: DEPS MUST BE ASYNC?
-CServer.isConnected = function() {
+CServer.isConnected = function(isSync) {
+    if (isSync) return (CUtility.isBool(CServer.config.isConnected) && CServer.config.isConnected) || false
     return CServer.config.isAwaiting || CServer.config.isConnected || false
 }
 
 CServer.connect = function(port, options) {
     port = (CUtility.isNumber(port) && port) || false
     options = (CUtility.isObject(options) && options) || {}
-    if (!port || CServer.isConnected()) return false
+    if (!port || !CServer.isConnected()) return false
     var CResolver = false
     CServer.config.isAwaiting = new Promise((resolver) => CResolver = resolver)
     CServer.config.port = port
