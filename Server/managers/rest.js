@@ -51,7 +51,7 @@ class CRest {
     
     static destroy(type, route) {
         if (CServer.rest.isVoid(type, route)) return false
-        CServer.rest.route[type][route].handler = null
+        delete CServer.rest.route[type][route].handler
         return true
     }
 

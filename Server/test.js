@@ -25,9 +25,11 @@ async function test() {
     if (!isConnected) return false
 
     // @Rest API Example
+    /*
     CServer.createRestAPI("get", "", function(request, response) {
         response.status(200).send("Some status message")
     })
     CServer.destroyRestAPI("get", "")
+    */
 }
 test()
