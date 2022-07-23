@@ -91,9 +91,12 @@ class CSocket {
     destroy() {
         const self = this
         if (!self.isInstance()) return false
-        CServer.socket.destroy(this.route)
         self.server.close()
-        //TODO: DESTROY NETWORKS..
+        for (const i in self.network) {
+            const j = self.network[i]
+            j.destroy()
+        }
+        CServer.socket.destroy(this.route)
         return true
     }
 
