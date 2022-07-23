@@ -119,11 +119,5 @@ class CSocket {
         self.network[name].destroy()
         return true
     }
-
-    emitNetwork(name, ...cArgs) {
-        const self = this
-        if (!self.isInstance() || !self.isNetwork(name)) return false
-        return self.network[name].emit(...cArgs)
-    }
 }
 CServer.socket = CSocket
