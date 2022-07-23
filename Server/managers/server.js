@@ -62,8 +62,6 @@ CServer.connect = function(port, options) {
         CServer.config.isConnected = true
         CResolver(CServer.config.isConnected)
         CUtility.print(`━ vNetworify (Server) | Launched [Port: ${CServer.config.port}]`)
-        // TODO: TESTING
-        CServer.socket.create("test")
     })
     return true
 }
