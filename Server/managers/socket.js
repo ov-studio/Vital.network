@@ -34,7 +34,7 @@ class CSocket {
     }
 
     static create(route) {
-        if (!CServer.socket.isVoid(route)) return false
+        if (!CServer.isConnected() || !CServer.socket.isVoid(route)) return false
         CServer.socket.route[route] = new CServer.socket(route)
         return true
     }
@@ -73,10 +73,8 @@ class CSocket {
         self.server.on("connection", function(socket, request) {
             var [_, query] = request.url.split("?")
             query = CUtility.queryString.parse(query)
-            socket.on("message", function(message) {
-                console.log("EMIT 1")
-                const parsedMessage = JSON.parse(message)
-                console.log(parsedMessage)
+            socket.on("message", function(data) {
+                console.log(data)
                 socket.send(JSON.stringify({message: "There be gold in them thar hills."}))
             })
         })
