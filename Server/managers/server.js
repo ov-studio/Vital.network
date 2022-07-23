@@ -51,11 +51,21 @@ CServer.isRestAPIVoid = function(type, route) {
     return (CUtility.isString(type) && CUtility.isString(route) && CServer.route[type] && (!CServer.route[type][route] || !CServer.route[type][route].handler) && true) || false
 }
 
+CServer.onVisitRestAPI = function(request, response, next) {
+    const type = request.method.toLowerCase()
+    const route = request.url.slice(1)
+    if (CServer.isRestAPIVoid(type, route)) {
+        response.status(404).send({isAuthorized: false, type: type, route: route})
+        return false
+    }
+    next()
+    return true
+}
+
 CServer.createRestAPI = function(type, route, exec) {
     if (!CServer.isRestAPIVoid(type, route) || !CUtility.isFunction(exec)) return false
     CServer.route[type][route] = CServer.route[type][route] || {}
     CServer.route[type][route].manager = CServer.route[type][route].manager || function(...cArgs) {
-        if (!CServer.route[type][route].handler) return cArgs[1].status(404).send(`<pre>Cannot GET /${route}</pre>`)
         CUtility.exec(CServer.route[type][route].handler, ...cArgs)
         return true
     }
@@ -84,6 +94,7 @@ CServer.connect = function(port, options) {
     CServer.instance.CExpress.use(CExpress.json())
     CServer.instance.CExpress.use(CExpress.urlencoded({ extended: true}))
     CServer.instance.CExpress.set("case sensitive routing", (options.isCaseSensitive && true) || false)
+    CServer.instance.CExpress.all("*", CServer.onVisitRestAPI)
     CServer.instance.CHTTP.listen(CServer.config.port, () => {
         CServer.config.isAwaiting = null
         CServer.config.isConnected = true
