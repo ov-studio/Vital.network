@@ -45,7 +45,7 @@ CServer.isConnected = function(isSync) {
 CServer.connect = function(port, options) {
     port = (CUtility.isNumber(port) && port) || false
     options = (CUtility.isObject(options) && options) || {}
-    if (!port || !CServer.isConnected()) return false
+    if (!port || CServer.isConnected()) return false
     var CResolver = false
     CServer.config.isAwaiting = new Promise((resolver) => CResolver = resolver)
     CServer.config.port = port
