@@ -15,8 +15,9 @@
 
 const CUtility = {
     print: console.log,
-    loadstring: eval,
-    querystring: require("querystring")
+    loadString: eval,
+    genUID: require("uuid"),
+    queryString: require("querystring")
 }
 const CTypes = [
     {handler: "isBool", type: "boolean"},
