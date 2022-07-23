@@ -93,6 +93,7 @@ class CSocket {
         if (!self.isInstance()) return false
         CServer.socket.destroy(this.route)
         self.server.close()
+        //TODO: DESTROY NETWORKS..
         return true
     }
 
@@ -107,6 +108,13 @@ class CSocket {
         if (!self.isInstance() || self.isNetwork(name)) return false
         self.network[name] = CServer.network.create(`Socket:${self.uid}:${name}`)
         return self.network[name]
+    },
+
+    destroyNetwork(name) {
+        const self = this
+        if (!self.isInstance() || !self.isNetwork(name)) return false
+        self.network[name].destroy()
+        return true
     }
 }
 CServer.socket = CSocket
