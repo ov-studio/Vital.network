@@ -116,15 +116,6 @@ class CSocket {
         return true
     }
 
-    emit(name, ...cArgs) {
-        if (!self.isNetwork(name)) return false
-        for (const i in self.network[name].handlers) {
-            const j = self.network[name].handlers[i]
-            j(...cArgs)
-        }
-        return true
-    }
-
     on(name, exec) {
         const self = this
         if (!self.isNetwork(name) || !CUtility.isFunction(exec) || self.network[name].handlers[exec]) return false
@@ -136,6 +127,15 @@ class CSocket {
         const self = this
         if (!self.isNetwork(name) || !CUtility.isFunction(exec) || !self.network[name].handlers[exec]) return false
         delete self.network[name].handlers[exec]
+        return true
+    }
+
+    emit(name, ...cArgs) {
+        if (!self.isNetwork(name)) return false
+        for (const i in self.network[name].handlers) {
+            const j = self.network[name].handlers[i]
+            j(...cArgs)
+        }
         return true
     }
 }
