@@ -23,7 +23,7 @@ const CTypes = [
     {handler: "isBool", type: "boolean"},
     {handler: "isString", type: "string"},
     {handler: "isNumber", type: "number"},
-    {handler: "isObject", type: "object", middleware: function(data, isArray) {return (isArray && Array.isArray(data)) || true}},
+    {handler: "isObject", type: "object", middleware: function(data, isArray) {return (!isArray && true) || Array.isArray(data)}},
     {handler: "isFunction", type: "function"}
 ]
 CTypes.forEach(function(j) {
@@ -62,6 +62,8 @@ CUtility.createAPIs = function(buffer, blacklist) {
     return result
 }
 
+const test = []
+console.log(CUtility.isObject(test, true))
 
 /*-----------
 -- Exports --
