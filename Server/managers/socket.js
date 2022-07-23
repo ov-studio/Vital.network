@@ -13,15 +13,22 @@
 -- Imports --
 -----------*/
 
-CServer = require("./server")(true)
+const CServer = require("./server")(true)
 
 
 /*------------------
 -- Class: CSocket --
 ------------------*/
 
-CServer.CSocket = {
+CServer.socket = {
     config: {},
-    instances: {},
-    rooms: {}
+    instance: {},
+    room: {}
+}
+
+CServer.socket.connect = function() {
+    CServer.instance.CWS.on("connection", function(socket, request) {
+        CServer.socket.instance[socket] = {}
+        console.log("CONNECTED SOCKET")
+    })
 }
