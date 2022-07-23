@@ -36,7 +36,7 @@ class CSocket {
     static create(route) {
         if (!CServer.isConnected() || !CServer.socket.isVoid(route)) return false
         CServer.socket.route[route] = new CServer.socket(route)
-        return true
+        return CServer.socket.route[route]
     }
 
     static destroy(route) {
