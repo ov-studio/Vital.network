@@ -34,10 +34,10 @@ class CNetwork {
     }
 
     static fetch = function(name) {
-        return (!CServer.network.isVoid(name) && CServer.network.network[name]) || false
+        return (!CServer.network.isVoid(name) && CServer.network.buffer[name]) || false
     }
 
-    static create = function(name) {
+    static create = function(name, isCallback) {
         if (!CServer.isConnected(true) || !CServer.network.isVoid(name)) return false
         CServer.network.buffer[name] = new CServer.network(name)
         return CServer.network.buffer[name]
