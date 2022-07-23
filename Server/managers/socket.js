@@ -54,16 +54,17 @@ class CSocket {
 
     constructor(route) {
         const self = this
-        self.route = route
-        self.instance = {}, self.network = {}, self.room = {}
+        self.uid = CUtility.genUID.v4(), self.route = route
+        self.instance = {}, self.room = {}
         self.server = new CWS.Server({
             noServer: true,
-            path: "/" + self.route
+            path: `/${self.route}`
         })
+        self.network = CServer.network.create(`Socket:${self.uid}`)
         self.server.on("connection", function(socket, request) {
-            socket.UID = CUtility.genUID.v4()
+            socket.uid = CUtility.genUID.v4()
             self.instance[socket] = {
-                UID: socket.UID
+                uid: socket.uid,
             }
         })
         CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
