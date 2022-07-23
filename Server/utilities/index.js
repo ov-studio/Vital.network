@@ -17,6 +17,18 @@ const CUtility = {
     print: console.log,
     loadstring: eval
 }
+const CTypes = [
+    {handler: "isBool", type: "boolean"},
+    {handler: "isString", type: "string"},
+    {handler: "isNumber", type: "number"},
+    {handler: "isObject", type: "object"},
+    {handler: "isFunction", type: "function"}
+]
+CTypes.forEach(function(j) {
+    CUtility[(j.handler)] = function(data) {
+        return CUtility.isType(data, j.type)
+    }
+})
 
 CUtility.isNull = function(data) {
     return data == null
@@ -24,26 +36,6 @@ CUtility.isNull = function(data) {
 
 CUtility.isType = function(data, type) {
     return (!CUtility.isNull(data) && !CUtility.isNull(type) && (typeof(type) == "string") && (typeof(data) == type) && true) || false
-}
-
-CUtility.isBool = function(data) {
-    return CUtility.isType(data, "boolean")
-}
-
-CUtility.isString = function(data) {
-    return CUtility.isType(data, "string")
-}
-
-CUtility.isNumber = function(data) {
-    return CUtility.isType(data, "number")
-}
-
-CUtility.isObject = function(data) {
-    return CUtility.isType(data, "object")
-}
-
-CUtility.isFunction = function(data) {
-    return CUtility.isType(data, "function")
 }
 
 CUtility.exec = function(exec, ...cArgs) {
@@ -65,8 +57,8 @@ CUtility.createAPIs = function(buffer, blacklist) {
 }
 
 
-/*------------
--- Exports  --
-------------*/
+/*-----------
+-- Exports --
+-----------*/
 
 module.exports = CUtility
