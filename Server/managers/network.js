@@ -77,12 +77,18 @@ class CNetwork {
         const self = this
         self.name = name
         self.handler = {}
-        console.log("CREATED NETWORK")
     }
 
     isInstance() {
         const self = this
         return (!self.isUnloaded && !CServer.network.isVoid(self.name) && true) || false
+    }
+
+    destroy() {
+        const self = this
+        if (!self.isInstance()) return false
+        CServer.network.destroy(self.name)
+        return true
     }
 
     on(exec) {
