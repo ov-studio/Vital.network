@@ -88,9 +88,16 @@ class CNetwork {
     on(exec) {
         const self = this
         if (!self.isInstance() || !CUtility.isFunction(exec)) return false
-        exec.uid = exec.uid || CUtility.genUID.v4()
-        if (self.handler[(exec.uid)]) return false
-        self.handler[(exec.uid)] = {
+        if (!exec.prototype.uid) {
+            Object.defineProperty(exec.prototype, "uid", {
+                value: CUtility.genUID.v4(),
+                enumerable: true,
+                configurable: false,
+                writable: false
+            })
+        }
+        if (self.handler[(exec.prototype.uid)]) return false
+        self.handler[(exec.prototype.uid)] = {
             exec: exec
         }
         return true
@@ -99,8 +106,8 @@ class CNetwork {
     off(exec) {
         const self = this
         if (!self.isInstance() || !CUtility.isFunction(exec)) return false
-        if (!exec.uid || !self.handler[(exec.uid)]) return false
-        delete self.handler[(exec.uid)]
+        if (!exec.prototype.uid || !self.handler[(exec.prototype.uid)]) return false
+        delete self.handler[(exec.prototype.uid)]
         return true
     }
 
