@@ -37,6 +37,7 @@ CServer.fetchServer = function(index) {
     return (index && CServer.instance[index]) || false
 }
 
+// TODO: DEPS MUST BE ASYNC?
 CServer.isConnected = function() {
     return CServer.config.isAwaiting || CServer.config.isConnected || false
 }
