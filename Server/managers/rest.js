@@ -49,7 +49,7 @@ class CRest {
     }
     
     static create(type, route, exec) {
-        if (!CServer.rest.isVoid(type, route) || !CUtility.isFunction(exec)) return false
+        if (!CServer.isConnected() || !CServer.rest.isVoid(type, route) || !CUtility.isFunction(exec)) return false
         CServer.rest.route[type][route] = CServer.rest.route[type][route] || {}
         CServer.rest.route[type][route].manager = CServer.rest.route[type][route].manager || function(...cArgs) {
             CUtility.exec(CServer.rest.route[type][route].handler, ...cArgs)
