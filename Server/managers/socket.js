@@ -34,6 +34,10 @@ class CSocket {
         return (CUtility.isString(route) && !CUtility.isObject(CServer.socket.buffer[route]) && true) || false
     }
 
+    static fetch = function(route) {
+        return (!CServer.socket.isVoid(name) && CServer.socket.buffer[route]) || false
+    }
+
     static create = function(route) {
         if (!CServer.isConnected(true) || !CServer.socket.isVoid(route)) return false
         CServer.socket.buffer[route] = new CServer.socket(route)
@@ -45,6 +49,12 @@ class CSocket {
         CServer.socket.buffer[route].isUnloaded = true
         delete CServer.socket.buffer[route]
         return true
+    }
+
+    static fetchUID = function(route) {
+        const cInstance = CServer.socket.fetch(route)
+        if (!cInstance) return false
+        return cInstance.uid || false
     }
 
 
