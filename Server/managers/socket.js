@@ -35,7 +35,7 @@ class CSocket {
     }
 
     static fetch = function(route) {
-        return (!CServer.socket.isVoid(name) && CServer.socket.buffer[route]) || false
+        return (!CServer.socket.isVoid(route) && CServer.socket.buffer[route]) || false
     }
 
     static create = function(route) {
@@ -83,12 +83,14 @@ class CSocket {
             })
         })
         self.server.on("connection", function(socket, request) {
-            var [_, query] = request.url.split("?")
+            var [route, query] = request.url.split("?")
+            route = CServer.socket.fetch(route.slice(1))
+            if (!route) return false
             query = CUtility.queryString.parse(query)
             socket.on("message", function(payload) {
                 payload = JSON.parse(payload)
-                if (!CUtility.isObject(payload) || !CUtility.isArray(payload.processArgs)) return false
-                CServer.network.emit(payload.networkName, ...(payload.processArgs))
+                if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.processArgs)) return false
+                CServer.network.emit(`Socket:${route.uid}:${payload.networkName}`, ...(payload.processArgs))
             })
         })
     }
