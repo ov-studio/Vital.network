@@ -69,22 +69,22 @@ class CNetwork {
 
     on(name, exec) {
         const self = this
-        if (!self.isInstance(name) || !CUtility.isFunction(exec) || self.network[name].handlers[exec]) return false
-        self.network[name].handlers[exec] = {}
+        if (!self.isInstance(name) || !CUtility.isFunction(exec) || self.handlers[exec]) return false
+        self.handlers[exec] = {}
         return true
     }
 
     off(name, exec) {
         const self = this
-        if (!self.isInstance(name) || !CUtility.isFunction(exec) || !self.network[name].handlers[exec]) return false
-        delete self.network[name].handlers[exec]
+        if (!self.isInstance(name) || !CUtility.isFunction(exec) || !self.handlers[exec]) return false
+        delete self.handlers[exec]
         return true
     }
 
     emit(name, ...cArgs) {
         if (!self.isInstance(name)) return false
-        for (const i in self.network[name].handlers) {
-            const j = self.network[name].handlers[i]
+        for (const i in self.handlers) {
+            const j = self.handlers[i]
             j(...cArgs)
         }
         return true
