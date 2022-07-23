@@ -80,7 +80,7 @@ CUtility.createAPIs = function(buffer, blacklist) {
             }
         }
     }
-    return !isVoid && result
+    return (!isVoid && result) || false
 }
 
 
