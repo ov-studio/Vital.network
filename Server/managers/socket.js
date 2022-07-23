@@ -116,11 +116,11 @@ class CSocket {
         return true
     }
 
-    emit(name, value) {
+    emit(name, ...cArgs) {
         if (!self.isNetwork(name)) return false
         for (const i in self.network[name].handlers) {
             const j = self.network[name].handlers[i]
-            j(value)
+            j(...cArgs)
         }
         return true
     }
