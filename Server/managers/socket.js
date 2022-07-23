@@ -75,8 +75,7 @@ class CSocket {
             query = CUtility.queryString.parse(query)
             socket.on("message", function(payload) {
                 payload = JSON.parse(payload)
-                if (!CUtility.isObject(payload) || !self.isNetwork(payload.networkName)) return false
-                payload.processArgs = (CUtility.isArray(payload.processArgs) && payload.processArgs) || []
+                if (!CUtility.isObject(payload) || !CUtility.isArray(payload.processArgs) || !self.isNetwork(payload.networkName)) return false
                 self.emit(payload.networkName, ...(payload.processArgs))
             })
         })
