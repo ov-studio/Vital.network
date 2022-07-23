@@ -23,12 +23,16 @@ const CTypes = [
     {handler: "isBool", type: "boolean"},
     {handler: "isString", type: "string"},
     {handler: "isNumber", type: "number"},
-    {handler: "isObject", type: "object"},
+    {handler: "isObject", type: "object", middleware: function(data, isArray) {return (isArray && Array.isArray(data)) || true}},
     {handler: "isFunction", type: "function"}
 ]
 CTypes.forEach(function(j) {
-    CUtility[(j.handler)] = function(data) {
-        return CUtility.isType(data, j.type)
+    CUtility[(j.handler)] = function(data, ...cArgs) {
+        var isTypeValid = CUtility.isType(data, j.type)
+        if (isTypeValid && j.middleware) {
+            isTypeValid = (j.middleware(data, ...cArgs) && isTypeValid) || false
+        }
+        return isTypeValid
     }
 })
 
