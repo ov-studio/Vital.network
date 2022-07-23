@@ -59,11 +59,11 @@ class CSocket {
             noServer: true,
             path: "/" + self.route
         })
-
         self.server.on("connection", function(socket, request) {
-            self.instance[socket] = {}
-            // TODO: REMOVE LATER
-            CUtility.print("CONNECTED SOCKET")
+            socket.UID = CUtility.genUID.v4()
+            self.instance[socket] = {
+                UID: socket.UID
+            }
         })
         CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
             self.server.handleUpgrade(request, socket, head, function(socket) {
@@ -72,12 +72,12 @@ class CSocket {
         })
         self.server.on("connection", function(socket, request) {
             var [_, query] = request.url.split("?")
-            query = CUtility.querystring.parse(query)
+            query = CUtility.queryString.parse(query)
             socket.on("message", function(message) {
                 console.log("EMIT 1")
                 const parsedMessage = JSON.parse(message)
                 console.log(parsedMessage)
-                socket.send(JSON.stringify({ message: 'There be gold in them thar hills.' }))
+                socket.send(JSON.stringify({message: "There be gold in them thar hills."}))
             })
         })
     }
