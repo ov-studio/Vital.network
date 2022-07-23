@@ -4,11 +4,11 @@
     "author": "ᴏᴠ <crazynuggets@outlook.com> (https://github.com/ov-studio)",
     "license": "GPLV3",
     "scripts": {
-      "start": "node ./loader"
+        "start": "node ./loader"
     },
     "dependencies": {
+        "ws": "^8.8.1",
         "cors": "^2.8.5",
-        "express": "^4.18.1",
-        "express-ws": "^5.0.2"
+        "express": "^4.18.1"
     }
-  }
+}
