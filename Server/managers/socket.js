@@ -106,10 +106,10 @@ class CSocket {
         return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && self.network[name].isInstance() && true) || false
     }
 
-    createNetwork(name) {
+    createNetwork(name, ...cArgs) {
         const self = this
         if (!self.isInstance() || self.isNetwork(name)) return false
-        self.network[name] = CServer.network.create(`Socket:${self.uid}:${name}`)
+        self.network[name] = CServer.network.create(`Socket:${self.uid}:${name}`, ...cArgs)
         return self.network[name]
     }
 
