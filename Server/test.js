@@ -10,6 +10,7 @@
 -- Imports --
 -----------*/
 
+// TODO: FIX, INDEX & PARSE ALL DEEP FUNCTIONS
 CServer = require("./managers/server")()
 
 
