@@ -6,23 +6,22 @@
      Developer(s): Aviril, Mario, Tron
      DOC: 22/07/2022
      Desc: Module Tester
-----------------------------------------------------------------*/
-
-// TODO: TO BE REMOVED LATER
-
-/*-----------
+----------------------------------------------------------------*//*-----------
 -- Imports --
 -----------*/
 
 CServer = require("./managers/server")()
 
 
+/*--------
+-- Test --
+--------*/
 
-// TODO: ...
 async function test() {
-    var test = await(CServer.connect(33001, {
+    const isConnected = await(CServer.connect(33001, {
         isCaseSensitive: true
     }))
+    if (!isConnected) return false
 
     // @Rest API Example
     CServer.createRestAPI("get", "", function(request, response) {
@@ -31,20 +30,3 @@ async function test() {
     CServer.destroyRestAPI("get", "")
 }
 test()
-
-
-
-// TODO: REPLACE LATER
-/*
-const expressWS = require("express-ws")
-expressWS(CServer.fetchServer("CExpress"), CServer.fetchServer("CHTTP"))
-
-// TODO: IMPLEMENT REST API CLASS
-// TODO: IMPLEMENT WS WRAPPER
-CServer.fetchServer("CExpress").ws("/", async function(ws, req) {
-    ws.on("message", async function(msg) {
-        console.log("WS TEST: " + toString(msg))
-        ws.send("WS RETURN VALUE?")
-    })
-})
-*/
