@@ -91,7 +91,7 @@ class CSocket {
         const self = this
         if (!self.isValid()) return false
         CServer.socket.destroy(this.route)
-        self.close()
+        self.server.close()
         return true
     }
 }
