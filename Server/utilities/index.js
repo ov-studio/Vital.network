@@ -56,14 +56,23 @@ CUtility.exec = function(exec, ...cArgs) {
 CUtility.createAPIs = function(buffer, blacklist) {
     if (!CUtility.isObject(buffer)) return false
     blacklist = (CUtility.isObject(blacklist) && blacklist) || false
+    var isVoid = true
     const result = {}
     for (const i in buffer) {
         const j = buffer[i]
-        if (CUtility.isFunction(j) && (!blacklist || !blacklist[j])) {
-            result[i] = j
+        if (CUtility.isObject(j)) {
+            const __result = CUtility.createAPIs(j)
+            if (__result) {
+                result[i] = __result
+            }
+        } else {
+            if (CUtility.isFunction(j) && (!blacklist || !blacklist[j])) {
+                isVoid = false
+                result[i] = j
+            }
         }
     }
-    return result
+    return !isVoid && result
 }
 
 
