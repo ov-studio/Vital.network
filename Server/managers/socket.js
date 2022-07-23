@@ -59,10 +59,26 @@ class CSocket {
             noServer: true,
             path: "/" + self.route
         })
+
         self.server.on("connection", function(socket, request) {
             self.instance[socket] = {}
             // TODO: REMOVE LATER
             CUtility.print("CONNECTED SOCKET")
+        })
+        CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
+            self.server.handleUpgrade(request, socket, head, function(socket) {
+                self.server.emit("connection", socket, request)
+            })
+        })
+        self.server.on("connection", function(socket, request) {
+            var [_, query] = request.url.split("?")
+            query = CUtility.querystring.parse(query)
+            socket.on("message", function(message) {
+                console.log("EMIT 1")
+                const parsedMessage = JSON.parse(message)
+                console.log(parsedMessage)
+                socket.send(JSON.stringify({ message: 'There be gold in them thar hills.' }))
+            })
         })
     }
 
@@ -75,9 +91,8 @@ class CSocket {
         const self = this
         if (!self.isValid()) return false
         CServer.socket.destroy(this.route)
+        self.close()
         return true
     }
 }
 CServer.socket = CSocket
-
-const testRT = CServer.socket.create("test")
