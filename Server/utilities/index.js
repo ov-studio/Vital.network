@@ -24,6 +24,7 @@ const CTypes = [
     {handler: "isString", type: "string"},
     {handler: "isNumber", type: "number"},
     {handler: "isObject", type: "object", middleware: function(data, isArray) {return (!isArray && true) || Array.isArray(data)}},
+    {handler: "isClass", type: "class"},
     {handler: "isFunction", type: "function"}
 ]
 CTypes.forEach(function(j) {
