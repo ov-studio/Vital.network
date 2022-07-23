@@ -44,6 +44,10 @@ CUtility.isType = function(data, type) {
     return (!CUtility.isNull(data) && !CUtility.isNull(type) && (typeof(type) == "string") && (typeof(data) == type) && true) || false
 }
 
+CUtility.isArray = function(data) {
+    return CUtility.isObject(data, true)
+}
+
 CUtility.exec = function(exec, ...cArgs) {
     if (!CUtility.isFunction(exec)) return false
     return exec(...cArgs)
@@ -62,8 +66,6 @@ CUtility.createAPIs = function(buffer, blacklist) {
     return result
 }
 
-const test = []
-console.log(CUtility.isObject(test, true))
 
 /*-----------
 -- Exports --
