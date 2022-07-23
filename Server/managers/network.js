@@ -50,11 +50,22 @@ class CNetwork {
         return true
     }
 
+    static on = function(name, ...cArgs) {
+        const cInstance = CServer.network.fetch(name)
+        if (!cInstance) return false
+        return cInstance.on(...cArgs)
+    }
+
+    static off = function(name, ...cArgs) {
+        const cInstance = CServer.network.fetch(name)
+        if (!cInstance) return false
+        return cInstance.off(...cArgs)
+    }
+
     static emit = function(name, ...cArgs) {
         const cInstance = CServer.network.fetch(name)
         if (!cInstance) return false
-        cInstance.emit(...cArgs)
-        return true
+        return cInstance.emit(...cArgs)
     }
 
 
