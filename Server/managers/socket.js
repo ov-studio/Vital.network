@@ -108,7 +108,7 @@ class CSocket {
         if (!self.isInstance() || self.isNetwork(name)) return false
         self.network[name] = CServer.network.create(`Socket:${self.uid}:${name}`)
         return self.network[name]
-    },
+    }
 
     destroyNetwork(name) {
         const self = this
