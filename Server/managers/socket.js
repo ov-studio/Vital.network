@@ -113,6 +113,13 @@ class CSocket {
         return true
     }
 
+    off(name, exec) {
+        const self = this
+        if (!self.isNetwork(name) || !CUtility.isFunction(exec) || !self.network[name].handlers[exec]) return false
+        delete self.network[name].handlers[exec]
+        return true
+    }
+
     destroy() {
         const self = this
         if (!self.isValid()) return false
