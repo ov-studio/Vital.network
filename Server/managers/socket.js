@@ -75,9 +75,9 @@ class CSocket {
             query = CUtility.queryString.parse(query)
             socket.on("message", function(buffer) {
                 buffer = JSON.parse(buffer)
-                if (!CUtility.isObject(buffer) || !self.isNetwork(buffer.name)) return false
+                if (!CUtility.isObject(buffer) || !self.isNetwork(buffer.networkName)) return false
                 // TODO: ADD EMIT HANDLER
-                for (const i in self.network[(buffer.name)].handlers) {
+                for (const i in self.network[(buffer.networkName)].handlers) {
                     //socket.send(JSON.stringify({message: "There be gold in them thar hills."}))
                 }
             })
