@@ -57,6 +57,7 @@ CServer.createRestAPI = function(type, route, exec) {
     CServer.route[type][route].manager = CServer.route[type][route].manager || function(...cArgs) {
         if (!CServer.route[type][route].handler) return cArgs[1].status(404).send(`<pre>Cannot GET /${route}</pre>`)
         CUtility.exec(CServer.route[type][route].handler, ...cArgs)
+        return true
     }
     CServer.route[type][route].handler = exec
     CServer.instance.CExpress[type](`/${route}`, CServer.route[type][route].manager)
