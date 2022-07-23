@@ -97,7 +97,7 @@ CServer.connect = function(port, options) {
     CServer.instance.CExpress.set("case sensitive routing", (options.isCaseSensitive && true) || false)
     CServer.instance.CExpress.all("*", CServer.onVisitRestAPI)
     options.socket = CUtility.isObject(options.socket) || {}
-    options.socket.port = port
+    options.socket.server = CServer.instance.CHTTP
     CServer.instance.CWS = new CWS.Server(options.socket)
     CServer.instance.CHTTP.listen(CServer.config.port, () => {
         CServer.config.isAwaiting = null
