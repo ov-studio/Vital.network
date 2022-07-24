@@ -110,6 +110,11 @@ class CSocket {
         return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && self.network[name].isInstance() && true) || false
     }
 
+    fetchNetwork(name) {
+        const self = this
+        return (self.isNetwork(name) && self.network[name]) || false
+    }
+
     createNetwork(name, ...cArgs) {
         const self = this
         if (!self.isInstance() || self.isNetwork(name)) return false
