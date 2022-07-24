@@ -54,7 +54,7 @@ CServer.connect = function(port, options) {
     CServer.instance.CEvent = new (CEvent).EventEmitter()
     CServer.instance.CExpress.use(CCors())
     CServer.instance.CExpress.use(CExpress.json())
-    CServer.instance.CExpress.use(CExpress.urlencoded({ extended: true}))
+    CServer.instance.CExpress.use(CExpress.urlencoded({extended: true}))
     CServer.instance.CExpress.set("case sensitive routing", (options.isCaseSensitive && true) || false)
     CServer.instance.CExpress.all("*", CServer.rest.onMiddleware)
     CServer.instance.CHTTP.listen(CServer.config.port, () => {
