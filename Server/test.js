@@ -33,10 +33,12 @@ async function test() {
     cNetwork.on(function() {
         console.log("HI XD")
     })
-    cNetwork.on(function(...cArgs) {
+    const testExec = function(...cArgs) {
         console.log("HI 2 XD")
         console.log(...cArgs)
-    })
+    }
+    cNetwork.on(testExec)
+    cNetwork.off(testExec)
     cNetwork.emit("test", "xD")
 
     // @Rest API Examples
