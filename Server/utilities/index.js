@@ -9,9 +9,9 @@
 ----------------------------------------------------------------*/
 
 
-/*------------------
--- Class: Utility --
-------------------*/
+/////////////////////
+// Class: Utility //
+/////////////////////
 
 const CUtility = {
     print: console.log,
@@ -132,8 +132,8 @@ CUtility.createAPIs = function(buffer, blacklist) {
 }
 
 
-/*-----------
--- Exports --
------------*/
+//////////////
+// Exports //
+//////////////
 
 module.exports = CUtility

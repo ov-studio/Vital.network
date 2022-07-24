@@ -68,8 +68,8 @@ CServer.connect = function(port, options) {
 }
 
 
-/*-----------
--- Exports --
------------*/
+//////////////
+// Exports //
+//////////////
 
 module.exports = CServer
