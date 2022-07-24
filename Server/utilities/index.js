@@ -53,6 +53,15 @@ CUtility.isClass = function(data) {
     return (CUtility.isFunction(data, "function") && data.isClass && true) || false
 }
 
+CUtility.createClass = function() {
+    return class __C{
+        static isClass = true
+        constructor(...cArgs) {
+            if (CUtility.isFunction(__C.constructor)) __C.constructor(this, ...cArgs)
+        }
+    }
+}
+
 CUtility.exec = function(exec, ...cArgs) {
     if (!CUtility.isFunction(exec)) return false
     return exec(...cArgs)
