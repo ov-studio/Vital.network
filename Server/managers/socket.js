@@ -105,6 +105,31 @@ CServer.socket.addInstanceMethod("off", function(self, name, ...cArgs) {
     return cNetwork.off(...cArgs)
 })
 
+CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs) {
+    const cNetwork = fetchNetwork(self, name)
+    if (!cNetwork) return false
+    if (isRemote) {
+        if (!CUtility.isServer && !self.isClient(isRemote)) return false
+        isRemote.send(JSON.stringify({
+            networkName: name,
+            networkArgs: cArgs
+        }))
+        return true
+    }
+    return cNetwork.emit(...cArgs)
+})
+
+CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, ...cArgs) {
+    const cNetwork = fetchNetwork(self, name)
+    if (!cNetwork) return false
+    if (isRemote) {
+        if (!CUtility.isServer && !self.isClient(isRemote)) return false
+        // TODO: ADD REMOTE TRANSFER
+        return true
+    }
+    return cNetwork.emitCallback(...cArgs)
+})
+
 if (!CUtility.isServer) {
     /////////////////////
     // Static Members //
@@ -177,30 +202,5 @@ else {
         if (!self.isInstance()) return false
         const vid = CUtility.fetchVID(client)
         return (vid && CUtility.isObject(self.instance[vid]) && true) || false
-    })
-
-    CServer.socket.addInstanceMethod("emit", function(self, name, client, ...cArgs) {
-        const cNetwork = fetchNetwork(self, name)
-        if (!cNetwork) return false
-        if (client) {
-            if (!self.isClient(client)) return false
-            client.send(JSON.stringify({
-                networkName: name,
-                networkArgs: cArgs
-            }))
-            return true
-        }
-        return cNetwork.emit(...cArgs)
-    })
-    
-    CServer.socket.addInstanceMethod("emitCallback", function(self, name, client, ...cArgs) {
-        const cNetwork = fetchNetwork(self, name)
-        if (!cNetwork) return false
-        if (client) {
-            if (!self.isClient(client)) return false
-            // TODO: ADD REMOTE TRANSFER
-            return true
-        }
-        return cNetwork.emitCallback(...cArgs)
     })
 }
