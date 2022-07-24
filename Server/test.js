@@ -37,7 +37,7 @@ async function test() {
         console.log("HI 2 XD")
         console.log(...cArgs)
     })
-    //cNetwork.emit("test", "xD")
+    cNetwork.emit("test", "xD")
 
     // @Rest API Examples
     vNetworkify.rest.create("get", "", function(request, response) {
