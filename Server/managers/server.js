@@ -46,11 +46,8 @@ if (!CUtility.isServer) {
         port = (CUtility.isNumber(port) && port) || false
         options = (CUtility.isObject(options) && options) || {}
         if (!port || CServer.isConnected()) return false
-        options.protocol = window.location.protocol
-        //options.protocol = ((window.location.protocol === "https:") && "wss:") || "ws:"
-        //const socketUrl = `${cProtocol}//${window.location.hostname}:${port}/test/`
-        const socketUrl = `${cProtocol}//localhost:${port}/test`
-        //new WebSocket(socketUrl);
+        config.protocol = window.location.protocol
+        config.hostname = window.location.hostname
         CUtility.print(`━ vNetworify (Client) | Launched [Port: ${CServer.config.port}]`)
         return true
     } 

@@ -106,7 +106,30 @@ CServer.socket.addInstanceMethod("off", function(self, name, ...cArgs) {
 })
 
 if (!CUtility.isServer) {
-
+    CServer.socket.addMethod("constructor", function(self, route) {
+        CUtility.fetchVID(self)
+        self.route = route, self.network = {}
+        self.room = {}
+        self.server = new WebSocket(`${CServer.config.protocol}//${CServer.config.hostname}:${port}/${route}`)
+        /*
+        self.server.on("onClientConnect", function(socket, request) {
+            var [instance, query] = request.url.split("?")
+            instance = CServer.socket.fetch(instance.slice(1))
+            if (!instance) return false
+            const vid = CUtility.fetchVID(socket)
+            self.instance[vid] = socket
+            query = CUtility.queryString.parse(query)
+            socket.on("close", function() {
+                delete self.instance[(socket.vid)]
+            })
+            socket.on("message", function(payload) {
+                payload = JSON.parse(payload)
+                if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
+                self.emit(payload.networkName, null, ...payload.networkArgs)
+            })
+        })
+        */
+    })
 }
 else {
     CServer.socket.addMethod("constructor", function(self, route) {
