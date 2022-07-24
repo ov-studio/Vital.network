@@ -54,24 +54,23 @@ CUtility.isClass = function(data) {
 }
 
 CUtility.createClass = function() {
-    return class __C{
+    class __C{
         static isClass = true
         constructor(...cArgs) {
             if (CUtility.isFunction(__C.constructor)) __C.constructor(this, ...cArgs)
         }
-        static addMethod(index, exec) {
-            if (!CUtility.isString(index) || !CUtility.isFunction(exec)) return false
-            __C.prototype[index] = function(...cArgs) {
-                exec(this, ...cArgs)
-            }
-            return true
-        }
-        static removeMethod(index) {
-            if (!CUtility.isString(index) || !CUtility.isFunction(__C.prototype[index])) return false
-            delete __C.prototype[index]
-            return true
-        }
     }
+    __C.addMethod = function(index, exec) {
+        if (!CUtility.isString(index) || !CUtility.isFunction(exec)) return false
+        __C.prototype[index] = exec
+        return true
+    }
+    __C.removeMethod = function(index) {
+        if (!CUtility.isString(index) || !CUtility.isFunction(__C.prototype[index])) return false
+        delete __C.prototype[index]
+        return true
+    }
+    return __C
 }
 
 CUtility.exec = function(exec, ...cArgs) {
