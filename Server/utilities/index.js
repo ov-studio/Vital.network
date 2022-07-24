@@ -58,8 +58,9 @@ CUtility.exec = function(exec, ...cArgs) {
     return exec(...cArgs)
 }
 
-CUtility.createVID = function(buffer) {
-    if (CUtility.isNull(buffer) || !buffer.prototype) return false
+CUtility.fetchVID = function(buffer) {
+    if (CUtility.isNull(buffer) || CUtility.isBool(buffer)) return false
+    buffer.prototype = buffer.prototype || {}
     if (!buffer.prototype.vuid) {
         Object.defineProperty(buffer.prototype, "vuid", {
             value: CUtility.genUID.v4(),
