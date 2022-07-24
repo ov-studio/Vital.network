@@ -31,6 +31,10 @@ CServer.socket = CUtility.createClass({
 // Static Members //
 /////////////////////
 
+const fetchNetwork = function(self, name) {
+    return (self.isNetwork(name) && self.network[name]) || false
+}
+
 CServer.socket.addMethod("isVoid", function(route) {
     return (CUtility.isString(route) && !CUtility.isObject(CServer.socket.buffer[route]) && true) || false
 })
@@ -51,10 +55,6 @@ CServer.socket.addMethod("destroy", function(route) {
     delete CServer.socket.buffer[route]
     return true
 })
-
-const fetchNetwork = function(self, name) {
-    return (self.isNetwork(name) && self.network[name]) || false
-}
 
 
 ///////////////////////
