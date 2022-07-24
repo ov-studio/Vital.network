@@ -66,8 +66,8 @@ class CSocket {
             path: `/${self.route}`
         })
         self.server.on("connection", function(socket, request) {
-            CUtility.fetchVID(socket)
-            self.instance[socket] = {}
+            const vid = CUtility.fetchVID(socket)
+            self.instance[vid] = socket
         })
         CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
             self.server.handleUpgrade(request, socket, head, function(socket) {
@@ -95,7 +95,8 @@ class CSocket {
     isClient(socket) {
         const self = this
         if (!self.isInstance()) return false
-        return (CUtility.isObject(self.instance[socket]) && true) || false
+        const vid = CUtility.fetchVID(socket)
+        return (vid && CUtility.isObject(self.instance[vid]) && true) || false
     }
 
     destroy() {
