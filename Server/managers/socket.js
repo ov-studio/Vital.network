@@ -110,7 +110,7 @@ if (!CUtility.isServer) {
         CUtility.fetchVID(self)
         self.route = route, self.network = {}, self.room = {}
         self.isConnected = false
-        self.connector = function() {
+        self.connect = function() {
             var cResolver = false
             CServer.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
             self.server = new WebSocket(`${CServer.config.protocol}//${CServer.config.hostname}:${port}/${route}`)
@@ -121,11 +121,11 @@ if (!CUtility.isServer) {
             self.server.on("error", function(error) {
                 self.isConnected = false
                 cResolver(self.isConnected, error)
-                self.connector()
+                self.connect()
             })
             return true
         }
-        self.connector()
+        self.connect()
     })
 }
 else {
