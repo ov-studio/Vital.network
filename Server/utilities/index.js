@@ -53,11 +53,16 @@ CUtility.isClass = function(data) {
     return (CUtility.isFunction(data, "function") && data.isClass && true) || false
 }
 
-CUtility.createClass = function() {
+CUtility.createClass = function(parent) {
     class __C{
         static isClass = true
         constructor(...cArgs) {
             if (CUtility.isFunction(__C.constructor)) __C.constructor(this, ...cArgs)
+        }
+    }
+    if (CUtility.isObject(parent)) {
+        for (const i in parent) {
+            __C[i] = parent[i]
         }
     }
     __C.addMethod = function(index, exec) {

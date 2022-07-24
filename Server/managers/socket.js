@@ -22,8 +22,9 @@ const CServer = require("./server")
 -- Class: Socket --
 -----------------*/
 
-CServer.socket = CUtility.createClass()
-CServer.socket.buffer = {}
+CServer.socket = CUtility.createClass({
+    buffer: {}
+})
 
 CServer.socket.constructor = function(self, route) {
     CUtility.fetchVID(self)
