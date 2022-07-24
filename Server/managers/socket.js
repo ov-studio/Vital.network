@@ -133,16 +133,14 @@ class CSocket {
         const self = this
         const cNetwork = self.fetchNetwork(name)
         if (!cNetwork) return false
-        cNetwork.on(...cArgs)
-        return true
+        return cNetwork.on(...cArgs)
     }
 
     off(name, ...cArgs) {
         const self = this
         const cNetwork = self.fetchNetwork(name)
         if (!cNetwork) return false
-        cNetwork.off(...cArgs)
-        return true
+        return cNetwork.off(...cArgs)
     }
 }
 CServer.socket = CSocket
