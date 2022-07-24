@@ -51,12 +51,6 @@ class CSocket {
         return true
     }
 
-    static fetchUID = function(route) {
-        const cInstance = CServer.socket.fetch(route)
-        if (!cInstance) return false
-        return cInstance.uid || false
-    }
-
 
     ///////////////////////
     // Instance Mmebers //
@@ -64,7 +58,7 @@ class CSocket {
 
     constructor(route) {
         const self = this
-        self.uid = CUtility.genUID.v4()
+        CUtility.fetchVID(this)
         self.route = route, self.network = {}
         self.instance = {}, self.room = {}
         self.server = new CWS.Server({
@@ -72,10 +66,8 @@ class CSocket {
             path: `/${self.route}`
         })
         self.server.on("connection", function(socket, request) {
-            socket.uid = CUtility.genUID.v4()
-            self.instance[socket] = {
-                uid: socket.uid
-            }
+            CUtility.fetchVID(socket)
+            self.instance[socket] = {}
         })
         CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
             self.server.handleUpgrade(request, socket, head, function(socket) {
@@ -83,14 +75,14 @@ class CSocket {
             })
         })
         self.server.on("connection", function(socket, request) {
-            var [route, query] = request.url.split("?")
-            route = CServer.socket.fetch(route.slice(1))
-            if (!route) return false
+            var [instance, query] = request.url.split("?")
+            instance = CServer.socket.fetch(instance.slice(1))
+            if (!instance) return false
             query = CUtility.queryString.parse(query)
             socket.on("message", function(payload) {
                 payload = JSON.parse(payload)
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.processArgs)) return false
-                CServer.network.emit(`Socket:${route.uid}:${payload.networkName}`, ...(payload.processArgs))
+                CServer.network.emit(`Socket:${CUtility.fetchVID(instance)}:${payload.networkName}`, ...(payload.processArgs))
             })
         })
     }
@@ -121,7 +113,7 @@ class CSocket {
     createNetwork(name, ...cArgs) {
         const self = this
         if (!self.isInstance() || self.isNetwork(name)) return false
-        self.network[name] = CServer.network.create(`Socket:${self.uid}:${name}`, ...cArgs)
+        self.network[name] = CServer.network.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
         return self.network[name]
     }
 
