@@ -29,8 +29,8 @@ async function test() {
 
     // @Socket API Examples
     const cSocket = vNetworkify.socket.create("test")
-    const cNetwork = cSocket.createNetwork("test")
-    cNetwork.on(function() {
+    cSocket.createNetwork("test")
+    cSocket.on(function() {
         console.log("HI XD")
     })
     const testExec = function(...cArgs) {
@@ -39,7 +39,7 @@ async function test() {
     }
     cSocket.on(testExec)
     cSocket.off(testExec)
-    cSocket.emit("test", "xD")
+    //cSocket.emit("test", "xD")
 
     // @Rest API Examples
     vNetworkify.rest.create("get", "", function(request, response) {

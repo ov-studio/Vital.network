@@ -112,7 +112,7 @@ class CSocket {
         return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && self.network[name].isInstance() && true) || false
     }
 
-    fetchNetwork(name) {
+    #fetchNetwork(name) {
         const self = this
         return (self.isNetwork(name) && self.network[name]) || false
     }
@@ -129,18 +129,18 @@ class CSocket {
         if (!self.isInstance() || !self.isNetwork(name)) return false
         self.network[name].destroy()
         return true
-    },
+    }
 
     on(name, ...cArgs) {
         const self = this
-        const cNetwork = self.fetchNetwork(name)
+        const cNetwork = self.#fetchNetwork(name)
         if (!cNetwork) return false
         return cNetwork.on(...cArgs)
     }
 
     off(name, ...cArgs) {
         const self = this
-        const cNetwork = self.fetchNetwork(name)
+        const cNetwork = self.#fetchNetwork(name)
         if (!cNetwork) return false
         return cNetwork.off(...cArgs)
     }
