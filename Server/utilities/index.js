@@ -59,7 +59,7 @@ CUtility.exec = function(exec, ...cArgs) {
 }
 
 CUtility.fetchVID = function(buffer) {
-    if (CUtility.isNull(buffer) || CUtility.isBool(buffer)) return false
+    if (CUtility.isNull(buffer) || CUtility.isBool(buffer) || CUtility.isNumber(buffer)) return false
     buffer.prototype = buffer.prototype || {}
     if (!buffer.prototype.vid) {
         Object.defineProperty(buffer.prototype, "vid", {
