@@ -13,7 +13,8 @@
 -- Imports --
 -----------*/
 
-const CNetworkify = require("./managers/server")()
+const vNetworkify = require("./managers/server")()
+console.log(vNetworkify)
 
 
 /*--------
@@ -21,13 +22,13 @@ const CNetworkify = require("./managers/server")()
 --------*/
 
 async function test() {
-    const isConnected = await(CNetworkify.connect(33001, {
+    const isConnected = await(vNetworkify.connect(33001, {
         isCaseSensitive: true
     }))
     if (!isConnected) return false
 
     // @Socket API Examples
-    const cSocket = CNetworkify.socket.create("test")
+    const cSocket = vNetworkify.socket.create("test")
     const cNetwork = cSocket.createNetwork("test")
     cNetwork.on(function() {
         console.log("HI XD")
@@ -36,14 +37,14 @@ async function test() {
         console.log("HI 2 XD")
         console.log(...cArgs)
     })
-    cNetwork.emit("test", "xD")
+    //cNetwork.emit("test", "xD")
 
     // @Rest API Examples
-    CNetworkify.rest.create("get", "", function(request, response) {
+    vNetworkify.rest.create("get", "", function(request, response) {
         response.status(200).send("Some status message")
     })
-    CNetworkify.rest.destroy("get", "")
-    CNetworkify.rest.create("get", "", function(request, response) {
+    vNetworkify.rest.destroy("get", "")
+    vNetworkify.rest.create("get", "", function(request, response) {
         response.status(200).send("Some new status message")
     })
 }
