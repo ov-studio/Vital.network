@@ -76,6 +76,11 @@ CServer.socket.addInstanceMethod("destroy", function(self) {
     return true
 })
 
+CServer.socket.addInstanceMethod("isNetwork", function(self, name) {
+    if (!self.isInstance()) return false
+    return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && self.network[name].isInstance() && true) || false
+})
+
 CServer.socket.addInstanceMethod("createNetwork", function(self, name, ...cArgs) {
     if (!self.isInstance() || self.isNetwork(name)) return false
     self.network[name] = CServer.network.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
@@ -140,34 +145,29 @@ else {
         const vid = CUtility.fetchVID(client)
         return (vid && CUtility.isObject(self.instance[vid]) && true) || false
     })
+
+    CServer.socket.addInstanceMethod("emit", function(self, name, client, ...cArgs) {
+        const cNetwork = fetchNetwork(self, name)
+        if (!cNetwork) return false
+        if (client) {
+            if (!self.isClient(client)) return false
+            client.send(JSON.stringify({
+                networkName: name,
+                networkArgs: cArgs
+            }))
+            return true
+        }
+        return cNetwork.emit(...cArgs)
+    })
+    
+    CServer.socket.addInstanceMethod("emitCallback", function(self, name, client, ...cArgs) {
+        const cNetwork = fetchNetwork(self, name)
+        if (!cNetwork) return false
+        if (client) {
+            if (!self.isClient(client)) return false
+            // TODO: ADD REMOTE TRANSFER
+            return true
+        }
+        return cNetwork.emitCallback(...cArgs)
+    })
 }
-
-CServer.socket.addInstanceMethod("isNetwork", function(self, name) {
-    if (!self.isInstance()) return false
-    return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && self.network[name].isInstance() && true) || false
-})
-
-CServer.socket.addInstanceMethod("emit", function(self, name, client, ...cArgs) {
-    const cNetwork = fetchNetwork(self, name)
-    if (!cNetwork) return false
-    if (client) {
-        if (!self.isClient(client)) return false
-        client.send(JSON.stringify({
-            networkName: name,
-            networkArgs: cArgs
-        }))
-        return true
-    }
-    return cNetwork.emit(...cArgs)
-})
-
-CServer.socket.addInstanceMethod("emitCallback", function(self, name, client, ...cArgs) {
-    const cNetwork = fetchNetwork(self, name)
-    if (!cNetwork) return false
-    if (client) {
-        if (!self.isClient(client)) return false
-        // TODO: ADD REMOTE TRANSFER
-        return true
-    }
-    return cNetwork.emitCallback(...cArgs)
-})
