@@ -67,10 +67,20 @@ CUtility.createClass = function(parent) {
     }
     __C.addMethod = function(index, exec) {
         if (!CUtility.isString(index) || !CUtility.isFunction(exec)) return false
-        __C.prototype[index] = exec
+        __C[index] = exec
         return true
     }
     __C.removeMethod = function(index) {
+        if (!CUtility.isString(index) || !CUtility.isFunction(__C[index])) return false
+        delete __C[index]
+        return true
+    }
+    __C.addInstanceMethod = function(index, exec) {
+        if (!CUtility.isString(index) || !CUtility.isFunction(exec)) return false
+        __C.prototype[index] = exec
+        return true
+    }
+    __C.removeInstanceMethod = function(index) {
         if (!CUtility.isString(index) || !CUtility.isFunction(__C.prototype[index])) return false
         delete __C.prototype[index]
         return true
