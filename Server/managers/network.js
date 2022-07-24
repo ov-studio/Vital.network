@@ -74,6 +74,12 @@ CServer.network.addMethod("emit", function(name, ...cArgs) {
 // Instance Mmebers //
 //////////////////////
 
+CServer.network.addMethod("constructor", function(self, name, isCallback) {
+    self.name = name
+    self.isCallback = (CUtility.isBool(isCallback) && true) || false
+    self.handler = (!self.isCallback && {}) || false
+})
+
 CServer.network.addInstanceMethod("isInstance", function() {
     const self = this
     return (!self.isUnloaded && !CServer.network.isVoid(self.name) && true) || false
