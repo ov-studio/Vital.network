@@ -119,7 +119,7 @@ class CSocket {
         const self = this
         if (!self.isInstance() || self.isNetwork(name)) return false
         self.network[name] = CServer.network.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
-        return self.network[name]
+        return true
     }
 
     destroyNetwork(name) {
