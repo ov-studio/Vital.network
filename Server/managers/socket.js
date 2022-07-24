@@ -26,6 +26,11 @@ CServer.socket = CUtility.createClass({
     buffer: {}
 })
 
+
+/////////////////////
+// Static Members //
+/////////////////////
+
 CServer.socket.constructor = function(self, route) {
     CUtility.fetchVID(self)
     self.route = route, self.network = {}
@@ -81,6 +86,11 @@ CServer.socket.destroy = function(route) {
 const fetchNetwork = function(self, name) {
     return (self.isNetwork(name) && self.network[name]) || false
 }
+
+
+///////////////////////
+// Instance Members //
+///////////////////////
 
 CServer.socket.addMethod("isInstance", function() {
     const self = this
