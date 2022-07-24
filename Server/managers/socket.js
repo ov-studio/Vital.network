@@ -144,5 +144,16 @@ class CSocket {
         if (!cNetwork) return false
         return cNetwork.off(...cArgs)
     }
+
+    emit(name, client, ...cArgs) {
+        const self = this
+        const cNetwork = self.#fetchNetwork(name)
+        if (!cNetwork) return false
+        if (client) {
+            // TODO: ADD REMOTE TRANSFER
+            return true
+        }
+        return cNetwork.emit(...cArgs)
+    }
 }
 CServer.socket = CSocket
