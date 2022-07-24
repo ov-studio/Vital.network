@@ -19,9 +19,9 @@ const CExpress = require("express")
 const CUtility = require("../utilities/index")
 
 
-/*-----------------
--- Class: Server --
------------------*/
+////////////////////
+// Class: Server //
+///////////////////
 
 const CServer = {
     config: {
