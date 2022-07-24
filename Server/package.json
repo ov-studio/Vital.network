@@ -1,28 +1,30 @@
 {
-  "name": "@vstudio/vnetworkify",
-  "version": "1.0.0",
-  "author": "ᴏᴠ <crazynuggets@outlook.com> (https://github.com/ov-studio)",
-  "license": "GPL-3.0",
-  "description": "Lightweight yet Reliable networking solution",
-  "homepage": "https://github.com/ov-studio/vNetworkify#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ov-studio/vNetworkify.git"
-  },
-  "bugs": {
-    "url": "https://github.com/ov-studio/vNetworkify/issues"
-  },
-  "keywords": ["networking", "library", "ov", "vstudio"],
-  "main": "./importer",
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {},
-  "dependencies": {
-    "cors": "^2.8.5",
-    "uuid": "^8.3.2",
-    "express": "^4.18.1",
-    "ws": "^8.8.1"
-  },
-  "devDependencies": {}
+    "name": "@vstudio/vnetworkify",
+    "version": "1.0.0",
+    "author": "ᴏᴠ <crazynuggets@outlook.com> (https://github.com/ov-studio)",
+    "license": "GPL-3.0",
+    "description": "Lightweight yet Reliable networking solution",
+    "homepage": "https://github.com/ov-studio/vNetworkify#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ov-studio/vNetworkify.git"
+    },
+    "bugs": {
+        "url": "https://github.com/ov-studio/vNetworkify/issues"
+    },
+    "keywords": ["networking", "library", "ov", "vstudio", "web-dev"],
+    "main": "./importer",
+    "publishConfig": {
+        "access": "public"
+    },
+    "scripts": {
+        "start": "node ./test"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "uuid": "^8.3.2",
+        "express": "^4.18.1",
+        "ws": "^8.8.1"
+    },
+    "devDependencies": {}
 }
