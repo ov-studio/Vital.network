@@ -61,15 +61,15 @@ CUtility.exec = function(exec, ...cArgs) {
 CUtility.fetchVID = function(buffer) {
     if (CUtility.isNull(buffer) || CUtility.isBool(buffer)) return false
     buffer.prototype = buffer.prototype || {}
-    if (!buffer.prototype.vuid) {
-        Object.defineProperty(buffer.prototype, "vuid", {
+    if (!buffer.prototype.vid) {
+        Object.defineProperty(buffer.prototype, "vid", {
             value: CUtility.genUID.v4(),
             enumerable: true,
             configurable: false,
             writable: false
         })
     }
-    return buffer.prototype.vuid
+    return buffer.prototype.vid
 }
 
 CUtility.createAPIs = function(buffer, blacklist) {
