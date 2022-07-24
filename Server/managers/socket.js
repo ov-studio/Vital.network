@@ -113,7 +113,7 @@ if (!CUtility.isServer) {
         self.connect = function() {
             var cResolver = false
             CServer.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
-            self.server = new WebSocket(`${CServer.config.protocol}//${CServer.config.hostname}:${port}/${route}`)
+            self.server = new WebSocket(`${CServer.config.protocol}//${CServer.config.hostname}:${CServer.config.port}/${self.route}`)
             self.server.on("open", function() {
                 self.isConnected = true
                 cResolver(self.isConnected)
