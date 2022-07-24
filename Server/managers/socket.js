@@ -65,20 +65,21 @@ class CSocket {
             noServer: true,
             path: `/${self.route}`
         })
-        self.server.on("connection", function(socket, request) {
-            const vid = CUtility.fetchVID(socket)
-            self.instance[vid] = socket
-        })
         CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
             self.server.handleUpgrade(request, socket, head, function(socket) {
-                self.server.emit("connection", socket, request)
+                self.server.emit("onClientConnect", socket, request)
             })
         })
-        self.server.on("connection", function(socket, request) {
+        self.server.on("onClientConnect", function(socket, request) {
             var [instance, query] = request.url.split("?")
             instance = CServer.socket.fetch(instance.slice(1))
             if (!instance) return false
+            const vid = CUtility.fetchVID(socket)
+            self.instance[vid] = socket
             query = CUtility.queryString.parse(query)
+            socket.on("close", function() {
+                delete self.instance[(socket.vid)]
+            })
             socket.on("message", function(payload) {
                 payload = JSON.parse(payload)
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.processArgs)) return false
