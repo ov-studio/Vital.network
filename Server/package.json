@@ -3,9 +3,8 @@
     "version": "1.0.0",
     "author": "ᴏᴠ <crazynuggets@outlook.com> (https://github.com/ov-studio)",
     "license": "GPLV3",
-    "scripts": {
-        "start": "node ./importer"
-    },
+    "main": "./importer",
+    "scripts": {},
     "dependencies": {
         "cors": "^2.8.5",
         "uuid": "^8.3.2",
