@@ -37,9 +37,9 @@ async function test() {
         console.log("HI 2 XD")
         console.log(...cArgs)
     }
-    cNetwork.on(testExec)
-    cNetwork.off(testExec)
-    cNetwork.emit("test", "xD")
+    cSocket.on(testExec)
+    cSocket.off(testExec)
+    cSocket.emit("test", "xD")
 
     // @Rest API Examples
     vNetworkify.rest.create("get", "", function(request, response) {
