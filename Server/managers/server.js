@@ -37,7 +37,6 @@ CServer.isConnected = function(isSync) {
     return CServer.config.isAwaiting || CServer.config.isConnected || false
 }
 
-
 if (!CUtility.isServer) {
     
 }
