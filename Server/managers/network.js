@@ -74,19 +74,19 @@ CServer.network.addMethod("emit", function(name, ...cArgs) {
 // Instance Mmebers //
 //////////////////////
 
-isInstance() {
+CServer.socket.addInstanceMethod("isInstance", function() {
     const self = this
     return (!self.isUnloaded && !CServer.network.isVoid(self.name) && true) || false
-}
+})
 
-destroy() {
+CServer.socket.addInstanceMethod("destroy", function() {
     const self = this
     if (!self.isInstance()) return false
     CServer.network.destroy(self.name)
     return true
-}
+})
 
-on(exec) {
+CServer.socket.addInstanceMethod("on", function(exec) {
     const self = this
     if (!self.isInstance() || !CUtility.isFunction(exec)) return false
     const vid = CUtility.fetchVID(exec)
@@ -103,9 +103,9 @@ on(exec) {
         }
     }
     return true
-}
+})
 
-off(exec) {
+CServer.socket.addInstanceMethod("off", function(exec) {
     const self = this
     if (!self.isInstance() || !CUtility.isFunction(exec)) return false
     if (!self.isCallback) {
@@ -118,9 +118,9 @@ off(exec) {
         self.handler = false
     }
     return true
-}
+})
 
-emit(...cArgs) {
+CServer.socket.addInstanceMethod("emit", function(...cArgs) {
     const self = this
     if (!self.isInstance() || self.isCallback) return false
     for (const i in self.handler) {
@@ -128,10 +128,10 @@ emit(...cArgs) {
         j.exec(...cArgs)
     }
     return true
-}
+})
 
-async emitCallback(...cArgs) {
+CServer.socket.addInstanceMethod("emitCallback", async function(...cArgs) {
     const self = this
     if (!self.isInstance() || !self.isCallback || !self.handler) return false
     return await self.handler.exec(...cArgs)
-}
+})
