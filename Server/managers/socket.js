@@ -82,7 +82,9 @@ class CSocket {
             socket.on("message", function(payload) {
                 payload = JSON.parse(payload)
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.processArgs)) return false
-                CServer.network.emit(`Socket:${CUtility.fetchVID(instance)}:${payload.networkName}`, ...(payload.processArgs))
+                const cNetwork = self.fetchNetwork(payload.networkName)
+                if (!cNetwork) return false
+                cNetwork.emit(`Socket:${CUtility.fetchVID(instance)}:${payload.networkName}`, ...(payload.processArgs))
             })
         })
     }
