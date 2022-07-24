@@ -48,12 +48,13 @@ CServer.connect = function(port, options) {
     var CResolver = false
     CServer.config.isAwaiting = new Promise((resolver) => CResolver = resolver)
     CServer.config.port = port
+    CServer.config.isCaseSensitive = (options.isCaseSensitive && true) || false
     CServer.instance.CExpress = CExpress()
     CServer.instance.CHTTP = CHTTP.Server(CServer.instance.CExpress)
     CServer.instance.CExpress.use(CCors())
     CServer.instance.CExpress.use(CExpress.json())
     CServer.instance.CExpress.use(CExpress.urlencoded({extended: true}))
-    CServer.instance.CExpress.set("case sensitive routing", (options.isCaseSensitive && true) || false)
+    CServer.instance.CExpress.set("case sensitive routing", CServer.config.isCaseSensitive)
     CServer.instance.CExpress.all("*", CServer.rest.onMiddleware)
     CServer.instance.CHTTP.listen(CServer.config.port, () => {
         CServer.config.isAwaiting = null
