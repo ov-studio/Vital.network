@@ -9,18 +9,18 @@
 ----------------------------------------------------------------*/
 
 
-/*-----------
--- Imports --
------------*/
+//////////////
+// Imports //
+//////////////
 
 const CWS = require("ws")
 const CUtility = require("../utilities")
 const CServer = require("./server")
 
 
-/*-----------------
--- Class: Socket --
------------------*/
+////////////////////
+// Class: Socket //
+////////////////////
 
 CServer.socket = CUtility.createClass({
     buffer: {}
