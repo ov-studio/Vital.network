@@ -127,6 +127,22 @@ class CSocket {
         if (!self.isInstance() || !self.isNetwork(name)) return false
         self.network[name].destroy()
         return true
+    },
+
+    on(name, ...cArgs) {
+        const self = this
+        const cNetwork = self.fetchNetwork(name)
+        if (!cNetwork) return false
+        cNetwork.on(...cArgs)
+        return true
+    }
+
+    off(name, ...cArgs) {
+        const self = this
+        const cNetwork = self.fetchNetwork(name)
+        if (!cNetwork) return false
+        cNetwork.off(...cArgs)
+        return true
     }
 }
 CServer.socket = CSocket
