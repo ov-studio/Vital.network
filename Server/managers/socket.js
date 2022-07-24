@@ -15,7 +15,7 @@
 
 const CWS = require("ws")
 const CUtility = require("../utilities")
-const CServer = require("./server")(true)
+const CServer = require("./server")
 
 
 /*-----------------
@@ -159,7 +159,7 @@ class CSocket {
             if (!self.isClient(client)) return false
             client.send(JSON.stringify({
                 networkName: name,
-                networkArgs: ...cArgs
+                networkArgs: cArgs
             }))
             return true
         }

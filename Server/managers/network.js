@@ -14,7 +14,7 @@
 -----------*/
 
 const CUtility = require("../utilities")
-const CServer = require("./server")(true)
+const CServer = require("./server")
 
 
 /*-----------------

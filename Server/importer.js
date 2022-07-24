@@ -13,8 +13,19 @@
 -- Imports --
 -----------*/
 
-require("./managers/server")
+var vNetworkify = require("./managers/server")
+const vUtility = require("./utilities")
 require("./managers/network")
 require("./managers/rest")
 require("./managers/socket")
-require("./test")
+
+
+/*-----------
+-- Exports --
+-----------*/
+
+vNetworkify = vUtility.createAPIs(vNetworkify, {
+    network: true
+})
+vNetworkify.utility = vUtility
+module.exports = vNetworkify

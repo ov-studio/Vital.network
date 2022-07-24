@@ -70,8 +70,4 @@ CServer.connect = function(port, options) {
 -- Exports --
 -----------*/
 
-module.exports = function(isExtension) {
-    return (isExtension && CServer) || CUtility.createAPIs(CServer, {
-        network: true
-    })
-}
+module.exports = CServer
