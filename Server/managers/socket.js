@@ -92,10 +92,10 @@ class CSocket {
         return (!self.isUnloaded && !CServer.socket.isVoid(self.route) && true) || false
     }
 
-    isClient(socket) {
+    isClient(client) {
         const self = this
         if (!self.isInstance()) return false
-        const vid = CUtility.fetchVID(socket)
+        const vid = CUtility.fetchVID(client)
         return (vid && CUtility.isObject(self.instance[vid]) && true) || false
     }
 
