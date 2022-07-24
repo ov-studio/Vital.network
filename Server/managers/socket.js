@@ -156,7 +156,7 @@ class CSocket {
         const cNetwork = self.#fetchNetwork(name)
         if (!cNetwork) return false
         if (client) {
-            if (!self.isClient(socket)) return false
+            if (!self.isClient(client)) return false
             // TODO: ADD REMOTE TRANSFER
             return true
         }
@@ -168,7 +168,7 @@ class CSocket {
         const cNetwork = self.#fetchNetwork(name)
         if (!cNetwork) return false
         if (client) {
-            if (!self.isClient(socket)) return false
+            if (!self.isClient(client)) return false
             // TODO: ADD REMOTE TRANSFER
             return true
         }
