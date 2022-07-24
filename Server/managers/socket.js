@@ -92,6 +92,12 @@ class CSocket {
         return (!self.isUnloaded && !CServer.socket.isVoid(self.route) && true) || false
     }
 
+    isClient(socket) {
+        const self = this
+        if (!self.isInstance()) return false
+        return (CUtility.isObject(self.instance[socket]) && true) || false
+    }
+
     destroy() {
         const self = this
         if (!self.isInstance()) return false
@@ -148,6 +154,7 @@ class CSocket {
         const cNetwork = self.#fetchNetwork(name)
         if (!cNetwork) return false
         if (client) {
+            if (!self.isClient(socket)) return false
             // TODO: ADD REMOTE TRANSFER
             return true
         }
