@@ -17,9 +17,9 @@ const CUtility = require("../utilities")
 const CServer = require("./server")
 
 
-/*---------------
--- Class: Rest --
----------------*/
+//////////////////
+// Class: Rest //
+//////////////////
 
 CServer.rest = CUtility.createClass({
     buffer: {
