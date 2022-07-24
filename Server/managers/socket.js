@@ -106,6 +106,10 @@ CServer.socket.addInstanceMethod("off", function(self, name, ...cArgs) {
 })
 
 if (!CUtility.isServer) {
+    /////////////////////
+    // Static Members //
+    /////////////////////
+
     CServer.socket.addMethod("constructor", function(self, route) {
         CUtility.fetchVID(self)
         self.route = route, self.network = {}, self.room = {}
@@ -129,6 +133,10 @@ if (!CUtility.isServer) {
     })
 }
 else {
+    /////////////////////
+    // Static Members //
+    /////////////////////
+
     CServer.socket.addMethod("constructor", function(self, route) {
         CUtility.fetchVID(self)
         self.route = route, self.network = {}
@@ -159,6 +167,11 @@ else {
             })
         })
     })
+
+    
+    ///////////////////////
+    // Instance Members //
+    ///////////////////////
 
     CServer.socket.addInstanceMethod("isClient", function(self, client) {
         if (!self.isInstance()) return false
