@@ -32,42 +32,42 @@ CServer.network = CUtility.createClass({
 
 CServer.network.addMethod("isVoid", function(name) {
     return (CUtility.isString(name) && !CUtility.isObject(CServer.network.buffer[name]) && true) || false
-}
+})
 
 CServer.network.addMethod("fetch", function(name) {
     return (!CServer.network.isVoid(name) && CServer.network.buffer[name]) || false
-}
+})
 
 CServer.network.addMethod("create", function(name, ...cArgs) {
     if (!CServer.isConnected(true) || !CServer.network.isVoid(name)) return false
     CServer.network.buffer[name] = new CServer.network(name, ...cArgs)
     return CServer.network.buffer[name]
-}
+})
 
 CServer.network.addMethod("destroy", function(name) {
     if (CServer.network.isVoid(name)) return false
     CServer.network.buffer[name].isUnloaded = true
     delete CServer.network.buffer[name]
     return true
-}
+})
 
 CServer.network.addMethod("on", function(name, ...cArgs) {
     const cInstance = CServer.network.fetch(name)
     if (!cInstance) return false
     return cInstance.on(...cArgs)
-}
+})
 
 CServer.network.addMethod("off", function(name, ...cArgs) {
     const cInstance = CServer.network.fetch(name)
     if (!cInstance) return false
     return cInstance.off(...cArgs)
-}
+})
 
 CServer.network.addMethod("emit", function(name, ...cArgs) {
     const cInstance = CServer.network.fetch(name)
     if (!cInstance) return false
     return cInstance.emit(...cArgs)
-}
+})
 
 
 ///////////////////////
