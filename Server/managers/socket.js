@@ -84,7 +84,7 @@ class CSocket {
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.processArgs)) return false
                 const cNetwork = self.fetchNetwork(payload.networkName)
                 if (!cNetwork) return false
-                cNetwork.emit(`Socket:${CUtility.fetchVID(instance)}:${payload.networkName}`, ...(payload.processArgs))
+                cNetwork.emit(...(payload.processArgs))
             })
         })
     }
