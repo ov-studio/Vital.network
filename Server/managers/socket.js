@@ -161,6 +161,18 @@ class CSocket {
             return true
         }
         return cNetwork.emit(...cArgs)
+    },
+
+    async emitCallback(name, client, ...cArgs) {
+        const self = this
+        const cNetwork = self.#fetchNetwork(name)
+        if (!cNetwork) return false
+        if (client) {
+            if (!self.isClient(socket)) return false
+            // TODO: ADD REMOTE TRANSFER
+            return true
+        }
+        return cNetwork.emitCallback(...cArgs)
     }
 }
 CServer.socket = CSocket
