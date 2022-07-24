@@ -82,7 +82,7 @@ class CSocket {
             socket.on("message", function(payload) {
                 payload = JSON.parse(payload)
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.processArgs)) return false
-                self.emit(payload.networkName, _, ...(payload.processArgs))
+                self.emit(payload.networkName, null, ...(payload.processArgs))
             })
         })
     }
