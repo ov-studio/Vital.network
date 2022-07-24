@@ -22,160 +22,146 @@ const CServer = require("./server")
 -- Class: Socket --
 -----------------*/
 
-class CSocket {
-    /////////////////////
-    // Static Mmebers //
-    ////////////////////
+CServer.socket = CUtility.createClass()
+CServer.socket.buffer = {}
 
-    static isClass = true
-    static buffer = {}
-
-    static isVoid = function(route) {
-        return (CUtility.isString(route) && !CUtility.isObject(CServer.socket.buffer[route]) && true) || false
-    }
-
-    static fetch = function(route) {
-        return (!CServer.socket.isVoid(route) && CServer.socket.buffer[route]) || false
-    }
-
-    static create = function(route) {
-        if (!CServer.isConnected(true) || !CServer.socket.isVoid(route)) return false
-        CServer.socket.buffer[route] = new CServer.socket(route)
-        return CServer.socket.buffer[route]
-    }
-
-    static destroy = function(route) {
-        if (CServer.socket.isVoid(route)) return false
-        CServer.socket.buffer[route].isUnloaded = true
-        delete CServer.socket.buffer[route]
-        return true
-    }
-
-
-    ///////////////////////
-    // Instance Mmebers //
-    //////////////////////
-
-    constructor(route) {
-        const self = this
-        CUtility.fetchVID(this)
-        self.route = route, self.network = {}
-        self.instance = {}, self.room = {}
-        self.server = new CWS.Server({
-            noServer: true,
-            path: `/${self.route}`
+CServer.socket.constructor = function(self, route) {
+    CUtility.fetchVID(self)
+    self.route = route, self.network = {}
+    self.instance = {}, self.room = {}
+    self.server = new CWS.Server({
+        noServer: true,
+        path: `/${self.route}`
+    })
+    CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
+        self.server.handleUpgrade(request, socket, head, function(socket) {
+            self.server.emit("onClientConnect", socket, request)
         })
-        CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
-            self.server.handleUpgrade(request, socket, head, function(socket) {
-                self.server.emit("onClientConnect", socket, request)
-            })
+    })
+    self.server.on("onClientConnect", function(socket, request) {
+        var [instance, query] = request.url.split("?")
+        instance = CServer.socket.fetch(instance.slice(1))
+        if (!instance) return false
+        const vid = CUtility.fetchVID(socket)
+        self.instance[vid] = socket
+        query = CUtility.queryString.parse(query)
+        socket.on("close", function() {
+            delete self.instance[(socket.vid)]
         })
-        self.server.on("onClientConnect", function(socket, request) {
-            var [instance, query] = request.url.split("?")
-            instance = CServer.socket.fetch(instance.slice(1))
-            if (!instance) return false
-            const vid = CUtility.fetchVID(socket)
-            self.instance[vid] = socket
-            query = CUtility.queryString.parse(query)
-            socket.on("close", function() {
-                delete self.instance[(socket.vid)]
-            })
-            socket.on("message", function(payload) {
-                payload = JSON.parse(payload)
-                if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
-                self.emit(payload.networkName, null, ...payload.networkArgs)
-            })
+        socket.on("message", function(payload) {
+            payload = JSON.parse(payload)
+            if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
+            self.emit(payload.networkName, null, ...payload.networkArgs)
         })
-    }
-
-    isInstance() {
-        const self = this
-        return (!self.isUnloaded && !CServer.socket.isVoid(self.route) && true) || false
-    }
-
-    isClient(client) {
-        const self = this
-        if (!self.isInstance()) return false
-        const vid = CUtility.fetchVID(client)
-        return (vid && CUtility.isObject(self.instance[vid]) && true) || false
-    }
-
-    destroy() {
-        const self = this
-        if (!self.isInstance()) return false
-        self.server.close()
-        for (const i in self.network) {
-            const j = self.network[i]
-            j.destroy()
-        }
-        CServer.socket.destroy(this.route)
-        return true
-    }
-
-    isNetwork(name) {
-        const self = this
-        if (!self.isInstance()) return false
-        return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && self.network[name].isInstance() && true) || false
-    }
-
-    #fetchNetwork(name) {
-        const self = this
-        return (self.isNetwork(name) && self.network[name]) || false
-    }
-
-    createNetwork(name, ...cArgs) {
-        const self = this
-        if (!self.isInstance() || self.isNetwork(name)) return false
-        self.network[name] = CServer.network.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
-        return true
-    }
-
-    destroyNetwork(name) {
-        const self = this
-        if (!self.isInstance() || !self.isNetwork(name)) return false
-        self.network[name].destroy()
-        return true
-    }
-
-    on(name, ...cArgs) {
-        const self = this
-        const cNetwork = self.#fetchNetwork(name)
-        if (!cNetwork) return false
-        return cNetwork.on(...cArgs)
-    }
-
-    off(name, ...cArgs) {
-        const self = this
-        const cNetwork = self.#fetchNetwork(name)
-        if (!cNetwork) return false
-        return cNetwork.off(...cArgs)
-    }
-
-    emit(name, client, ...cArgs) {
-        const self = this
-        const cNetwork = self.#fetchNetwork(name)
-        if (!cNetwork) return false
-        if (client) {
-            if (!self.isClient(client)) return false
-            client.send(JSON.stringify({
-                networkName: name,
-                networkArgs: cArgs
-            }))
-            return true
-        }
-        return cNetwork.emit(...cArgs)
-    }
-
-    async emitCallback(name, client, ...cArgs) {
-        const self = this
-        const cNetwork = self.#fetchNetwork(name)
-        if (!cNetwork) return false
-        if (client) {
-            if (!self.isClient(client)) return false
-            // TODO: ADD REMOTE TRANSFER
-            return true
-        }
-        return cNetwork.emitCallback(...cArgs)
-    }
+    })
 }
-CServer.socket = CSocket
+
+CServer.socket.isVoid = function(route) {
+    return (CUtility.isString(route) && !CUtility.isObject(CServer.socket.buffer[route]) && true) || false
+}
+
+CServer.socket.fetch = function(route) {
+    return (!CServer.socket.isVoid(route) && CServer.socket.buffer[route]) || false
+}
+
+CServer.socket.create = function(route) {
+    if (!CServer.isConnected(true) || !CServer.socket.isVoid(route)) return false
+    CServer.socket.buffer[route] = new CServer.socket(route)
+    return CServer.socket.buffer[route]
+}
+
+CServer.socket.destroy = function(route) {
+    if (CServer.socket.isVoid(route)) return false
+    CServer.socket.buffer[route].isUnloaded = true
+    delete CServer.socket.buffer[route]
+    return true
+}
+
+const fetchNetwork = function(self, name) {
+    return (self.isNetwork(name) && self.network[name]) || false
+}
+
+CServer.socket.addMethod("isInstance", function() {
+    const self = this
+    return (!self.isUnloaded && !CServer.socket.isVoid(self.route) && true) || false
+})
+
+CServer.socket.addMethod("isClient", function(client) {
+    const self = this
+    if (!self.isInstance()) return false
+    const vid = CUtility.fetchVID(client)
+    return (vid && CUtility.isObject(self.instance[vid]) && true) || false
+})
+
+CServer.socket.addMethod("destroy", function() {
+    const self = this
+    if (!self.isInstance()) return false
+    self.server.close()
+    for (const i in self.network) {
+        const j = self.network[i]
+        j.destroy()
+    }
+    CServer.socket.destroy(this.route)
+    return true
+})
+
+CServer.socket.addMethod("isNetwork", function(name) {
+    const self = this
+    if (!self.isInstance()) return false
+    return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && self.network[name].isInstance() && true) || false
+})
+
+CServer.socket.addMethod("createNetwork", function(name, ...cArgs) {
+    const self = this
+    if (!self.isInstance() || self.isNetwork(name)) return false
+    self.network[name] = CServer.network.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
+    return true
+})
+
+CServer.socket.addMethod("destroyNetwork", function(name) {
+    const self = this
+    if (!self.isInstance() || !self.isNetwork(name)) return false
+    self.network[name].destroy()
+    return true
+})
+
+CServer.socket.addMethod("on", function(name, ...cArgs) {
+    const self = this
+    const cNetwork = fetchNetwork(self, name)
+    if (!cNetwork) return false
+    return cNetwork.on(...cArgs)
+})
+
+CServer.socket.addMethod("off", function(name, ...cArgs) {
+    const self = this
+    const cNetwork = fetchNetwork(self, name)
+    if (!cNetwork) return false
+    return cNetwork.off(...cArgs)
+})
+
+CServer.socket.addMethod("emit", function(name, client, ...cArgs) {
+    const self = this
+    const cNetwork = fetchNetwork(self, name)
+    if (!cNetwork) return false
+    if (client) {
+        if (!self.isClient(client)) return false
+        client.send(JSON.stringify({
+            networkName: name,
+            networkArgs: cArgs
+        }))
+        return true
+    }
+    return cNetwork.emit(...cArgs)
+})
+
+CServer.socket.addMethod("emitCallback", function(name, client, ...cArgs) {
+    const self = this
+    const cNetwork = fetchNetwork(self, name)
+    if (!cNetwork) return false
+    if (client) {
+        if (!self.isClient(client)) return false
+        // TODO: ADD REMOTE TRANSFER
+        return true
+    }
+    return cNetwork.emitCallback(...cArgs)
+})
