@@ -95,17 +95,10 @@ class CNetwork {
     on(exec) {
         const self = this
         if (!self.isInstance() || !CUtility.isFunction(exec)) return false
-        if (!exec.prototype.uid) {
-            Object.defineProperty(exec.prototype, "uid", {
-                value: CUtility.genUID.v4(),
-                enumerable: true,
-                configurable: false,
-                writable: false
-            })
-        }
+        const vid = CUtility.createVID(exec)
         if (!self.isCallback) {
-            if (self.handler[(exec.prototype.uid)]) return false
-            self.handler[(exec.prototype.uid)] = {
+            if (self.handler[vid]) return false
+            self.handler[vid] = {
                 exec: exec
             }
         }
