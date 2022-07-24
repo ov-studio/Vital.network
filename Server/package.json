@@ -12,7 +12,19 @@
     "bugs": {
         "url": "https://github.com/ov-studio/vNetworkify/issues"
     },
-    "keywords": ["ov", "vstudio", "web-dev", "networker", "library", "networking", "lightweight", "communication", "interface", "socket", "rest"],
+    "keywords": [
+        "ov",
+        "vstudio",
+        "web-dev",
+        "networker",
+        "library",
+        "networking",
+        "lightweight",
+        "communication",
+        "interface",
+        "socket",
+        "rest"
+    ],
     "main": "./importer",
     "publishConfig": {
         "access": "public"
@@ -21,10 +33,10 @@
         "start": "node ./test"
     },
     "dependencies": {
+        "browserify": "^17.0.0",
         "cors": "^2.8.5",
-        "uuid": "^8.3.2",
         "express": "^4.18.1",
+        "uuid": "^8.3.2",
         "ws": "^8.8.1"
-    },
-    "devDependencies": {}
+    }
 }
