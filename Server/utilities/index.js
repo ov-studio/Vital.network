@@ -14,7 +14,7 @@
 /////////////////////
 
 const CUtility = {
-    isServer: !CUtility.isObject(process.browser),
+    isServer: (!process.browser && true) || false,
     print: console.log,
     loadString: eval,
     genUID: require("uuid"),
