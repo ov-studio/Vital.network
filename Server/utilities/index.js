@@ -61,7 +61,9 @@ CUtility.createClass = function() {
         }
         static addMethod(index, exec) {
             if (!CUtility.isString(index) || !CUtility.isFunction(exec)) return false
-            __C.prototype[index] = exec
+            __C.prototype[index] = function(...cArgs) {
+                exec(this, ...cArgs)
+            }
             return true
         }
         static removeMethod(index) {
