@@ -31,6 +31,36 @@ CServer.socket = CUtility.createClass({
 // Static Members //
 /////////////////////
 
+CServer.socket.addMethod("isVoid", function(route) {
+    return (CUtility.isString(route) && !CUtility.isObject(CServer.socket.buffer[route]) && true) || false
+})
+
+CServer.socket.addMethod("fetch", function(route) {
+    return (!CServer.socket.isVoid(route) && CServer.socket.buffer[route]) || false
+})
+
+CServer.socket.addMethod("create", function(route) {
+    if (!CServer.isConnected(true) || !CServer.socket.isVoid(route)) return false
+    CServer.socket.buffer[route] = new CServer.socket(route)
+    return CServer.socket.buffer[route]
+})
+
+CServer.socket.addMethod("destroy", function(route) {
+    if (CServer.socket.isVoid(route)) return false
+    CServer.socket.buffer[route].isUnloaded = true
+    delete CServer.socket.buffer[route]
+    return true
+})
+
+const fetchNetwork = function(self, name) {
+    return (self.isNetwork(name) && self.network[name]) || false
+}
+
+
+///////////////////////
+// Instance Members //
+///////////////////////
+
 CServer.socket.addMethod("constructor", function(self, route) {
     CUtility.fetchVID(self)
     self.route = route, self.network = {}
@@ -61,36 +91,6 @@ CServer.socket.addMethod("constructor", function(self, route) {
         })
     })
 })
-
-CServer.socket.addMethod("isVoid", function(route) {
-    return (CUtility.isString(route) && !CUtility.isObject(CServer.socket.buffer[route]) && true) || false
-})
-
-CServer.socket.addMethod("fetch", function(route) {
-    return (!CServer.socket.isVoid(route) && CServer.socket.buffer[route]) || false
-})
-
-CServer.socket.addMethod("create", function(route) {
-    if (!CServer.isConnected(true) || !CServer.socket.isVoid(route)) return false
-    CServer.socket.buffer[route] = new CServer.socket(route)
-    return CServer.socket.buffer[route]
-})
-
-CServer.socket.addMethod("destroy", function(route) {
-    if (CServer.socket.isVoid(route)) return false
-    CServer.socket.buffer[route].isUnloaded = true
-    delete CServer.socket.buffer[route]
-    return true
-})
-
-const fetchNetwork = function(self, name) {
-    return (self.isNetwork(name) && self.network[name]) || false
-}
-
-
-///////////////////////
-// Instance Members //
-///////////////////////
 
 CServer.socket.addInstanceMethod("isInstance", function() {
     const self = this
