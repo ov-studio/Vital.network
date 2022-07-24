@@ -161,7 +161,7 @@ class CSocket {
             return true
         }
         return cNetwork.emit(...cArgs)
-    },
+    }
 
     async emitCallback(name, client, ...cArgs) {
         const self = this

@@ -26,19 +26,33 @@ async function test() {
     }))
     if (!isConnected) return false
 
+    
     // @Socket API Examples
     const cSocket = vNetworkify.socket.create("test")
     cSocket.createNetwork("test")
+
+
+    // @Casual Network Examples
     cSocket.on("test", function() {
-        console.log("HI XD")
+        console.log("Casual Network | Handler 1")
     })
     const testExec = function(...cArgs) {
-        console.log("HI 2 XD")
+        console.log("Casual Network | Handler 2")
         console.log(...cArgs)
     }
     cSocket.on("test", testExec)
     cSocket.off("test", testExec)
     cSocket.emit("test", false, "xD")
+
+
+    // @Callback Network Examples
+    cSocket.createNetwork("testcb", true)
+    cSocket.on("testcb", function(argA, argB) {
+        return argA + argB
+    })
+    const callbackResult = await cSocket.emitCallback("testcb", false, 1, 4)
+    console.log("Callback Network | Result: " + callbackResult)
+
 
     // @Rest API Examples
     vNetworkify.rest.create("get", "", function(request, response) {

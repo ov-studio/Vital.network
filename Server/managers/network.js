@@ -134,13 +134,12 @@ class CNetwork {
             j.exec(...cArgs)
         }
         return true
-    },
+    }
 
     async emitCallback(...cArgs) {
         const self = this
         if (!self.isInstance() || !self.isCallback || !self.handler) return false
-        const result = await self.handler(...cArgs)
-        return result
+        return await self.handler.exec(...cArgs)
     }
 }
 CServer.network = CNetwork
