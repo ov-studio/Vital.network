@@ -80,20 +80,17 @@ CServer.network.addMethod("constructor", function(self, name, isCallback) {
     self.handler = (!self.isCallback && {}) || false
 })
 
-CServer.network.addInstanceMethod("isInstance", function() {
-    const self = this
+CServer.network.addInstanceMethod("isInstance", function(self) {
     return (!self.isUnloaded && !CServer.network.isVoid(self.name) && true) || false
 })
 
-CServer.network.addInstanceMethod("destroy", function() {
-    const self = this
+CServer.network.addInstanceMethod("destroy", function(self) {
     if (!self.isInstance()) return false
     CServer.network.destroy(self.name)
     return true
 })
 
-CServer.network.addInstanceMethod("on", function(exec) {
-    const self = this
+CServer.network.addInstanceMethod("on", function(self, exec) {
     if (!self.isInstance() || !CUtility.isFunction(exec)) return false
     const vid = CUtility.fetchVID(exec)
     if (!self.isCallback) {
@@ -111,8 +108,7 @@ CServer.network.addInstanceMethod("on", function(exec) {
     return true
 })
 
-CServer.network.addInstanceMethod("off", function(exec) {
-    const self = this
+CServer.network.addInstanceMethod("off", function(self, exec) {
     if (!self.isInstance() || !CUtility.isFunction(exec)) return false
     if (!self.isCallback) {
         const vid = CUtility.fetchVID(exec)
@@ -126,8 +122,7 @@ CServer.network.addInstanceMethod("off", function(exec) {
     return true
 })
 
-CServer.network.addInstanceMethod("emit", function(...cArgs) {
-    const self = this
+CServer.network.addInstanceMethod("emit", function(self, ...cArgs) {
     if (!self.isInstance() || self.isCallback) return false
     for (const i in self.handler) {
         const j = self.handler[i]
@@ -136,8 +131,7 @@ CServer.network.addInstanceMethod("emit", function(...cArgs) {
     return true
 })
 
-CServer.network.addInstanceMethod("emitCallback", async function(...cArgs) {
-    const self = this
+CServer.network.addInstanceMethod("emitCallback", async function(self, ...cArgs) {
     if (!self.isInstance() || !self.isCallback || !self.handler) return false
     return await self.handler.exec(...cArgs)
 })

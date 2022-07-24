@@ -92,20 +92,17 @@ CServer.socket.addMethod("constructor", function(self, route) {
     })
 })
 
-CServer.socket.addInstanceMethod("isInstance", function() {
-    const self = this
+CServer.socket.addInstanceMethod("isInstance", function(self) {
     return (!self.isUnloaded && !CServer.socket.isVoid(self.route) && true) || false
 })
 
-CServer.socket.addInstanceMethod("isClient", function(client) {
-    const self = this
+CServer.socket.addInstanceMethod("isClient", function(self, client) {
     if (!self.isInstance()) return false
     const vid = CUtility.fetchVID(client)
     return (vid && CUtility.isObject(self.instance[vid]) && true) || false
 })
 
-CServer.socket.addInstanceMethod("destroy", function() {
-    const self = this
+CServer.socket.addInstanceMethod("destroy", function(self) {
     if (!self.isInstance()) return false
     self.server.close()
     for (const i in self.network) {
@@ -116,42 +113,36 @@ CServer.socket.addInstanceMethod("destroy", function() {
     return true
 })
 
-CServer.socket.addInstanceMethod("isNetwork", function(name) {
-    const self = this
+CServer.socket.addInstanceMethod("isNetwork", function(self, name) {
     if (!self.isInstance()) return false
     return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && self.network[name].isInstance() && true) || false
 })
 
-CServer.socket.addInstanceMethod("createNetwork", function(name, ...cArgs) {
-    const self = this
+CServer.socket.addInstanceMethod("createNetwork", function(self, name, ...cArgs) {
     if (!self.isInstance() || self.isNetwork(name)) return false
     self.network[name] = CServer.network.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
     return true
 })
 
-CServer.socket.addInstanceMethod("destroyNetwork", function(name) {
-    const self = this
+CServer.socket.addInstanceMethod("destroyNetwork", function(self, name) {
     if (!self.isInstance() || !self.isNetwork(name)) return false
     self.network[name].destroy()
     return true
 })
 
-CServer.socket.addInstanceMethod("on", function(name, ...cArgs) {
-    const self = this
+CServer.socket.addInstanceMethod("on", function(self, name, ...cArgs) {
     const cNetwork = fetchNetwork(self, name)
     if (!cNetwork) return false
     return cNetwork.on(...cArgs)
 })
 
-CServer.socket.addInstanceMethod("off", function(name, ...cArgs) {
-    const self = this
+CServer.socket.addInstanceMethod("off", function(self, name, ...cArgs) {
     const cNetwork = fetchNetwork(self, name)
     if (!cNetwork) return false
     return cNetwork.off(...cArgs)
 })
 
-CServer.socket.addInstanceMethod("emit", function(name, client, ...cArgs) {
-    const self = this
+CServer.socket.addInstanceMethod("emit", function(self, name, client, ...cArgs) {
     const cNetwork = fetchNetwork(self, name)
     if (!cNetwork) return false
     if (client) {
@@ -165,8 +156,7 @@ CServer.socket.addInstanceMethod("emit", function(name, client, ...cArgs) {
     return cNetwork.emit(...cArgs)
 })
 
-CServer.socket.addInstanceMethod("emitCallback", function(name, client, ...cArgs) {
-    const self = this
+CServer.socket.addInstanceMethod("emitCallback", function(self, name, client, ...cArgs) {
     const cNetwork = fetchNetwork(self, name)
     if (!cNetwork) return false
     if (client) {
