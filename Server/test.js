@@ -14,7 +14,6 @@
 -----------*/
 
 const vNetworkify = require("./managers/server")()
-console.log(vNetworkify)
 
 
 /*--------
