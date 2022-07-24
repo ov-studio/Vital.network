@@ -59,6 +59,16 @@ CUtility.createClass = function() {
         constructor(...cArgs) {
             if (CUtility.isFunction(__C.constructor)) __C.constructor(this, ...cArgs)
         }
+        static addMethod(index, exec) {
+            if (!CUtility.isString(index) || !CUtility.isFunction(exec)) return false
+            __C.prototype[index] = exec
+            return true
+        }
+        static removeMethod(index) {
+            if (!CUtility.isString(index) || !CUtility.isFunction(__C.prototype[index])) return false
+            delete __C.prototype[index]
+            return true
+        }
     }
 }
 
