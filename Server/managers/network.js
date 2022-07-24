@@ -95,7 +95,7 @@ class CNetwork {
     on(exec) {
         const self = this
         if (!self.isInstance() || !CUtility.isFunction(exec)) return false
-        const vid = CUtility.createVID(exec)
+        const vid = CUtility.fetchVID(exec)
         if (!self.isCallback) {
             if (self.handler[vid]) return false
             self.handler[vid] = {
@@ -114,13 +114,13 @@ class CNetwork {
     off(exec) {
         const self = this
         if (!self.isInstance() || !CUtility.isFunction(exec)) return false
-        if (!exec.prototype.uid) return false
         if (!self.isCallback) {
-            if (!self.handler[(exec.prototype.uid)]) return false
-            delete self.handler[(exec.prototype.uid)]
+            const vid = CUtility.fetchVID(exec)
+            if (!self.handler[vid]) return false
+            delete self.handler[vid]
         }
         else {
-            if (!self.handler || (self.handler.prototype.uid != exec.prototype.uid)) return false
+            if (!self.handler || (CUtility.fetchVID(exec) != CUtility.fetchVID(self.handler))) return false
             self.handler = false
         }
         return true
