@@ -82,8 +82,8 @@ class CSocket {
             })
             socket.on("message", function(payload) {
                 payload = JSON.parse(payload)
-                if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.processArgs)) return false
-                self.emit(payload.networkName, null, ...payload.processArgs)
+                if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
+                self.emit(payload.networkName, null, ...payload.networkArgs)
             })
         })
     }
@@ -157,7 +157,10 @@ class CSocket {
         if (!cNetwork) return false
         if (client) {
             if (!self.isClient(client)) return false
-            // TODO: ADD REMOTE TRANSFER
+            client.send(JSON.stringify({
+                networkName: name,
+                networkArgs: ...cArgs
+            }))
             return true
         }
         return cNetwork.emit(...cArgs)
