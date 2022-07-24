@@ -24,7 +24,9 @@ const CUtility = require("../utilities/index")
 -----------------*/
 
 const CServer = {
-    config: {},
+    config: {
+        isServer: !CUtility.isObject(process.browser)
+    },
     instance: {}
 }
 
