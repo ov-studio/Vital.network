@@ -32,12 +32,12 @@ async function test() {
     cSocket.createNetwork("test")
 
 
-    // @Casual Network Examples
+    // @Normal Network Examples
     cSocket.on("test", function() {
-        console.log("Casual Network | Handler 1")
+        console.log("Normal Network | Handler 1")
     })
     const testExec = function(...cArgs) {
-        console.log("Casual Network | Handler 2")
+        console.log("Normal Network | Handler 2")
         console.log(...cArgs)
     }
     cSocket.on("test", testExec)
