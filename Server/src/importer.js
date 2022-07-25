@@ -9,9 +9,9 @@
 ----------------------------------------------------------------*/
 
 
-/*-----------
--- Imports --
------------*/
+//////////////
+// Imports //
+//////////////
 
 var vNetworkify = require("./managers/server")
 const vUtility = require("./utilities")
@@ -20,9 +20,9 @@ require("./managers/rest")
 require("./managers/socket")
 
 
-/*-----------
--- Exports --
------------*/
+//////////////
+// Exports //
+//////////////
 
 vNetworkify = vUtility.createAPIs(vNetworkify, {
     network: true

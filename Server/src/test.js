@@ -13,7 +13,7 @@
 -- Imports --
 -----------*/
 
-const vNetworkify = require("./importer")
+const vNetworkify = require("./index")
 
 
 /*--------
@@ -21,7 +21,7 @@ const vNetworkify = require("./importer")
 --------*/
 
 async function test() {
-    const isConnected = await(vNetworkify.connect(33001, {
+    const isConnected = await(vNetworkify.connect(33021, {
         isCaseSensitive: true
     }))
     if (!isConnected) return false

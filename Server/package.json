@@ -30,13 +30,18 @@
         "access": "public"
     },
     "scripts": {
-        "start": "node ./test"
+        "start": "node ./src/test",
+        "build": "webpack"
     },
     "dependencies": {
-        "browserify": "^17.0.0",
         "cors": "^2.8.5",
         "express": "^4.18.1",
         "uuid": "^8.3.2",
         "ws": "^8.8.1"
+    },
+    "devDependencies": {
+        "webpack": "^5.73.0",
+        "webpack-cli": "^4.10.0",
+        "webpack-node-externals": "^3.0.0"
     }
 }
