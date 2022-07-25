@@ -49,6 +49,7 @@ if (!CUtility.isServer) {
         CServer.config.port = port
         CServer.config.protocol = window.location.protocol
         CServer.config.hostname = window.location.hostname
+        CServer.config.isConnected = true
         CUtility.print(`━ vNetworkify (Client) | Launched [Port: ${CServer.config.port}]`)
         return true
     } 

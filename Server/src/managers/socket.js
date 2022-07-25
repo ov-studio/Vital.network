@@ -142,7 +142,7 @@ if (!CUtility.isServer) {
         self.connect = function() {
             var cResolver = false
             CServer.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
-            self.server = new WebSocket(`${CServer.config.protocol}//${CServer.config.hostname}:${CServer.config.port}/${self.route}`)
+            self.server = new WebSocket(`${((CServer.config.protocol == "https") && "wss") || "ws"}://${CServer.config.hostname}:${CServer.config.port}/${self.route}`)
             self.server.on("open", function() {
                 self.isConnected = true
                 cResolver(self.isConnected)
@@ -173,6 +173,7 @@ else {
         CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
             self.server.handleUpgrade(request, socket, head, function(socket) {
                 self.server.emit("onClientConnect", socket, request)
+                console.log("CLIENT CONNECTED")
             })
         })
         self.server.on("onClientConnect", function(socket, request) {
