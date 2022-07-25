@@ -39,7 +39,6 @@ CServer.socket.addInstanceMethod("destroyNetwork", function(self, name) {
     if (!self.isNetwork(name)) return false
     for (const i in self.network[name].queue) {
         self.network[name].queue[i].reject()
-        delete self.network[name].queue[i]
     }
     self.network[name].destroy()
     delete self.network[name]
@@ -80,7 +79,16 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
         const networkCB = {}
         const vid = CUtility.fetchVID(networkCB)
         const cPromise = new Promise(function(resolve, reject) {
-            self.queue[vid] = {resolve: resolve, reject: reject}
+            self.queue[vid] = {
+                resolve: function(...cArgs) {
+                    delete self.queue[vid]
+                    return resolve(...cArgs)
+                },
+                reject: function(...cArgs) {
+                    delete self.queue[vid]
+                    return reject(...cArgs)
+                }
+            }
         })
         cReceiver.send(JSON.stringify({
             networkName: name,
