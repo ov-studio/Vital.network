@@ -25,10 +25,16 @@ async function debug() {
     }))
     if (!isConnected) return false
 
-    
+
     // @Socket API Examples
     const cSocket = vNetworkify.socket.create("Server:MyRoute")
     cSocket.createNetwork("Server:MyNetwork")
+    cSocket.onClientConnect = function(socket, vid) {
+        console.log(`Client Connected [VID: ${vid}]`)
+    }
+    cSocket.onClientDisconnect = function(socket, vid) {
+        console.log(`Client Disconnected [VID: ${vid}]`)
+    }
 
 
     // @Non-Callback Network Examples

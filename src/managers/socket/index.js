@@ -135,8 +135,6 @@ else {
         CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
             self.server.handleUpgrade(request, socket, head, function(socket) {
                 self.server.emit("onClientConnect", socket, request)
-                console.log("CLIENT CONNECTED")
-                if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(socket, vid)
             })
         })
         self.server.on("onClientConnect", function(socket, request) {
@@ -147,6 +145,7 @@ else {
             self.instance[vid] = socket
             socket.room = {}
             query = CUtility.queryString.parse(query)
+            if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(socket, vid)
             socket.onclose = function() {
                 for (const i in socket.room) {
                     self.leaveRoom(i, socket)
