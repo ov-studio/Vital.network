@@ -259,10 +259,7 @@ else {
     CServer.socket.addInstanceMethod("emitRoom", function(self, name, network, ...cArgs) {
         if (!self.isInstance() || self.isRoomVoid(name)) return false
         for (const i in self.room[name]) {
-            const j = self.room[i]
-            // TODO: RETRIEVE CLIENT FROM ROOM UID
-            const client = false
-            self.emit(network, client, ...cArgs)
+            self.emit(network, self.instance[i], ...cArgs)
         }
         return true
     })
