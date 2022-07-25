@@ -118,17 +118,19 @@ if (!CUtility.isServer) {
                 payload = JSON.parse(payload.data)
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
                 if (CUtility.isObject(payload.networkCB)) {
-                    payload.networkCB.isProcessed = true
-                    const cNetwork = (self.isNetwork(payload.networkName) && self.network[(payload.networkName)]) || false
-                    if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
-                    else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
-                    self.server.send(JSON.stringify(payload))
+                    if (!payload.networkCB.isProcessed) {
+                        payload.networkCB.isProcessed = true
+                        const cNetwork = self.fetchNetwork(payload.networkName)
+                        if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
+                        else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
+                        self.server.send(JSON.stringify(payload))
+                    }
+                    else CServer.socket.resolveCallback(self, null, payload)
                     return true
                 }
                 self.emit(payload.networkName, null, ...payload.networkArgs)
                 return true
             }
-            return true
         }
         self.connect()
     })
@@ -181,7 +183,17 @@ else {
             socket.onmessage = function(payload) {
                 payload = JSON.parse(payload.data)
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
-                if (CUtility.isObject(payload.networkCB)) return CServer.socket.resolveCallback(self, socket, payload)
+                if (CUtility.isObject(payload.networkCB)) {
+                    if (!payload.networkCB.isProcessed) {
+                        payload.networkCB.isProcessed = true
+                        const cNetwork = self.fetchNetwork(payload.networkName)
+                        if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
+                        else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
+                        self.server.send(JSON.stringify(payload))
+                    }
+                    else CServer.socket.resolveCallback(self, socket, payload)
+                    return true
+                }
                 self.emit(payload.networkName, null, ...payload.networkArgs)
                 return true
             }
