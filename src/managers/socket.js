@@ -88,6 +88,7 @@ CServer.socket.addInstanceMethod("createNetwork", function(self, name, ...cArgs)
 CServer.socket.addInstanceMethod("destroyNetwork", function(self, name) {
     if (!self.isNetwork(name)) return false
     self.network[name].destroy()
+    delete self.network[name]
     return true
 })
 
@@ -238,12 +239,13 @@ else {
 
     CServer.socket.addInstanceMethod("createRoom", function(self, name) {
         if (self.isRoom(name)) return false
-        self.room[name] = {}
+        self.room[name] = CServer.room.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
         return true
     })
 
     CServer.socket.addInstanceMethod("destroyRoom", function(self, name) {
         if (!self.isRoom(name)) return false
+        self.room[name].destroy()
         delete self.room[name]
         return true
     })
