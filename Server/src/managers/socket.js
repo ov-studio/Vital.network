@@ -138,21 +138,23 @@ if (!CUtility.isServer) {
 
     CServer.socket.addMethod("constructor", function(self, route) {
         CUtility.fetchVID(self)
+        self.config = {
+            isConnected: false
+        }
         self.route = route, self.network = {}, self.room = {}
-        self.isConnected = false
         self.connect = function() {
             if (CServer.isConnected()) return false
             var cResolver = false
-            self.isAwaiting = new Promise((resolver) => cResolver = resolver)
+            self.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
             self.server = new WebSocket(`${((CServer.config.protocol == "https") && "wss") || "ws"}://${CServer.config.hostname}:${CServer.config.port}/${self.route}`)
             self.server.onopen = function() {
-                self.isAwaiting = null
-                self.isConnected = true
-                cResolver(self.isConnected)
+                self.config.isAwaiting = null
+                self.config.isConnected = true
+                cResolver(self.config.isConnected)
             }
             self.server.onerror = function(error) {
-                self.isConnected = false
-                cResolver(self.isConnected, error)
+                self.config.isConnected = false
+                cResolver(self.config.isConnected, error)
                 self.connect()
             }
             return true
@@ -167,8 +169,8 @@ if (!CUtility.isServer) {
 
     CServer.socket.addInstanceMethod("isConnected", function(self, isSync) {
         if (!self.isInstance()) return false
-        if (isSync) return (CUtility.isBool(self.isConnected) && self.isConnected) || false
-        return self.isAwaiting || self.isConnected || false
+        if (isSync) return (CUtility.isBool(self.config.isConnected) && self.config.isConnected) || false
+        return self.config.isAwaiting || self.config.isConnected || false
     })
 }
 else {
