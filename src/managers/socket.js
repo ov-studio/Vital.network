@@ -214,9 +214,8 @@ else {
             query = CUtility.queryString.parse(query)
             socket.onclose = function() {
                 delete self.instance[vid]
-                for (const i in self.room) {
-                    const j = self.room[i]
-                    delete j[vid]
+                for (const i in socket.room) {
+                    if (!self.isRoomVoid(i)) delete self.room[i][vid]
                 }
             }
             socket.onmessage = function(payload) {
@@ -254,6 +253,17 @@ else {
         if (!self.isInstance() || !self.isClient(client) || self.isRoomVoid(name) || self.isInRoom(name, client)) return false
         const vid = CUtility.fetchVID(client)
         self.room[name][vid] = true
+        return true
+    })
+
+    CServer.socket.addInstanceMethod("emitRoom", function(self, name, network, ...cArgs) {
+        if (!self.isInstance() || self.isRoomVoid(name)) return false
+        for (const i in self.room[name]) {
+            const j = self.room[i]
+            // TODO: RETRIEVE CLIENT FROM ROOM UID
+            const client = false
+            self.emit(network, client, ...cArgs)
+        }
         return true
     })
 }
