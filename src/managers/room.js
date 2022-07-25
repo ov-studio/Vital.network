@@ -58,14 +58,13 @@ CServer.room.addMethod("destroy", function(name) {
 
 CServer.room.addMethod("constructor", function(self, name) {
     self.name = name
-})
+}, "isInstance")
 
 CServer.room.addInstanceMethod("isInstance", function(self) {
     return (!self.isUnloaded && !CServer.room.isVoid(self.name) && true) || false
 })
 
 CServer.room.addInstanceMethod("destroy", function(self) {
-    if (!self.isInstance()) return false
     CServer.room.destroy(self.name)
     return true
 })
