@@ -27,7 +27,8 @@ require("./managers/room")
 //////////////
 
 const vNetworkify = CUtility.createAPIs(CNetworkify, {
-    network: true
+    network: true,
+    room: true
 })
 vNetworkify.utility = CUtility
 CUtility.global.vNetworkify = vNetworkify
