@@ -12,7 +12,7 @@
 // Debugger //
 ///////////////
 
-async function test() {
+async function debug() {
     const isConnected = await(vNetworkify.connect(33021, {
         isCaseSensitive: true
     }))
@@ -50,4 +50,4 @@ async function test() {
     const networkCBResult = await cSocket.emitCallback("Client:MyCBNetwork", false, 1, 4)
     vNetworkify.utility.print(`Callback Network | Result: ${networkCBResult}`)
 }
-test()
+debug()
