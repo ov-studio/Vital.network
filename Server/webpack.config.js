@@ -47,8 +47,8 @@ module.exports = [
         },
         devServer: {
           host: "0.0.0.0",
-          publicPath: "/src/assets/",
-          contentBase: CPath.resolve(__dirname, "./src/views"),
+          publicPath: "/assets/",
+          contentBase: CPath.resolve(__dirname, "./views"),
           watchContentBase: true,
           compress: true,
           port: 9001
