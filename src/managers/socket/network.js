@@ -54,8 +54,6 @@ CServer.socket.addInstanceMethod("off", function(self, name, ...cArgs) {
 })
 
 CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs) {
-    const cNetwork = fetchNetwork(self, name)
-    if (!cNetwork) return false
     if (isRemote) {
         if (CUtility.isServer && !self.isClient(isRemote)) return false
         const cReceiver = (CUtility.isServer && isRemote) || self.server
@@ -65,17 +63,19 @@ CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs
         }))
         return true
     }
+    const cNetwork = fetchNetwork(self, name)
+    if (!cNetwork) return false
     return cNetwork.emit(...cArgs)
 })
 
 CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, ...cArgs) {
-    const cNetwork = fetchNetwork(self, name)
-    if (!cNetwork) return false
     if (isRemote) {
         if (!CUtility.isServer && !self.isClient(isRemote)) return false
         // TODO: ADD REMOTE TRANSFER
         return true
     }
+    const cNetwork = fetchNetwork(self, name)
+    if (!cNetwork) return false
     return cNetwork.emitCallback(...cArgs)
 })
 

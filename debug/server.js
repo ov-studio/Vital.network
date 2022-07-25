@@ -29,12 +29,6 @@ async function debug() {
     // @Socket API Examples
     const cSocket = vNetworkify.socket.create("Server:MyRoute")
     cSocket.createNetwork("Server:MyNetwork")
-    cSocket.onClientConnect = function(socket, vid) {
-        console.log(`Client Connected [VID: ${vid}]`)
-    }
-    cSocket.onClientDisconnect = function(socket, vid) {
-        console.log(`Client Disconnected [VID: ${vid}]`)
-    }
 
 
     // @Non-Callback Network Examples
@@ -62,7 +56,14 @@ async function debug() {
     cSocket.createRoom("Server:MyRoom")
     cSocket.destroyRoom("Server:MyRoom")
     cSocket.createRoom("Server:MyRoom")
-    cSocket.emitRoom("Client:MyNetwork", "Arg 1", "Arg 2")
+    cSocket.onClientConnect = function(client, vid) {
+        console.log(`Client Connected [VID: ${vid}]`)
+        cSocket.joinRoom("Server:MyRoom", client)
+        cSocket.emitRoom("Server:MyRoom", "Client:MyNetwork")
+    }
+    cSocket.onClientDisconnect = function(client, vid) {
+        console.log(`Client Disconnected [VID: ${vid}]`)
+    }
 
 
     // @Rest API Examples

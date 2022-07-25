@@ -104,6 +104,11 @@ if (!CUtility.isServer) {
                 cResolver(self.config.isConnected, error)
                 self.connect()
             }
+            self.server.onmessage = function(payload) {
+                payload = JSON.parse(payload.data)
+                if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
+                self.emit(payload.networkName, null, ...payload.networkArgs)
+            }
             return true
         }
         self.connect()
