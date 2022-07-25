@@ -78,20 +78,19 @@ CServer.network.addMethod("constructor", function(self, name, isCallback) {
     self.name = name
     self.isCallback = (CUtility.isBool(isCallback) && true) || false
     self.handler = (!self.isCallback && {}) || false
-})
+}, "isInstance")
 
 CServer.network.addInstanceMethod("isInstance", function(self) {
     return (!self.isUnloaded && !CServer.network.isVoid(self.name) && true) || false
 })
 
 CServer.network.addInstanceMethod("destroy", function(self) {
-    if (!self.isInstance()) return false
     CServer.network.destroy(self.name)
     return true
 })
 
 CServer.network.addInstanceMethod("on", function(self, exec) {
-    if (!self.isInstance() || !CUtility.isFunction(exec)) return false
+    if (!CUtility.isFunction(exec)) return false
     const vid = CUtility.fetchVID(exec)
     if (!self.isCallback) {
         if (self.handler[vid]) return false
@@ -109,7 +108,7 @@ CServer.network.addInstanceMethod("on", function(self, exec) {
 })
 
 CServer.network.addInstanceMethod("off", function(self, exec) {
-    if (!self.isInstance() || !CUtility.isFunction(exec)) return false
+    if (!CUtility.isFunction(exec)) return false
     if (!self.isCallback) {
         const vid = CUtility.fetchVID(exec)
         if (!self.handler[vid]) return false
@@ -123,7 +122,7 @@ CServer.network.addInstanceMethod("off", function(self, exec) {
 })
 
 CServer.network.addInstanceMethod("emit", function(self, ...cArgs) {
-    if (!self.isInstance() || self.isCallback) return false
+    if (self.isCallback) return false
     for (const i in self.handler) {
         const j = self.handler[i]
         j.exec(...cArgs)
@@ -132,6 +131,6 @@ CServer.network.addInstanceMethod("emit", function(self, ...cArgs) {
 })
 
 CServer.network.addInstanceMethod("emitCallback", async function(self, ...cArgs) {
-    if (!self.isInstance() || !self.isCallback || !self.handler) return false
+    if (!self.isCallback || !self.handler) return false
     return await self.handler.exec(...cArgs)
 })
