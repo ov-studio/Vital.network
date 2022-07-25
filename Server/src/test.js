@@ -34,11 +34,11 @@ async function test() {
 
     // @Normal Network Examples
     cSocket.on("test", function() {
-        console.log("Normal Network | Handler 1")
+        vNetworkify.utility.print("Normal Network | Handler 1")
     })
     const testExec = function(...cArgs) {
-        console.log("Normal Network | Handler 2")
-        console.log(...cArgs)
+        vNetworkify.utility.print("Normal Network | Handler 2")
+        vNetworkify.utility.print(...cArgs)
     }
     cSocket.on("test", testExec)
     cSocket.off("test", testExec)
@@ -51,7 +51,7 @@ async function test() {
         return argA + argB
     })
     const callbackResult = await cSocket.emitCallback("testcb", false, 1, 4)
-    console.log("Callback Network | Result: " + callbackResult)
+    vNetworkify.utility.print("Callback Network | Result: " + callbackResult)
 
 
     // @Rest API Examples
