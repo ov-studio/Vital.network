@@ -29,7 +29,11 @@ require("./managers/socket/room")
 
 const vNetworkify = CUtility.createAPIs(CNetworkify, {
     network: true,
-    room: true
+    room: true,
+    socket: {
+        fetchNetwork: true,
+        resolveCallback: true
+    }
 })
 vNetworkify.utility = CUtility
 CUtility.global.vNetworkify = vNetworkify
