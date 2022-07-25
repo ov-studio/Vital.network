@@ -47,7 +47,6 @@ CServer.socket.addInstanceMethod("isNetwork", function(self, name) {
 CServer.socket.addInstanceMethod("createNetwork", function(self, name, ...cArgs) {
     if (self.isNetwork(name)) return false
     self.network[name] = CServer.network.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
-    self.network[name].queue = {}
     return true
 })
 
@@ -86,6 +85,7 @@ CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs
 })
 
 CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, ...cArgs) {
+    console.log("TEST 1")
     if (isRemote) {
         if (CUtility.isServer && !self.isClient(isRemote)) return false
         const cReceiver = (CUtility.isServer && isRemote) || self.server
@@ -108,8 +108,10 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
             networkArgs: cArgs,
             networkCB: networkCB
         }))
+        console.log("EY")
         return cPromise
     }
+    console.log("TEST 2")
     const cNetwork = CServer.socket.fetchNetwork(self, name)
     if (!cNetwork) return false
     return cNetwork.emitCallback(...cArgs)
