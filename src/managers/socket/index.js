@@ -47,6 +47,14 @@ CServer.socket.addMethod("create", function(route) {
 CServer.socket.addMethod("destroy", function(route) {
     if (CServer.socket.isVoid(route)) return false
     CServer.socket.buffer[route].isUnloaded = true
+    for (const i in CServer.socket.buffer[route].network) {
+        CServer.socket.buffer[route].network.destroy()
+    }
+    if (CUtility.isServer) {
+        for (const i in CServer.socket.buffer[route].room) {
+            CServer.socket.buffer[route].network.destroy()
+        }
+    }
     delete CServer.socket.buffer[route]
     return true
 })
