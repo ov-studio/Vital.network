@@ -42,7 +42,7 @@ async function debug() {
     }
     cSocket.on("Server:MyNetwork", secondaryExec)
     cSocket.off("Server:MyNetwork", secondaryExec)
-    cSocket.emit("Server:MyNetwork", false, "Argdebug1", "Argdebug2")
+    cSocket.emit("Server:MyNetwork", false, "Arg 1", "Arg 2")
 
     // @Callback Network Examples
     cSocket.createNetwork("Server:MyCBNetwork", true)
@@ -57,7 +57,7 @@ async function debug() {
     cSocket.createRoom("Server:MyRoom")
     cSocket.destroyRoom("Server:MyRoom")
     cSocket.createRoom("Server:MyRoom")
-    cSocket.emitRoom("Client:MyNetwork", "Argdebug1", "Argdebug2")
+    cSocket.emitRoom("Client:MyNetwork", "Arg 1", "Arg 2")
 
 
     // @Rest API Examples
