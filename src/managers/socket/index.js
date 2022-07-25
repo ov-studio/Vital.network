@@ -120,12 +120,8 @@ if (!CUtility.isServer) {
                 if (CUtility.isObject(payload.networkCB)) {
                     payload.networkCB.isProcessed = true
                     const cNetwork = (self.isNetwork(payload.networkName) && self.network[(payload.networkName)]) || false
-                    if (!cNetwork || !cNetwork.isCallback) {
-                        // TODO: HANDLE THIS...?
-                        console.log("Doesn't exists")
-                        return false
-                    }
-                    payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
+                    if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
+                    else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
                     self.server.send(JSON.stringify(payload))
                     return true
                 }
