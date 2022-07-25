@@ -80,7 +80,7 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
         const networkCB = {}
         const vid = CUtility.fetchVID(networkCB)
         const cPromise = new Promise(function(resolve, reject) {
-            self.queue[vid] = {resolve = resolve, reject = reject}
+            self.queue[vid] = {resolve: resolve, reject: reject}
         })
         cReceiver.send(JSON.stringify({
             networkName: name,
