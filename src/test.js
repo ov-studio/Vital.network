@@ -57,16 +57,16 @@ async function test() {
     cSocket.createRoom("myServerRoom")
     cSocket.destroyRoom("myServerRoom")
     cSocket.createRoom("myServerRoom")
-    cSocket.emitRoom("myClientNetwork", "wew", "xD")
+    cSocket.emitRoom("myClientNetwork", "ArgTest1", "ArgTest2")
 
 
     // @Rest API Examples
     vNetworkify.rest.create("get", "", function(request, response) {
-        response.status(200).send("Some status message")
+        response.status(200).send("API Status Message")
     })
     vNetworkify.rest.destroy("get", "")
     vNetworkify.rest.create("get", "", function(request, response) {
-        response.status(200).send("Some new status message")
+        response.status(200).send("Updated Status Message")
     })
 }
 test()
