@@ -42,14 +42,16 @@ CUtility.fetchVID = function(buffer) {
 
 CUtility.createAPIs = function(buffer, blacklist) {
     if (!CUtility.isObject(buffer) && !CUtility.isClass(buffer)) return false
-    blacklist = (CUtility.isObject(blacklist) && blacklist) || false
+    blacklist = (blacklist && CUtility.isObject(blacklist) && blacklist) || false
     var isVoid = true
     const result = {}
     for (const i in buffer) {
         const j = buffer[i]
-        if (!blacklist || !blacklist[i]) {
+        const isBlackListed = (blacklist && (blacklist[i] == true) && true) || false
+        const isBlacklistPointer = (blacklist && !isBlackListed && blacklist[i]) || false
+        if (!isBlackListed) {
             if (CUtility.isObject(j) || CUtility.isClass(j)) {
-                const __result = CUtility.createAPIs(j)
+                const __result = CUtility.createAPIs(j, isBlacklistPointer)
                 if (__result) {
                     isVoid = false
                     result[i] = __result
