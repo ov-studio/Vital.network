@@ -14,21 +14,21 @@
 /////////////////////
 
 const CUtility = {
-    isServer: (!process.browser && true) || false,
+    isServer: ((typeof(process) != "undefined") && !process.browser && true) || false,
     print: console.log,
     loadString: eval,
     genUID: require("uuid"),
     queryString: require("querystring")
 }
 
-const CTypes = [
+const CType = [
     {handler: "isBool", type: "boolean"},
     {handler: "isString", type: "string"},
     {handler: "isNumber", type: "number"},
     {handler: "isObject", type: "object", middleware: function(data, isArray) {return (!isArray && true) || Array.isArray(data)}},
     {handler: "isFunction", type: "function"}
 ]
-CTypes.forEach(function(j) {
+CType.forEach(function(j) {
     CUtility[(j.handler)] = function(data, ...cArgs) {
         var isTypeValid = CUtility.isType(data, j.type)
         if (isTypeValid && j.middleware) {
