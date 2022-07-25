@@ -184,29 +184,7 @@ else {
             socket.onmessage = function(payload) {
                 payload = JSON.parse(payload.data)
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
-                if (CUtility.isObject(payload.networkCB)) {
-                    if (!payload.networkCB.isProcessed) {
-                        const queueID = false
-                        console.log(payload)
-                        // TODO: ...WIP
-                        /*
-                        payload.networkCB.isProcessed = true
-                        const cNetwork = (self.isNetwork(payload.networkName) && self.network[(payload.networkName)]) || false
-                        if (!cNetwork || !cNetwork.isCallback) {
-                            // TODO: HANDLE THIS...?
-                            console.log("Doesn't exists")
-                            return false
-                        }
-                        payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
-                        self.server.send(payload)
-                        */
-                        return true
-                    }
-                    const queueID = CUtility.fetchVID(payload.networkCB)
-                    if (!CUtility.isObject(socket.queue[queueID])) return false
-                    socket.queue[queueID].resolve(...payload.networkArgs)
-                    return true
-                }
+                if (CUtility.isObject(payload.networkCB)) return self.resolveCallback(socket, payload)
                 self.emit(payload.networkName, null, ...payload.networkArgs)
                 return true
             }

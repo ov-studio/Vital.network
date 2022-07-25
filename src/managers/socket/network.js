@@ -99,6 +99,34 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
     return cNetwork.emitCallback(...cArgs)
 })
 
+CServer.socket.addInstanceMethod("resolveCallback", function(self, client, payload) {
+    console.log("Trying to resolve cb")
+    console.log(payload)
+    if (CUtility.isServer) {
+        if (!payload.networkCB.isProcessed) {
+            const queueID = false
+            console.log(payload)
+            // TODO: ...WIP
+            /*
+            payload.networkCB.isProcessed = true
+            const cNetwork = (self.isNetwork(payload.networkName) && self.network[(payload.networkName)]) || false
+            if (!cNetwork || !cNetwork.isCallback) {
+                // TODO: HANDLE THIS...?
+                console.log("Doesn't exists")
+                return false
+            }
+            payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
+            self.server.send(payload)
+            */
+            return true
+        }
+        const queueID = CUtility.fetchVID(payload.networkCB)
+        if (!CUtility.isObject(client.queue[queueID])) return false
+        client.queue[queueID].resolve(...payload.networkArgs)
+    }
+    return true
+})
+
 if (!CUtility.isServer) {
 
 }
