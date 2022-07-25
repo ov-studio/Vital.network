@@ -28,36 +28,36 @@ async function test() {
 
     
     // @Socket API Examples
-    const cSocket = vNetworkify.socket.create("test")
-    cSocket.createNetwork("test")
+    const cSocket = vNetworkify.socket.create("myRoute")
+    cSocket.createNetwork("myServerNetwork")
 
 
     // @Non-Callback Network Examples
-    cSocket.on("test", function() {
-        vNetworkify.utility.print("Normal Network | Handler 1")
+    cSocket.on("myServerNetwork", function() {
+        vNetworkify.utility.print("Non Callback Network | Handler 1")
     })
     const testExec = function(...cArgs) {
-        vNetworkify.utility.print("Normal Network | Handler 2")
+        vNetworkify.utility.print("Non Callback Network | Handler 2")
         vNetworkify.utility.print(...cArgs)
     }
-    cSocket.on("test", testExec)
-    cSocket.off("test", testExec)
-    cSocket.emit("test", false, "xD")
+    cSocket.on("myServerNetwork", testExec)
+    cSocket.off("myServerNetwork", testExec)
+    cSocket.emit("myServerNetwork", false, "ArgTest1", "ArgTest2")
 
     // @Callback Network Examples
-    cSocket.createNetwork("testcb", true)
-    cSocket.on("testcb", function(argA, argB) {
+    cSocket.createNetwork("myServerCallbackNetwork", true)
+    cSocket.on("myServerCallbackNetwork", function(argA, argB) {
         return argA + argB
     })
-    const callbackResult = await cSocket.emitCallback("testcb", false, 1, 4)
-    vNetworkify.utility.print("Callback Network | Result: " + callbackResult)
+    const myServerCallbackNetworkResult = await cSocket.emitCallback("myServerCallbackNetwork", false, 1, 4)
+    vNetworkify.utility.print("Callback Network | Result: " + myServerCallbackNetworkResult)
 
 
     // @Room Examples
-    cSocket.createRoom("test")
-    cSocket.destroyRoom("test")
-    cSocket.createRoom("test")
-    cSocket.emitRoom("test", "wew", "xD")
+    cSocket.createRoom("myServerRoom")
+    cSocket.destroyRoom("myServerRoom")
+    cSocket.createRoom("myServerRoom")
+    cSocket.emitRoom("myClientNetwork", "wew", "xD")
 
 
     // @Rest API Examples
