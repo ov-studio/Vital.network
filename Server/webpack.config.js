@@ -47,9 +47,9 @@ module.exports = [
             }
         },
         devServer: {
-          host: "0.0.0.0", // Required for docker
-          publicPath: "/assets/",
-          contentBase: CPath.resolve(__dirname, "./views"),
+          host: "0.0.0.0",
+          publicPath: "/src/assets/",
+          contentBase: CPath.resolve(__dirname, "./src/views"),
           watchContentBase: true,
           compress: true,
           port: 9001
