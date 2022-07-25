@@ -16,13 +16,29 @@ const CUtility = require("../../utilities")
 const CServer = require("../server")
 
 
+/////////////////////
+// Static Members //
+/////////////////////
+
+CServer.socket.addMethod("fetchNetwork", function(self, name) {
+    return (self.isNetwork(name) && self.network[name]) || false
+})
+
+CServer.socket.addMethod("resolveCallback", function(self, client, payload) {
+    if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
+    if (CUtility.isServer && !self.isClient(client)) return false
+    const queueID = CUtility.fetchVID(payload.networkCB)
+    const cReceiver = (CUtility.isServer && client) || self.server
+    if (!CUtility.isObject(cReceiver.queue[queueID])) return false
+    if (payload.networkCB.isErrored) cReceiver.queue[queueID].reject(...payload.networkArgs)
+    else cReceiver.queue[queueID].resolve(...payload.networkArgs)
+    return true
+})
+
+
 ///////////////////////
 // Instance Members //
 ///////////////////////
-
-const fetchNetwork = function(self, name) {
-    return (self.isNetwork(name) && self.network[name]) || false
-}
 
 CServer.socket.addInstanceMethod("isNetwork", function(self, name) {
     return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && self.network[name].isInstance() && true) || false
@@ -43,13 +59,13 @@ CServer.socket.addInstanceMethod("destroyNetwork", function(self, name) {
 })
 
 CServer.socket.addInstanceMethod("on", function(self, name, ...cArgs) {
-    const cNetwork = fetchNetwork(self, name)
+    const cNetwork = CServer.socket.fetchNetwork(self, name)
     if (!cNetwork) return false
     return cNetwork.on(...cArgs)
 })
 
 CServer.socket.addInstanceMethod("off", function(self, name, ...cArgs) {
-    const cNetwork = fetchNetwork(self, name)
+    const cNetwork = CServer.socket.fetchNetwork(self, name)
     if (!cNetwork) return false
     return cNetwork.off(...cArgs)
 })
@@ -64,7 +80,7 @@ CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs
         }))
         return true
     }
-    const cNetwork = fetchNetwork(self, name)
+    const cNetwork = CServer.socket.fetchNetwork(self, name)
     if (!cNetwork) return false
     return cNetwork.emit(...cArgs)
 })
@@ -94,18 +110,7 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
         }))
         return cPromise
     }
-    const cNetwork = fetchNetwork(self, name)
+    const cNetwork = CServer.socket.fetchNetwork(self, name)
     if (!cNetwork) return false
     return cNetwork.emitCallback(...cArgs)
-})
-
-CServer.socket.addMethod("resolveCallback", function(self, client, payload) {
-    if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
-    if (CUtility.isServer && !self.isClient(client)) return false
-    const queueID = CUtility.fetchVID(payload.networkCB)
-    const cReceiver = (CUtility.isServer && client) || self.server
-    if (!CUtility.isObject(cReceiver.queue[queueID])) return false
-    if (payload.networkCB.isErrored) cReceiver.queue[queueID].reject(...payload.networkArgs)
-    else cReceiver.queue[queueID].resolve(...payload.networkArgs)
-    return true
 })
