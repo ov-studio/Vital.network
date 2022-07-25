@@ -37,9 +37,6 @@ CServer.socket.addInstanceMethod("createNetwork", function(self, name, ...cArgs)
 
 CServer.socket.addInstanceMethod("destroyNetwork", function(self, name) {
     if (!self.isNetwork(name)) return false
-    for (const i in self.network[name].queue) {
-        self.network[name].queue[i].reject()
-    }
     self.network[name].destroy()
     delete self.network[name]
     return true
@@ -78,15 +75,14 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
         const cReceiver = (CUtility.isServer && isRemote) || self.server
         const networkCB = {}
         const vid = CUtility.fetchVID(networkCB)
-        networkCB.queueID = vid
         const cPromise = new Promise(function(resolve, reject) {
-            self.queue[vid] = {
+            isRemote.queue[vid] = {
                 resolve: function(...cArgs) {
-                    delete self.queue[vid]
+                    delete isRemote.queue[vid]
                     return resolve(...cArgs)
                 },
                 reject: function(...cArgs) {
-                    delete self.queue[vid]
+                    delete isRemote.queue[vid]
                     return reject(...cArgs)
                 }
             }
