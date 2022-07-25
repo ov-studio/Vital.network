@@ -109,10 +109,3 @@ CServer.socket.addInstanceMethod("resolveCallback", function(self, client, paylo
     else cReceiver.queue[queueID].resolve(...payload.networkArgs)
     return true
 })
-
-if (!CUtility.isServer) {
-
-}
-else {
-
-}
