@@ -29,7 +29,7 @@
     "main": "./importer",
     "prepublishOnly": "webpack --mode=production",
     "scripts": {
-        "start": "node ./src/test",
+        "debug": "node ./debug/server",
         "build": "webpack"
     },
     "dependencies": {

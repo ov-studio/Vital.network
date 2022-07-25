@@ -1,26 +1,26 @@
 
 /*----------------------------------------------------------------
      Resource: vNetworkify
-     Script: test.js
+     Script: debug: server.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
      DOC: 22/07/2022
-     Desc: Module Tester
+     Desc: Module Debugger
 ----------------------------------------------------------------*/
 
 
-/*-----------
--- Imports --
------------*/
+//////////////
+// Imports //
+//////////////
 
-require("./importer")
+require("../src/importer")
 
 
-/*--------
--- Test --
---------*/
+///////////////
+// Debugger //
+///////////////
 
-async function test() {
+async function debug() {
     const isConnected = await(vNetworkify.connect(33021, {
         isCaseSensitive: true
     }))
@@ -28,36 +28,36 @@ async function test() {
 
     
     // @Socket API Examples
-    const cSocket = vNetworkify.socket.create("myRoute")
-    cSocket.createNetwork("myServerNetwork")
+    const cSocket = vNetworkify.socket.create("Server:MyRoute")
+    cSocket.createNetwork("Server:MyNetwork")
 
 
     // @Non-Callback Network Examples
-    cSocket.on("myServerNetwork", function() {
+    cSocket.on("Server:MyNetwork", function() {
         vNetworkify.utility.print("Non Callback Network | Handler 1")
     })
-    const testExec = function(...cArgs) {
+    const secondaryExec = function(...cArgs) {
         vNetworkify.utility.print("Non Callback Network | Handler 2")
         vNetworkify.utility.print(...cArgs)
     }
-    cSocket.on("myServerNetwork", testExec)
-    cSocket.off("myServerNetwork", testExec)
-    cSocket.emit("myServerNetwork", false, "ArgTest1", "ArgTest2")
+    cSocket.on("Server:MyNetwork", secondaryExec)
+    cSocket.off("Server:MyNetwork", secondaryExec)
+    cSocket.emit("Server:MyNetwork", false, "Argdebug1", "Argdebug2")
 
     // @Callback Network Examples
-    cSocket.createNetwork("myServerCallbackNetwork", true)
-    cSocket.on("myServerCallbackNetwork", function(argA, argB) {
+    cSocket.createNetwork("Server:MyCBNetwork", true)
+    cSocket.on("Server:MyCBNetwork", function(argA, argB) {
         return argA + argB
     })
-    const myServerCallbackNetworkResult = await cSocket.emitCallback("myServerCallbackNetwork", false, 1, 4)
-    vNetworkify.utility.print("Callback Network | Result: " + myServerCallbackNetworkResult)
+    const networkCBResult = await cSocket.emitCallback("Server:MyCBNetwork", false, 1, 4)
+    vNetworkify.utility.print("Callback Network | Result: " + networkCBResult)
 
 
     // @Room Examples
-    cSocket.createRoom("myServerRoom")
-    cSocket.destroyRoom("myServerRoom")
-    cSocket.createRoom("myServerRoom")
-    cSocket.emitRoom("myClientNetwork", "ArgTest1", "ArgTest2")
+    cSocket.createRoom("Server:MyRoom")
+    cSocket.destroyRoom("Server:MyRoom")
+    cSocket.createRoom("Server:MyRoom")
+    cSocket.emitRoom("Client:MyNetwork", "Argdebug1", "Argdebug2")
 
 
     // @Rest API Examples
@@ -69,4 +69,4 @@ async function test() {
         response.status(200).send("Updated Status Message")
     })
 }
-test()
+debug()
