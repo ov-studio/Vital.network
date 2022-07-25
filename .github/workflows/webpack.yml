@@ -2,10 +2,11 @@ name: NodeJS with Webpack
 
 on:
   release:
+    types: [ published ]
     branches: [ "main" ]
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
 
     strategy:
