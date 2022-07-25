@@ -109,7 +109,7 @@ CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs
     const cNetwork = fetchNetwork(self, name)
     if (!cNetwork) return false
     if (isRemote) {
-        if (!CUtility.isServer && !self.isClient(isRemote)) return false
+        if (CUtility.isServer && !self.isClient(isRemote)) return false
         isRemote.send(JSON.stringify({
             networkName: name,
             networkArgs: cArgs
