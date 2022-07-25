@@ -239,7 +239,7 @@ else {
         return (vid && CUtility.isObject(self.instance[vid]) && true) || false
     })
 
-    CServer.socket.addInstanceMethod("createRoom", function(self, name) {
+    CServer.socket.addInstanceMethod("createRoom", function(self, name, ...cArgs) {
         if (self.isRoom(name)) return false
         self.room[name] = CServer.room.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
         self.room[name].member = {}

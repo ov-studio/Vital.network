@@ -32,7 +32,7 @@ async function test() {
     cSocket.createNetwork("test")
 
 
-    // @Normal Network Examples
+    // @Non-Callback Network Examples
     cSocket.on("test", function() {
         vNetworkify.utility.print("Normal Network | Handler 1")
     })
@@ -44,7 +44,6 @@ async function test() {
     cSocket.off("test", testExec)
     cSocket.emit("test", false, "xD")
 
-
     // @Callback Network Examples
     cSocket.createNetwork("testcb", true)
     cSocket.on("testcb", function(argA, argB) {
@@ -52,6 +51,13 @@ async function test() {
     })
     const callbackResult = await cSocket.emitCallback("testcb", false, 1, 4)
     vNetworkify.utility.print("Callback Network | Result: " + callbackResult)
+
+
+    // @Room Examples
+    cSocket.createRoom("test")
+    cSocket.destroyRoom("test")
+    cSocket.createRoom("test")
+    cSocket.emitRoom("test", "wew", "xD")
 
 
     // @Rest API Examples
