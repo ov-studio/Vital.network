@@ -78,6 +78,7 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
         const cReceiver = (CUtility.isServer && isRemote) || self.server
         const networkCB = {}
         const vid = CUtility.fetchVID(networkCB)
+        networkCB.queueID = vid
         const cPromise = new Promise(function(resolve, reject) {
             self.queue[vid] = {
                 resolve: function(...cArgs) {
