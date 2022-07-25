@@ -13,8 +13,8 @@
 // Imports //
 //////////////
 
-var vNetworkify = require("./managers/server")
-const vUtility = require("./utilities")
+const CNetworkify = require("./managers/server")
+const CUtility = require("./utilities")
 require("./managers/network")
 require("./managers/rest")
 require("./managers/socket")
@@ -24,9 +24,9 @@ require("./managers/socket")
 // Exports //
 //////////////
 
-vNetworkify = vUtility.createAPIs(vNetworkify, {
+const vNetworkify = CUtility.createAPIs(CNetworkify, {
     network: true
 })
-vNetworkify.utility = vUtility
-vUtility.global.vNetworkify = vNetworkify
+vNetworkify.utility = CUtility
+CUtility.global.vNetworkify = vNetworkify
 module.exports = vNetworkify
