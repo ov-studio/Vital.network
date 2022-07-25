@@ -28,6 +28,14 @@ const CServer = {
     instance: {}
 }
 
+const onConnectionStatus = function(resolver, state) {
+    CServer.config.isAwaiting = null
+    CServer.config.isConnected = state
+    if (CUtility.isFunction(resolver)) resolver(CServer.config.isConnected)
+    CUtility.print(`━ vNetworkify (Client) | ${(state && "Launched") || "Launch failed"} [Port: ${CServer.config.port}]`)
+    return true
+}
+
 CServer.fetchConfig = function() {
     return CServer.config
 }
@@ -49,8 +57,7 @@ if (!CUtility.isServer) {
         CServer.config.port = port
         CServer.config.protocol = window.location.protocol
         CServer.config.hostname = window.location.hostname
-        CServer.config.isConnected = true
-        CUtility.print(`━ vNetworkify (Client) | Launched [Port: ${CServer.config.port}]`)
+        onConnectionStatus(null, true)
         return true
     } 
 }
@@ -70,12 +77,7 @@ else {
         CServer.instance.CExpress.use(CExpress.urlencoded({extended: true}))
         CServer.instance.CExpress.set("case sensitive routing", CServer.config.isCaseSensitive)
         CServer.instance.CExpress.all("*", CServer.rest.onMiddleware)
-        CServer.instance.CHTTP.listen(CServer.config.port, () => {
-            CServer.config.isAwaiting = null
-            CServer.config.isConnected = true
-            cResolver(CServer.config.isConnected)
-            CUtility.print(`━ vNetworkify (Server) | Launched [Port: ${CServer.config.port}]`)
-        })
+        CServer.instance.CHTTP.listen(CServer.config.port, () => onConnectionStatus(cResolver, true))
         return true
     }    
 }
