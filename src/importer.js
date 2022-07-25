@@ -19,6 +19,7 @@ require("./utilities/type")
 require("./managers/network")
 require("./managers/rest")
 require("./managers/socket")
+require("./managers/room")
 
 
 //////////////
