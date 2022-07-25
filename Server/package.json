@@ -2,6 +2,7 @@
     "name": "@vstudio/vnetworkify",
     "version": "1.0.0",
     "author": "ᴏᴠ <crazynuggets@outlook.com> (https://github.com/ov-studio)",
+    "private": false,
     "license": "GPL-3.0",
     "description": "Lightweight yet Reliable networking solution",
     "homepage": "https://github.com/ov-studio/vNetworkify#readme",
@@ -26,9 +27,7 @@
         "rest"
     ],
     "main": "./importer",
-    "publishConfig": {
-        "access": "public"
-    },
+    "prepublishOnly": "webpack --mode=production",
     "scripts": {
         "start": "node ./src/test",
         "build": "webpack"
