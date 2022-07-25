@@ -139,10 +139,10 @@ else {
             socket.room = {}
             query = CUtility.queryString.parse(query)
             socket.onclose = function() {
-                delete self.instance[vid]
                 for (const i in socket.room) {
-                    if (self.isRoom(i)) delete self.room[i].member[vid]
+                    self.leaveRoom(i, socket)
                 }
+                delete self.instance[vid]
             }
             socket.onmessage = function(payload) {
                 payload = JSON.parse(payload)

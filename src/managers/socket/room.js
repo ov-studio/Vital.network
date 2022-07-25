@@ -66,6 +66,13 @@ else {
         return true
     })
 
+    CServer.socket.addInstanceMethod("leaveRoom", function(self, name, client) {
+        if (!self.isClient(client) || !self.isInRoom(name, client)) return false
+        const vid = CUtility.fetchVID(client)
+        delete self.room[name].member[vid]
+        return true
+    })
+
     CServer.socket.addInstanceMethod("emitRoom", function(self, name, network, ...cArgs) {
         if (!self.isRoom(name)) return false
         for (const i in self.room[name].member) {
