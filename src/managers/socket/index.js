@@ -189,7 +189,7 @@ else {
                         const cNetwork = CServer.socket.fetchNetwork(self, payload.networkName)
                         if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
                         else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
-                        self.server.send(JSON.stringify(payload))
+                        socket.send(JSON.stringify(payload))
                     }
                     else CServer.socket.resolveCallback(self, socket, payload)
                     return true
