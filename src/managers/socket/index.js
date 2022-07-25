@@ -136,6 +136,7 @@ else {
             self.server.handleUpgrade(request, socket, head, function(socket) {
                 self.server.emit("onClientConnect", socket, request)
                 console.log("CLIENT CONNECTED")
+                if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(socket, vid)
             })
         })
         self.server.on("onClientConnect", function(socket, request) {
@@ -151,6 +152,7 @@ else {
                     self.leaveRoom(i, socket)
                 }
                 delete self.instance[vid]
+                if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(socket, vid)
             }
             socket.onmessage = function(payload) {
                 payload = JSON.parse(payload)
