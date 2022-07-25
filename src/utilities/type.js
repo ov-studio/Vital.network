@@ -13,7 +13,7 @@
 // Imports //
 //////////////
 
-const CUtility = require("./index")
+const CUtility = require("./")
 
 
 //////////////////
