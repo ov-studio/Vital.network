@@ -28,6 +28,7 @@ module.exports = [
 
     {
         target: "web",
+        mode: "production",
         entry: {
             app: ["./src/importer.js"]
         },
@@ -62,6 +63,7 @@ module.exports = [
 
     {
         target: "node",
+        mode: "production",
         entry: {
           app: ["./src/importer.js"]
         },
