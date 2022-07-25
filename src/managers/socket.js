@@ -218,7 +218,7 @@ else {
             socket.onclose = function() {
                 delete self.instance[vid]
                 for (const i in socket.room) {
-                    if (self.isRoom(i)) delete self.room[i][vid]
+                    if (self.isRoom(i)) delete self.room[i].member[vid]
                 }
             }
             socket.onmessage = function(payload) {
