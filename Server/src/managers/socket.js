@@ -143,15 +143,15 @@ if (!CUtility.isServer) {
             var cResolver = false
             CServer.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
             self.server = new WebSocket(`${((CServer.config.protocol == "https") && "wss") || "ws"}://${CServer.config.hostname}:${CServer.config.port}/${self.route}`)
-            self.server.on("open", function() {
+            self.server.onopen = function() {
                 self.isConnected = true
                 cResolver(self.isConnected)
-            })
-            self.server.on("error", function(error) {
+            }
+            self.server.onerror = function(error) {
                 self.isConnected = false
                 cResolver(self.isConnected, error)
                 self.connect()
-            })
+            }
             return true
         }
         self.connect()
