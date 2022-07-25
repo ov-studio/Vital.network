@@ -132,15 +132,19 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
 
 CServer.socket.addInstanceMethod("isRoom", function(self, name) {
     const cInstance = (CUtility.isString(name) && CUtility.isObject(self.room[name]) && self.room[name]) || false
-    if (CUtility.isServer() && cInstance && (!CUtility.isObject(cInstance) || !cInstance.isInstance())) cInstance = false
+    if (CUtility.isServer && cInstance && !cInstance.isInstance()) cInstance = false
     return (cInstance && true) || false
 })
 
 CServer.socket.addInstanceMethod("isInRoom", function(self, name, client) {
     if (!self.isRoom(name)) return false
-    if (CUtility.isServer && !self.isClient(client)) return false
-    const vid = (CUtility.isServer && CUtility.fetchVID(client)) || CUtility.fetchVID(self)
-    return (CUtility.isObject(self.room[name]) && self.room[name][vid] && true) || false
+    if (CUtility.isServer) {
+        if (!self.isClient(client)) return false
+        const vid = CUtility.fetchVID(client)
+        return (self.room[name].member[vid] && true) || false   
+    }
+    const vid = CUtility.fetchVID(self)
+    return (self.room[name][vid] && true) || false
 })
 
 if (!CUtility.isServer) {
@@ -189,10 +193,6 @@ else {
     // Static Members //
     /////////////////////
 
-    const fetchRoom = function(self, name) {
-        return (self.isRoom(name) && self.room[name]) || false
-    }
-    
     CServer.socket.addMethod("constructor", function(self, route) {
         CUtility.fetchVID(self)
         self.route = route, self.network = {}
@@ -242,6 +242,7 @@ else {
     CServer.socket.addInstanceMethod("createRoom", function(self, name) {
         if (self.isRoom(name)) return false
         self.room[name] = CServer.room.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
+        self.room[name].member = {}
         return true
     })
 
@@ -255,13 +256,13 @@ else {
     CServer.socket.addInstanceMethod("joinRoom", function(self, name, client) {
         if (!self.isClient(client) || !self.isRoom(name) || self.isInRoom(name, client)) return false
         const vid = CUtility.fetchVID(client)
-        self.room[name][vid] = true
+        self.room[name].member[vid] = true
         return true
     })
 
     CServer.socket.addInstanceMethod("emitRoom", function(self, name, network, ...cArgs) {
         if (!self.isRoom(name)) return false
-        for (const i in self.room[name]) {
+        for (const i in self.room[name].member) {
             self.emit(network, self.instance[i], ...cArgs)
         }
         return true
