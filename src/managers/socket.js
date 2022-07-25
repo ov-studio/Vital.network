@@ -35,10 +35,6 @@ const fetchNetwork = function(self, name) {
     return (self.isNetwork(name) && self.network[name]) || false
 }
 
-const fetchRoom = function(self, name) {
-    return (self.isRoom(name) && self.room[name]) || false
-}
-
 CServer.socket.addMethod("isVoid", function(route) {
     return (CUtility.isString(route) && !CUtility.isObject(CServer.socket.buffer[route]) && true) || false
 })
@@ -190,6 +186,10 @@ else {
     // Static Members //
     /////////////////////
 
+    const fetchRoom = function(self, name) {
+        return (self.isRoom(name) && self.room[name]) || false
+    }
+    
     CServer.socket.addMethod("constructor", function(self, route) {
         CUtility.fetchVID(self)
         self.route = route, self.network = {}
