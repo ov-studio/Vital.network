@@ -250,9 +250,10 @@ else {
         return true
     })
 
-    CServer.socket.addInstanceMethod("joinRoom", function(self, name) {
-        if (!self.isInstance() || self.isRoomVoid(name)) return false
-        delete self.room[name]
+    CServer.socket.addInstanceMethod("joinRoom", function(self, name, client) {
+        if (!self.isInstance() || !self.isClient(client) || self.isRoomVoid(name) || self.isInRoom(name, client)) return false
+        const vid = CUtility.fetchVID(client)
+        self.room[name][vid] = true
         return true
     })
 }
