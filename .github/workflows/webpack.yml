@@ -1,8 +1,7 @@
 name: NodeJS with Webpack
 
 on:
-  release:
-    types: [ published ]
+  push:
     branches: [ "main" ]
 
 jobs:
