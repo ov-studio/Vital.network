@@ -16,7 +16,6 @@
 const CPath = require("path")
 const CPackage = require("./package.json")
 const CNodeExternals = require("webpack-node-externals")
-console.log(CPackage.name)
 
 
 //////////////
@@ -54,7 +53,7 @@ module.exports = [
           compress: true,
           port: 9001
         },
-        devtool: "inline-source-map",
+        devtool: "inline-source-map"
     },
 
 
