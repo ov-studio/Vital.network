@@ -185,7 +185,7 @@ else {
             socket.onmessage = function(payload) {
                 payload = JSON.parse(payload.data)
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
-                if (CUtility.isObject(payload.networkCB)) return self.resolveCallback(socket, payload)
+                if (CUtility.isObject(payload.networkCB)) return CServer.socket.resolveCallback(self, socket, payload)
                 self.emit(payload.networkName, null, ...payload.networkArgs)
                 return true
             }

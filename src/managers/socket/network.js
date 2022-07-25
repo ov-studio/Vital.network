@@ -99,7 +99,7 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
     return cNetwork.emitCallback(...cArgs)
 })
 
-CServer.socket.addInstanceMethod("resolveCallback", function(self, client, payload) {
+CServer.socket.addMethod("resolveCallback", function(self, client, payload) {
     if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
     if (CUtility.isServer && !self.isClient(client)) return false
     const queueID = CUtility.fetchVID(payload.networkCB)
