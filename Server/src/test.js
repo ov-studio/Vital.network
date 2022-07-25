@@ -13,7 +13,7 @@
 -- Imports --
 -----------*/
 
-const vNetworkify = require("./importer")
+require("./importer")
 
 
 /*--------
