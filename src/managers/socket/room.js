@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------
      Resource: vNetworkify
-     Script: managars: socket: room.js
+     Script: managers: socket: room.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
      DOC: 22/07/2022

@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------
      Resource: vNetworkify
-     Script: managars: network.js
+     Script: managers: network.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
      DOC: 22/07/2022

@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------
      Resource: vNetworkify
-     Script: managars: rest.js
+     Script: managers: rest.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
      DOC: 22/07/2022
