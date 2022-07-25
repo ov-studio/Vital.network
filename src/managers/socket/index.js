@@ -47,13 +47,20 @@ CServer.socket.addMethod("create", function(route) {
 CServer.socket.addMethod("destroy", function(route) {
     if (CServer.socket.isVoid(route)) return false
     CServer.socket.buffer[route].isUnloaded = true
-    for (const i in CServer.socket.buffer[route].network) {
-        CServer.socket.buffer[route].destroyNetwork(i)
-    }
     if (CUtility.isServer) {
+        for (const i in CServer.socket.buffer[route].instance) {
+            const j = CServer.socket.buffer[route].instance[i]
+            for (const k in j.queue) {
+                const v = j[k]
+                v.reject()
+            }
+        }
         for (const i in CServer.socket.buffer[route].room) {
             CServer.socket.buffer[route].destroyRoom(i)
         }
+    }
+    for (const i in CServer.socket.buffer[route].network) {
+        CServer.socket.buffer[route].destroyNetwork(i)
     }
     delete CServer.socket.buffer[route]
     return true
@@ -98,16 +105,19 @@ if (!CUtility.isServer) {
                 self.config.isAwaiting = null
                 self.config.isConnected = true
                 cResolver(self.config.isConnected)
+                return true
             }
             self.server.onerror = function(error) {
                 self.config.isConnected = false
                 cResolver(self.config.isConnected, error)
                 self.connect()
+                return true
             }
             self.server.onmessage = function(payload) {
                 payload = JSON.parse(payload.data)
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
                 self.emit(payload.networkName, null, ...payload.networkArgs)
+                return true
             }
             return true
         }
@@ -148,7 +158,7 @@ else {
             if (!instance) return false
             const vid = CUtility.fetchVID(socket)
             self.instance[vid] = socket
-            socket.room = {}
+            socket.queue = {}, socket.room = {}
             query = CUtility.queryString.parse(query)
             if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(socket, vid)
             socket.onclose = function() {
@@ -157,11 +167,19 @@ else {
                 }
                 delete self.instance[vid]
                 if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(socket, vid)
+                return true
             }
             socket.onmessage = function(payload) {
                 payload = JSON.parse(payload)
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
+                if (CUtility.isObject(payload.networkCB)) {
+                    const queueID = CUtility.fetchVID(networkCB)
+                    if (!CUtility.isObject(socket.queue[queueID])) return false
+                    socket.queue[queueID].resolve(...payload.networkArgs)
+                    return true
+                }
                 self.emit(payload.networkName, null, ...payload.networkArgs)
+                return true
             }
         })
     }, "isInstance")
