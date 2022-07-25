@@ -85,10 +85,9 @@ CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs
 })
 
 CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, ...cArgs) {
-    console.log("TEST 1")
     if (isRemote) {
         if (CUtility.isServer && !self.isClient(isRemote)) return false
-        const cQueue = (CUtility.isServer && cQueue) || self.queue
+        const cQueue = (CUtility.isServer && isRemote.cQueue) || self.queue
         if (!cQueue) return false
         const cReceiver = (CUtility.isServer && isRemote) || self.server
         const networkCB = {}
@@ -110,10 +109,8 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
             networkArgs: cArgs,
             networkCB: networkCB
         }))
-        console.log("EY")
         return cPromise
     }
-    console.log("TEST 2")
     const cNetwork = CServer.socket.fetchNetwork(self, name)
     if (!cNetwork) return false
     return cNetwork.emitCallback(...cArgs)
