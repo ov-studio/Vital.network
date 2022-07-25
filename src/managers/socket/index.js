@@ -120,7 +120,7 @@ if (!CUtility.isServer) {
                 if (CUtility.isObject(payload.networkCB)) {
                     if (!payload.networkCB.isProcessed) {
                         payload.networkCB.isProcessed = true
-                        const cNetwork = self.fetchNetwork(payload.networkName)
+                        const cNetwork = CServer.socket.fetchNetwork(payload.networkName)
                         if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
                         else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
                         self.server.send(JSON.stringify(payload))
@@ -186,7 +186,7 @@ else {
                 if (CUtility.isObject(payload.networkCB)) {
                     if (!payload.networkCB.isProcessed) {
                         payload.networkCB.isProcessed = true
-                        const cNetwork = self.fetchNetwork(payload.networkName)
+                        const cNetwork = CServer.socket.fetchNetwork(payload.networkName)
                         if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
                         else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
                         self.server.send(JSON.stringify(payload))
