@@ -31,11 +31,16 @@ CServer.socket.addInstanceMethod("isNetwork", function(self, name) {
 CServer.socket.addInstanceMethod("createNetwork", function(self, name, ...cArgs) {
     if (self.isNetwork(name)) return false
     self.network[name] = CServer.network.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
+    self.network[name].queue = {}
     return true
 })
 
 CServer.socket.addInstanceMethod("destroyNetwork", function(self, name) {
     if (!self.isNetwork(name)) return false
+    for (const i in self.network[name].queue) {
+        self.network[name].queue[i].reject()
+        delete self.network[name].queue[i]
+    }
     self.network[name].destroy()
     delete self.network[name]
     return true
@@ -70,9 +75,19 @@ CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs
 
 CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, ...cArgs) {
     if (isRemote) {
-        if (!CUtility.isServer && !self.isClient(isRemote)) return false
-        // TODO: ADD REMOTE TRANSFER
-        return true
+        if (CUtility.isServer && !self.isClient(isRemote)) return false
+        const cReceiver = (CUtility.isServer && isRemote) || self.server
+        const networkCB = {}
+        const vid = CUtility.fetchVID(networkCB)
+        const cPromise = new Promise(function(resolve, reject) {
+            self.queue[vid] = {resolve = resolve, reject = reject}
+        })
+        cReceiver.send(JSON.stringify({
+            networkName: name,
+            networkArgs: cArgs,
+            networkCB: networkCB
+        }))
+        return cPromise
     }
     const cNetwork = fetchNetwork(self, name)
     if (!cNetwork) return false
