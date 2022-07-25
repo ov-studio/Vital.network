@@ -202,16 +202,21 @@ else {
             instance = CServer.socket.fetch(instance.slice(1))
             if (!instance) return false
             const vid = CUtility.fetchVID(socket)
+            socket.room = {}
             self.instance[vid] = socket
             query = CUtility.queryString.parse(query)
-            socket.on("close", function() {
+            socket.onclose = function() {
                 delete self.instance[(socket.vid)]
-            })
-            socket.on("message", function(payload) {
+                for (const i in self.room) {
+                    const j = self.room[i]
+                    delete j[(socket.vid)]
+                }
+            }
+            socket.onmessage = function(payload) {
                 payload = JSON.parse(payload)
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
                 self.emit(payload.networkName, null, ...payload.networkArgs)
-            })
+            }
         })
     })
 
