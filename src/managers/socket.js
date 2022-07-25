@@ -131,7 +131,9 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
 })
 
 CServer.socket.addInstanceMethod("isRoom", function(self, name) {
-    return (CUtility.isString(name) && CUtility.isObject(self.room[name]) && true) || false
+    const cInstance = (CUtility.isString(name) && CUtility.isObject(self.room[name]) && self.room[name]) || false
+    if (CUtility.isServer() && cInstance && (!CUtility.isObject(cInstance) || !cInstance.isInstance())) cInstance = false
+    return (cInstance && true) || false
 })
 
 CServer.socket.addInstanceMethod("isInRoom", function(self, name, client) {
