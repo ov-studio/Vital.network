@@ -116,6 +116,15 @@ if (!CUtility.isServer) {
             self.server.onmessage = function(payload) {
                 payload = JSON.parse(payload.data)
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
+                if (CUtility.isObject(payload.networkCB)) {
+                    console.log("Received cb payload")
+                    console.log(payload)
+                    /*
+                    if (!CUtility.isObject(socket.queue[queueID])) return false
+                    socket.queue[queueID].resolve(...payload.networkArgs)
+                    */
+                    return true
+                }
                 self.emit(payload.networkName, null, ...payload.networkArgs)
                 return true
             }
@@ -173,7 +182,7 @@ else {
                 payload = JSON.parse(payload)
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
                 if (CUtility.isObject(payload.networkCB)) {
-                    const queueID = CUtility.fetchVID(networkCB)
+                    const queueID = CUtility.fetchVID(payload.networkCB)
                     if (!CUtility.isObject(socket.queue[queueID])) return false
                     socket.queue[queueID].resolve(...payload.networkArgs)
                     return true
