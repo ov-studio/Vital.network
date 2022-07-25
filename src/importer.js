@@ -1,10 +1,10 @@
 /*----------------------------------------------------------------
      Resource: vNetworkify
-     Script: loader.js
+     Script: importer.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
      DOC: 22/07/2022
-     Desc: Module Loader
+     Desc: Module Importer
 ----------------------------------------------------------------*/
 
 
