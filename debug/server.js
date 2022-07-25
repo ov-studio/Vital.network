@@ -50,7 +50,7 @@ async function debug() {
         return argA + argB
     })
     const networkCBResult = await cSocket.emitCallback("Server:MyCBNetwork", false, 1, 4)
-    vNetworkify.utility.print("Callback Network | Result: " + networkCBResult)
+    vNetworkify.utility.print(`Callback Network | Result: ${toString(networkCBResult)}`)
 
 
     // @Room Examples
