@@ -16,7 +16,7 @@
 const CCors = require("cors")
 const CHTTP = require("http")
 const CExpress = require("express")
-const CUtility = require("../utilities/index")
+const CUtility = require("../utilities")
 
 
 ////////////////////

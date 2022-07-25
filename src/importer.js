@@ -15,6 +15,7 @@
 
 const CNetworkify = require("./managers/server")
 const CUtility = require("./utilities")
+require("./utilities/type")
 require("./managers/network")
 require("./managers/rest")
 require("./managers/socket")
