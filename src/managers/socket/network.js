@@ -87,7 +87,7 @@ CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs
 CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, ...cArgs) {
     if (isRemote) {
         if (CUtility.isServer && !self.isClient(isRemote)) return false
-        const cQueue = (CUtility.isServer && isRemote.cQueue) || self.queue
+        const cQueue = (CUtility.isServer && isRemote.queue) || self.queue
         if (!cQueue) return false
         const cReceiver = (CUtility.isServer && isRemote) || self.server
         const networkCB = {}
