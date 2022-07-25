@@ -202,14 +202,14 @@ else {
             instance = CServer.socket.fetch(instance.slice(1))
             if (!instance) return false
             const vid = CUtility.fetchVID(socket)
-            socket.room = {}
             self.instance[vid] = socket
+            socket.room = {}
             query = CUtility.queryString.parse(query)
             socket.onclose = function() {
-                delete self.instance[(socket.vid)]
+                delete self.instance[vid]
                 for (const i in self.room) {
                     const j = self.room[i]
-                    delete j[(socket.vid)]
+                    delete j[vid]
                 }
             }
             socket.onmessage = function(payload) {
