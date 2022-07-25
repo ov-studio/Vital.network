@@ -56,7 +56,7 @@ CServer.room.addMethod("destroy", function(name) {
 // Instance Mmebers //
 //////////////////////
 
-CServer.room.addMethod("constructor", function(self, name, isCallback) {
+CServer.room.addMethod("constructor", function(self, name) {
     self.name = name
 })
 
