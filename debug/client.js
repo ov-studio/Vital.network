@@ -21,6 +21,9 @@ async function debug() {
 
     // @Socket API Examples
     const cSocket = vNetworkify.socket.create("Server:MyRoute")
+    const isSocketConnected = await cSocket.isConnected()
+    if (!isSocketConnected) return false
+
     cSocket.createNetwork("Client:MyNetwork")
     cSocket.onClientConnect = function(socket, vid) {
         console.log(`Client Connected [${vid}]`)
@@ -49,5 +52,7 @@ async function debug() {
     })
     const networkCBResult = await cSocket.emitCallback("Client:MyCBNetwork", false, 1, 4)
     vNetworkify.utility.print(`Callback Network | Result: ${networkCBResult}`)
+    const networkRemoteCBResult = await cSocket.emitCallback("Server:MyCBNetwork", true, 100, 200)
+    vNetworkify.utility.print(`Remote Callback Network | Result: ${networkRemoteCBResult}`)
 }
 debug()
