@@ -141,10 +141,12 @@ if (!CUtility.isServer) {
         self.route = route, self.network = {}, self.room = {}
         self.isConnected = false
         self.connect = function() {
+            if (CServer.isConnected()) return false
             var cResolver = false
-            CServer.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
+            self.isAwaiting = new Promise((resolver) => cResolver = resolver)
             self.server = new WebSocket(`${((CServer.config.protocol == "https") && "wss") || "ws"}://${CServer.config.hostname}:${CServer.config.port}/${self.route}`)
             self.server.onopen = function() {
+                self.isAwaiting = null
                 self.isConnected = true
                 cResolver(self.isConnected)
             }
@@ -156,6 +158,17 @@ if (!CUtility.isServer) {
             return true
         }
         self.connect()
+    })
+
+
+    ///////////////////////
+    // Instance Members //
+    ///////////////////////
+
+    CServer.socket.addInstanceMethod("isConnected", function(self, isSync) {
+        if (!self.isInstance()) return false
+        if (isSync) return (CUtility.isBool(self.isConnected) && self.isConnected) || false
+        return self.isAwaiting || self.isConnected || false
     })
 }
 else {
