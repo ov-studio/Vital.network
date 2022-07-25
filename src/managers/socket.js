@@ -136,6 +136,13 @@ CServer.socket.addInstanceMethod("isRoomVoid", function(self, name) {
     return (CUtility.isString(name) && !CUtility.isObject(self.room[name]) && true) || false
 })
 
+CServer.socket.addInstanceMethod("isInRoom", function(self, name, client) {
+    if (!self.isInstance() || self.isRoomVoid(name)) return false
+    if (CUtility.isServer && !self.isClient(client)) return false
+    const vid = (CUtility.isServer && CUtility.fetchVID(client)) || CUtility.fetchVID(self)
+    return (CUtility.isObject(self.room[name]) && self.room[name][vid] && true) || false
+})
+
 if (!CUtility.isServer) {
     /////////////////////
     // Static Members //
@@ -238,6 +245,12 @@ else {
     })
 
     CServer.socket.addInstanceMethod("destroyRoom", function(self, name) {
+        if (!self.isInstance() || self.isRoomVoid(name)) return false
+        delete self.room[name]
+        return true
+    })
+
+    CServer.socket.addInstanceMethod("joinRoom", function(self, name) {
         if (!self.isInstance() || self.isRoomVoid(name)) return false
         delete self.room[name]
         return true
