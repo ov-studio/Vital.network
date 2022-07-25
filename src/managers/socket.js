@@ -131,6 +131,11 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
     return cNetwork.emitCallback(...cArgs)
 })
 
+CServer.socket.addInstanceMethod("isRoomVoid", function(self, name) {
+    if (!self.isInstance()) return false
+    return (CUtility.isString(name) && !CUtility.isObject(self.room[name]) && true) || false
+})
+
 if (!CUtility.isServer) {
     /////////////////////
     // Static Members //
@@ -219,5 +224,17 @@ else {
         if (!self.isInstance()) return false
         const vid = CUtility.fetchVID(client)
         return (vid && CUtility.isObject(self.instance[vid]) && true) || false
+    })
+
+    CServer.socket.addInstanceMethod("createRoom", function(self, name) {
+        if (!self.isInstance() || !self.isRoomVoid(name)) return false
+        self.room[name] = {}
+        return true
+    })
+
+    CServer.socket.addInstanceMethod("destroyRoom", function(self, name) {
+        if (!self.isInstance() || self.isRoomVoid(name)) return false
+        delete self.room[name]
+        return true
     })
 }
