@@ -1,4 +1,3 @@
-
 /*----------------------------------------------------------------
      Resource: vNetworkify
      Script: loader.js
@@ -20,6 +19,7 @@ require("./managers/network")
 require("./managers/room")
 require("./managers/rest")
 require("./managers/socket/")
+require("./managers/socket/network")
 require("./managers/socket/room")
 
 

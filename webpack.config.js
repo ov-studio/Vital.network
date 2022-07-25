@@ -1,4 +1,3 @@
-
 /*----------------------------------------------------------------
      Resource: vNetworkify
      Script: webpack.config.js

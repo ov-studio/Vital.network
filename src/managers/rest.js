@@ -1,4 +1,3 @@
-
 /*----------------------------------------------------------------
      Resource: vNetworkify
      Script: managars: rest.js
