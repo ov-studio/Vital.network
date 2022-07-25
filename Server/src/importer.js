@@ -28,4 +28,5 @@ vNetworkify = vUtility.createAPIs(vNetworkify, {
     network: true
 })
 vNetworkify.utility = vUtility
+vUtility.global.vNetworkify = vNetworkify
 module.exports = vNetworkify

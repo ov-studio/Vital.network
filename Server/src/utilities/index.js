@@ -14,12 +14,13 @@
 /////////////////////
 
 const CUtility = {
-    isServer: ((typeof(process) != "undefined") && !process.browser && true) || false,
     print: console.log,
     loadString: eval,
     genUID: require("uuid"),
     queryString: require("querystring")
 }
+CUtility.isServer = (global && true) || false
+CUtility.global = (CUtility.isServer && global) || window
 
 const CType = [
     {handler: "isBool", type: "boolean"},
