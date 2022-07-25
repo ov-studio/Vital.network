@@ -1,6 +1,6 @@
 
 /*----------------------------------------------------------------
-     Resource: vNetworify
+     Resource: vNetworkify
      Script: loader.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron

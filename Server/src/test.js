@@ -1,6 +1,6 @@
 
 /*----------------------------------------------------------------
-     Resource: vNetworify
+     Resource: vNetworkify
      Script: test.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron

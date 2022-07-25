@@ -1,6 +1,6 @@
 
 /*----------------------------------------------------------------
-     Resource: vNetworify
+     Resource: vNetworkify
      Script: managars: server.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
@@ -48,7 +48,7 @@ if (!CUtility.isServer) {
         if (!port || CServer.isConnected()) return false
         config.protocol = window.location.protocol
         config.hostname = window.location.hostname
-        CUtility.print(`━ vNetworify (Client) | Launched [Port: ${CServer.config.port}]`)
+        CUtility.print(`━ vNetworkify (Client) | Launched [Port: ${CServer.config.port}]`)
         return true
     } 
 }
@@ -72,7 +72,7 @@ else {
             CServer.config.isAwaiting = null
             CServer.config.isConnected = true
             cResolver(CServer.config.isConnected)
-            CUtility.print(`━ vNetworify (Server) | Launched [Port: ${CServer.config.port}]`)
+            CUtility.print(`━ vNetworkify (Server) | Launched [Port: ${CServer.config.port}]`)
         })
         return true
     }    
