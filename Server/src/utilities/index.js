@@ -19,7 +19,7 @@ const CUtility = {
     genUID: require("uuid"),
     queryString: require("querystring")
 }
-CUtility.isServer = (global && true) || false
+CUtility.isServer = ((typeof(process) != "undefined") && !process.browser && true) || false
 CUtility.global = (CUtility.isServer && global) || window
 
 const CType = [
