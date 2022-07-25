@@ -95,7 +95,8 @@ if (!CUtility.isServer) {
         self.config = {
             isConnected: false
         }
-        self.route = route, self.network = {}, self.room = {}
+        self.route = route
+        self.queue = {}, self.network = {}, self.room = {}
         self.connect = function() {
             if (self.isConnected()) return false
             var cResolver = false
