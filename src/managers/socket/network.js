@@ -88,17 +88,19 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
     console.log("TEST 1")
     if (isRemote) {
         if (CUtility.isServer && !self.isClient(isRemote)) return false
+        const cQueue = (CUtility.isServer && cQueue) || self.queue
+        if (!cQueue) return false
         const cReceiver = (CUtility.isServer && isRemote) || self.server
         const networkCB = {}
         const vid = CUtility.fetchVID(networkCB)
         const cPromise = new Promise(function(resolve, reject) {
-            isRemote.queue[vid] = {
+            cQueue[vid] = {
                 resolve: function(...cArgs) {
-                    delete isRemote.queue[vid]
+                    delete cQueue[vid]
                     return resolve(...cArgs)
                 },
                 reject: function(...cArgs) {
-                    delete isRemote.queue[vid]
+                    delete cQueue[vid]
                     return reject(...cArgs)
                 }
             }
