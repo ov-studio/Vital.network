@@ -65,8 +65,9 @@ CUtility.createClass = function(parent) {
             __C[i] = parent[i]
         }
     }
-    __C.addMethod = function(index, exec) {
+    __C.addMethod = function(index, exec, isInstanceware) {
         if (!CUtility.isString(index) || !CUtility.isFunction(exec)) return false
+        if ((index == "constructor") && CUtility.isString(isInstanceware)) __C.isInstanceware = isInstanceware
         __C[index] = exec
         return true
     }
@@ -79,6 +80,8 @@ CUtility.createClass = function(parent) {
         if (!CUtility.isString(index) || !CUtility.isFunction(exec)) return false
         __C.prototype[index] = function(...cArgs) {
             const self = this
+            const isInstanceware = __C.isInstanceware
+            if (CUtility.isString(isInstanceware) && CUtility.isFunction(self[isInstanceware]) && !CUtility.isFunction(self[isInstanceware])) return false
             return exec(self, ...cArgs)
         }
         return true
