@@ -21,7 +21,7 @@ Tired of using bloatwares? unnecessary dependencies? redundant codes? reinventin
 * Built-In Socket APIs
 * Built-In Socket Networker
 * Built-In Socket Rooms
-* Supports CDN Embedded (Solo embeddable script provided w/n every release `vnetworkify-client`, `vnetworkify-server`)
+* Supports CDN Embedding (Solo embeddable script provided w/n every release `vnetworkify-client`, `vnetworkify-server`)
 * Necessary Integration APIs
 
 ## ━ Contents
