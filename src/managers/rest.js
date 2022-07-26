@@ -35,7 +35,10 @@ CServer.rest = CUtility.createClass({
 /////////////////////
 
 if (!CUtility.isServer) {
-    
+    CServer.rest.addMethod("fetch", function(type, ...cArgs) {
+        if (!CServer.isConnected(true) || !CUtility.isObject(CServer.rest.buffer[type][route])) return false
+        return CServer.instance.CExpress[type](`/${route}`, ...cArgs)
+    })
 }
 else {
     CServer.rest.addMethod("isVoid", function(type, route) {
