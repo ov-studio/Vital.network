@@ -22,7 +22,7 @@ jobs:
     - name: Building Package
       run: |
         npm install
-        npm run webpack
+        npm run build
 
     - name: Publishing Package
       run: npm publish --access public
