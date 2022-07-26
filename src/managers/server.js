@@ -82,9 +82,7 @@ if (!CUtility.isServer) {
             delete: function(route, data) {
                 if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
                 return fetch(route, {
-                    method: "PUT",
-                    headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify(data)
+                    method: "DELETE"
                 }))
             }
         }
