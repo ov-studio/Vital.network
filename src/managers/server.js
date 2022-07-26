@@ -79,8 +79,8 @@ if (!CUtility.isServer) {
                     body: JSON.stringify(data)
                 }))
             },
-            delete: function(route, data) {
-                if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
+            delete: function(route) {
+                if (!CUtility.isString(route)) return false
                 return fetch(route, {
                     method: "DELETE"
                 }))
