@@ -63,13 +63,13 @@ if (!CUtility.isServer) {
                     method: "POST",
                     headers: {["Content-Type"]: "application/json"},
                     body: JSON.stringify(data)
-                }))
+                })
             },
             get: function(route) {
                 if (!CUtility.isString(route)) return false
                 return fetch(route, {
                     method: "GET"
-                }))
+                })
             },
             put: function(route, data) {
                 if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
@@ -77,13 +77,13 @@ if (!CUtility.isServer) {
                     method: "PUT",
                     headers: {["Content-Type"]: "application/json"},
                     body: JSON.stringify(data)
-                }))
+                })
             },
             delete: function(route) {
                 if (!CUtility.isString(route)) return false
                 return fetch(route, {
                     method: "DELETE"
-                }))
+                })
             }
         }
         onConnectionStatus(null, true)
