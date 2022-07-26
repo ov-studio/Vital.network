@@ -27,7 +27,6 @@
         "rest"
     ],
     "main": "./importer",
-    "prepublishOnly": "webpack --mode=production",
     "scripts": {
         "debug": "node ./debug/server",
         "build": "webpack"
