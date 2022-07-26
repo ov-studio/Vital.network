@@ -26,10 +26,10 @@ async function debug() {
 
     cSocket.createNetwork("Client:MyNetwork")
     cSocket.onClientConnect = function(socket, vid) {
-        console.log(`Client Connected [${vid}]`)
+        vNetworkify.utility.print(`Client Connected [${vid}]`)
     }
     cSocket.onClientDisconnect = function(socket, vid) {
-        console.log(`Client Disconnected [${vid}]`)
+        vNetworkify.utility.print(`Client Disconnected [${vid}]`)
     }
 
 
@@ -54,5 +54,14 @@ async function debug() {
     vNetworkify.utility.print(`Callback Network | Result: ${networkCBResult}`)
     const networkRemoteCBResult = await cSocket.emitCallback("Server:MyCBNetwork", true, 100, 200)
     vNetworkify.utility.print(`Remote Callback Network | Result: ${networkRemoteCBResult}`)
+
+
+    // @Rest API Examples
+    var restAPIResult = await vNetworkify.rest.fetch("get", "http://localhost:33021/")
+    restAPIResult = await restAPIResult.json()
+    vNetworkify.utility.print(restAPIResult)
+    var restAPIResult = await vNetworkify.rest.fetch("get", "http://localhost:33021/invalid")
+    restAPIResult = await restAPIResult.json()
+    vNetworkify.utility.print(restAPIResult)
 }
 debug()
