@@ -61,7 +61,7 @@ if (!CUtility.isServer) {
                 if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
                 return fetch(route, {
                     method: "POST",
-                    headers: {"Content-Type": "application/json"},
+                    headers: {["Content-Type"]: "application/json"},
                     body: JSON.stringify(data)
                 }))
             },
@@ -75,7 +75,7 @@ if (!CUtility.isServer) {
                 if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
                 return fetch(route, {
                     method: "PUT",
-                    headers: {"Content-Type": "application/json"},
+                    headers: {["Content-Type"]: "application/json"},
                     body: JSON.stringify(data)
                 }))
             },
