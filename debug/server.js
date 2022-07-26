@@ -57,14 +57,14 @@ async function debug() {
     cSocket.destroyRoom("Server:MyRoom")
     cSocket.createRoom("Server:MyRoom")
     cSocket.onClientConnect = async function(client, vid) {
-        console.log(`* Client Connected [VID: ${vid}]`)
+        vNetworkify.utility.print(`* Client Connected [VID: ${vid}]`)
         cSocket.joinRoom("Server:MyRoom", client)
         cSocket.emitRoom("Server:MyRoom", "Client:MyNetwork")
         const networkRemoteCBResult = await cSocket.emitCallback("Client:MyCBNetwork", client, 10, 20)
         vNetworkify.utility.print(`Remote Callback Network | Result: ${networkRemoteCBResult}`)
     }
     cSocket.onClientDisconnect = function(client, vid) {
-        console.log(`* Client Disconnected [VID: ${vid}]`)
+        vNetworkify.utility.print(`* Client Disconnected [VID: ${vid}]`)
     }
 
 
@@ -74,7 +74,7 @@ async function debug() {
     })
     vNetworkify.rest.destroy("get", "")
     vNetworkify.rest.create("get", "", function(request, response) {
-        response.status(200).send("Updated Status Message")
+        response.status(200).send({test: "Updated Status Message"})
     })
 }
 debug()
