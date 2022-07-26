@@ -56,6 +56,14 @@ if (!CUtility.isServer) {
         CServer.config.port = port
         CServer.config.protocol = window.location.protocol
         CServer.config.hostname = window.location.hostname
+        CServer.instance.CExpress = {
+            get: async function(route) {
+                if (!CUtility.isString(route)) return false
+                return await fetch(route, {
+                    method: "GET"
+                ))
+            }
+        }
         onConnectionStatus(null, true)
         return true
     } 
