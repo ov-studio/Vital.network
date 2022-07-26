@@ -59,9 +59,7 @@ if (!CUtility.isServer) {
         CServer.instance.CExpress = {
             get: async function(route) {
                 if (!CUtility.isString(route)) return false
-                return await fetch(route, {
-                    method: "GET"
-                ))
+                return await fetch(route, {method: "GET"))
             }
         }
         onConnectionStatus(null, true)
