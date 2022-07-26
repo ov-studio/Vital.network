@@ -57,16 +57,32 @@ if (!CUtility.isServer) {
         CServer.config.protocol = window.location.protocol
         CServer.config.hostname = window.location.hostname
         CServer.instance.CExpress = {
+            post: function(route, data) {
+                if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
+                return fetch(route, {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(data)
+                }))
+            },
             get: function(route) {
                 if (!CUtility.isString(route)) return false
                 return fetch(route, {
                     method: "GET"
                 }))
             },
-            post: function(route, data) {
+            put: function(route, data) {
                 if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
                 return fetch(route, {
-                    method: "POST",
+                    method: "PUT",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify(data)
+                }))
+            },
+            delete: function(route, data) {
+                if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
+                return fetch(route, {
+                    method: "PUT",
                     headers: {"Content-Type": "application/json"},
                     body: JSON.stringify(data)
                 }))
