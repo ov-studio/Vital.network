@@ -38,11 +38,12 @@ module.exports = [
         },
         resolve: {
             alias: {
-                "ws": false,
                 "querystring": false,
+                "crypto": false,
                 "cors": false,
+                "express": false,
                 "http": false,
-                "express": false
+                "ws": false
             }
         },
         devServer: {
