@@ -21,19 +21,18 @@ async function debug() {
 
     // @Socket API Examples
     const cSocket = vNetworkify.socket.create("Server:MyRoute")
+    cSocket.onClientConnect = function() {
+        vNetworkify.utility.print(`* Client Connected`)
+    }
+    cSocket.onClientDisconnect = function() {
+        vNetworkify.utility.print(`* Client Disconnected`)
+    }
     const isSocketConnected = await cSocket.isConnected()
     if (!isSocketConnected) return false
 
-    cSocket.createNetwork("Client:MyNetwork")
-    cSocket.onClientConnect = function(socket, vid) {
-        vNetworkify.utility.print(`Client Connected [${vid}]`)
-    }
-    cSocket.onClientDisconnect = function(socket, vid) {
-        vNetworkify.utility.print(`Client Disconnected [${vid}]`)
-    }
-
 
     // @Non-Callback Network Examples
+    cSocket.createNetwork("Client:MyNetwork")
     cSocket.on("Client:MyNetwork", function() {
         vNetworkify.utility.print("Non Callback Network | Handler 1")
     })

@@ -102,16 +102,17 @@ if (!CUtility.isServer) {
             var cResolver = false
             self.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
             self.server = new WebSocket(`${((CServer.config.protocol == "https") && "wss") || "ws"}://${CServer.config.hostname}:${CServer.config.port}/${self.route}`)
-            const vid = CUtility.fetchVID(self.server)
             self.server.onopen = function() {
                 self.config.isAwaiting = null
                 self.config.isConnected = true
-                cResolver(self.config.isConnected)
-                if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(self.server, vid)
+                setTimeout(function() {
+                    cResolver(self.config.isConnected)
+                    if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect()
+                }, 1)
                 return true
             }
             self.server.onclose = function() {
-                if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(self.server, vid)
+                if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect()
                 return true
             }
             self.server.onerror = function(error) {
