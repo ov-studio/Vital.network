@@ -28,10 +28,10 @@ async function debug() {
 
     // @Socket API Examples
     const cSocket = vNetworkify.socket.create("Server:MyRoute")
-    cSocket.createNetwork("Server:MyNetwork")
 
 
     // @Non-Callback Network Examples
+    cSocket.createNetwork("Server:MyNetwork")
     cSocket.on("Server:MyNetwork", function() {
         vNetworkify.utility.print("Non Callback Network | Handler 1")
     })
