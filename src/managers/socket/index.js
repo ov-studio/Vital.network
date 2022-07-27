@@ -178,18 +178,18 @@ else {
             var [instance, query] = request.url.split("?")
             instance = CServer.socket.fetch(instance.slice(1))
             if (!instance) return false
-            const vid = CUtility.fetchVID(socket)
-            self.instance[vid] = socket
+            const clientVID = CUtility.fetchVID(socket)
+            self.instance[clientVID] = socket
             socket.queue = {}, socket.room = {}
             query = CUtility.queryString.parse(query)
-            if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(socket, vid)
-            socket.send(JSON.stringify({clientVID: vid}))
+            if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(socket, clientVID)
+            socket.send(JSON.stringify({clientVID: clientVID}))
             socket.onclose = function() {
                 for (const i in socket.room) {
                     self.leaveRoom(i, socket)
                 }
-                delete self.instance[vid]
-                if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(socket, vid)
+                delete self.instance[clientVID]
+                if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(socket, clientVID)
                 return true
             }
             socket.onmessage = function(payload) {
@@ -218,7 +218,7 @@ else {
     ///////////////////////
 
     CServer.socket.addInstanceMethod("isClient", function(self, client) {
-        const vid = CUtility.fetchVID(client, null, true)
-        return (vid && CUtility.isObject(self.instance[vid]) && true) || false
+        const clientVID = CUtility.fetchVID(client, null, true)
+        return (clientVID && CUtility.isObject(self.instance[clientVID]) && true) || false
     })
 }
