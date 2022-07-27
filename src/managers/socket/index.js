@@ -105,14 +105,11 @@ if (!CUtility.isServer) {
             self.server.onopen = function() {
                 self.config.isAwaiting = null
                 self.config.isConnected = true
-                setTimeout(function() {
-                    cResolver(self.config.isConnected)
-                    if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect()
-                }, 1)
+                cResolver(self.config.isConnected)
                 return true
             }
             self.server.onclose = function() {
-                if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect()
+                if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(CUtility.fetchVID(self.server, null, true) || false)
                 return true
             }
             self.server.onerror = function(error) {
@@ -125,7 +122,10 @@ if (!CUtility.isServer) {
                 payload = JSON.parse(payload.data)
                 if (!CUtility.isObject(payload)) return false
                 if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
-                    if (payload.clientVID) CUtility.fetchVID(self.server, payload.clientVID)
+                    if (payload.clientVID) {
+                        const clientVID = CUtility.fetchVID(self.server, payload.clientVID)
+                        if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(clientVID)
+                    }
                     return false
                 }
                 if (CUtility.isObject(payload.networkCB)) {
