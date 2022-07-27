@@ -123,7 +123,11 @@ if (!CUtility.isServer) {
             }
             self.server.onmessage = function(payload) {
                 payload = JSON.parse(payload.data)
-                if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
+                if (!CUtility.isObject(payload)) return false
+                if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
+                    if (payload.clientVID) CUtility.fetchVID(self.server, payload.clientVID)
+                    return false
+                }
                 if (CUtility.isObject(payload.networkCB)) {
                     if (!payload.networkCB.isProcessed) {
                         payload.networkCB.isProcessed = true
@@ -179,6 +183,7 @@ else {
             socket.queue = {}, socket.room = {}
             query = CUtility.queryString.parse(query)
             if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(socket, vid)
+            socket.send(JSON.stringify({clientVID: vid}))
             socket.onclose = function() {
                 for (const i in socket.room) {
                     self.leaveRoom(i, socket)
