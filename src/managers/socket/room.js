@@ -30,11 +30,11 @@ CServer.socket.addInstanceMethod("isInRoom", function(self, name, client) {
     if (!self.isRoom(name)) return false
     if (CUtility.isServer) {
         if (!self.isClient(client)) return false
-        const vid = CUtility.fetchVID(client, null, true)
-        return (vid && self.room[name].member[vid] && true) || false   
+        const clientVID = CUtility.fetchVID(client, null, true)
+        return (clientVID && self.room[name].member[clientVID] && true) || false   
     }
-    const vid = CUtility.fetchVID(self, null, true)
-    return (vid && self.room[name][vid] && true) || false
+    const clientVID = CUtility.fetchVID(self, null, true)
+    return (clientVID && self.room[name][clientVID] && true) || false
 })
 
 if (!CUtility.isServer) {
