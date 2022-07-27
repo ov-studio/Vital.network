@@ -27,12 +27,12 @@ CUtility.exec = function(exec, ...cArgs) {
     return exec(...cArgs)
 }
 
-CUtility.fetchVID = function(buffer) {
+CUtility.fetchVID = function(buffer, vid) {
     if (CUtility.isNull(buffer) || CUtility.isBool(buffer) || CUtility.isNumber(buffer)) return false
     buffer.prototype = buffer.prototype || {}
     if (!buffer.prototype.vid) {
         Object.defineProperty(buffer.prototype, "vid", {
-            value: `${CUtility.identifier}:${CUtility.crypto.randomUUID()}`,
+            value: vid || `${CUtility.identifier}:${CUtility.crypto.randomUUID()}`,
             enumerable: true,
             configurable: false,
             writable: false
