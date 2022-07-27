@@ -54,8 +54,8 @@ if (!CUtility.isServer) {
         options = (CUtility.isObject(options) && options) || {}
         if (!port || CServer.isConnected()) return false
         CServer.config.port = port
-        CServer.config.protocol = options.protocol || window.location.protocol
-        CServer.config.hostname = options.hostname || window.location.hostname
+        CServer.config.protocol = (CUtility.isString(options.protocol) && options.protocol) || window.location.protocol
+        CServer.config.hostname = (CUtility.isString(options.hostname) && options.hostname) || window.location.hostname
         CServer.instance.CExpress = {
             post: function(route, data) {
                 if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
