@@ -61,17 +61,17 @@ else {
 
     CServer.socket.addInstanceMethod("joinRoom", function(self, name, client) {
         if (!self.isClient(client) || !self.isRoom(name) || self.isInRoom(name, client)) return false
-        const vid = CUtility.fetchVID(client, null, true)
-        if (!vid) return false
-        self.room[name].member[vid] = true
+        const clientVID = CUtility.fetchVID(client, null, true)
+        if (!clientVID) return false
+        self.room[name].member[clientVID] = true
         return true
     })
 
     CServer.socket.addInstanceMethod("leaveRoom", function(self, name, client) {
         if (!self.isClient(client) || !self.isInRoom(name, client)) return false
-        const vid = CUtility.fetchVID(client, null, true)
-        if (!vid) return false
-        delete self.room[name].member[vid]
+        const clientVID = CUtility.fetchVID(client, null, true)
+        if (!clientVID) return false
+        delete self.room[name].member[clientVID]
         return true
     })
 
