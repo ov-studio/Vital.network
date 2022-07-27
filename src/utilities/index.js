@@ -15,11 +15,12 @@
 const CUtility = {
     print: console.log,
     loadString: eval,
-    genUID: require("uuid"),
     queryString: require("querystring")
 }
 CUtility.isServer = ((typeof(process) != "undefined") && !process.browser && true) || false
+CUtility.crypto = (CUtility.isServer && require("crypto")) || crypto
 CUtility.global = (CUtility.isServer && global) || window
+CUtility.identifier = CUtility.crypto.createHash("md5").update(`vNetworkify:${(CUtility.isServer && "Server") || "Client"}`).digest("hex")
 
 CUtility.exec = function(exec, ...cArgs) {
     if (!CUtility.isFunction(exec)) return false
@@ -31,7 +32,7 @@ CUtility.fetchVID = function(buffer) {
     buffer.prototype = buffer.prototype || {}
     if (!buffer.prototype.vid) {
         Object.defineProperty(buffer.prototype, "vid", {
-            value: CUtility.genUID.v4(),
+            value: `${CUtility.identifier}:${CUtility.crypto.randomUUID()}`,
             enumerable: true,
             configurable: false,
             writable: false
