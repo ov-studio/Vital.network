@@ -20,7 +20,7 @@ const CUtility = {
 CUtility.isServer = ((typeof(process) != "undefined") && !process.browser && true) || false
 CUtility.crypto = (CUtility.isServer && require("crypto")) || crypto
 CUtility.global = (CUtility.isServer && global) || window
-CUtility.identifier = CUtility.crypto.createHash("md5").update(`vNetworkify:${(CUtility.isServer && "Server") || "Client"}`).digest("hex")
+CUtility.identifier = `vNetworkify-${(CUtility.isServer && "Server") || "Client"}`
 
 CUtility.exec = function(exec, ...cArgs) {
     if (!CUtility.isFunction(exec)) return false
