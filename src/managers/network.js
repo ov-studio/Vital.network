@@ -90,8 +90,8 @@ CServer.network.addInstanceMethod("destroy", function(self) {
 
 CServer.network.addInstanceMethod("on", function(self, exec) {
     if (!CUtility.isFunction(exec)) return false
-    const vid = CUtility.fetchVID(exec)
     if (!self.isCallback) {
+        const vid = CUtility.fetchVID(exec)
         if (self.handler[vid]) return false
         self.handler[vid] = {
             exec: exec
@@ -109,12 +109,12 @@ CServer.network.addInstanceMethod("on", function(self, exec) {
 CServer.network.addInstanceMethod("off", function(self, exec) {
     if (!CUtility.isFunction(exec)) return false
     if (!self.isCallback) {
-        const vid = CUtility.fetchVID(exec)
-        if (!self.handler[vid]) return false
+        const vid = CUtility.fetchVID(exec, null, true)
+        if (!vid || !self.handler[vid]) return false
         delete self.handler[vid]
     }
     else {
-        if (!self.handler || (CUtility.fetchVID(exec) != CUtility.fetchVID(self.handler))) return false
+        if (!self.handler || (exec != self.handler.exec)) return false
         self.handler = false
     }
     return true
