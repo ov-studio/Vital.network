@@ -1,6 +1,6 @@
 {
     "name": "@vstudio/vnetworkify",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "author": "ᴏᴠ <crazynuggets@outlook.com> (https://github.com/ov-studio)",
     "private": false,
     "license": "GPL-3.0",
@@ -18,6 +18,7 @@
         "vstudio",
         "web-dev",
         "networker",
+        "networkify",
         "library",
         "networking",
         "lightweight",
@@ -26,7 +27,7 @@
         "socket",
         "rest"
     ],
-    "main": "./importer",
+    "main": "./src/importer",
     "scripts": {
         "debug": "node ./debug/server",
         "build": "webpack"
