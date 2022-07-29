@@ -20,10 +20,12 @@ const CServer = require("../server")
 // Static Members //
 /////////////////////
 
+// @Desc: Fetches network instance by name
 CServer.socket.addMethod("fetchNetwork", function(self, name) {
     return (self.isNetwork(name) && self.network[name]) || false
 })
 
+// @Desc: Resolves an awaiting callback network's handler
 CServer.socket.addMethod("resolveCallback", function(self, client, payload) {
     if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
     if (CUtility.isServer && !self.isClient(client)) return false
@@ -41,16 +43,19 @@ CServer.socket.addMethod("resolveCallback", function(self, client, payload) {
 // Instance Members //
 ///////////////////////
 
+// @Desc: Verifies network's validity
 CServer.socket.addInstanceMethod("isNetwork", function(self, name) {
     return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && self.network[name].isInstance() && true) || false
 })
 
+// @Desc: Creates a fresh network w/ specified name
 CServer.socket.addInstanceMethod("createNetwork", function(self, name, ...cArgs) {
     if (self.isNetwork(name)) return false
     self.network[name] = CServer.network.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
     return true
 })
 
+// @Desc: Destroys an existing network by specified name
 CServer.socket.addInstanceMethod("destroyNetwork", function(self, name) {
     if (!self.isNetwork(name)) return false
     self.network[name].destroy()
@@ -58,18 +63,21 @@ CServer.socket.addInstanceMethod("destroyNetwork", function(self, name) {
     return true
 })
 
+// @Desc: Attaches a handler on specified network
 CServer.socket.addInstanceMethod("on", function(self, name, ...cArgs) {
     const cNetwork = CServer.socket.fetchNetwork(self, name)
     if (!cNetwork) return false
     return cNetwork.on(...cArgs)
 })
 
+// @Desc: Detaches a handler from specified network
 CServer.socket.addInstanceMethod("off", function(self, name, ...cArgs) {
     const cNetwork = CServer.socket.fetchNetwork(self, name)
     if (!cNetwork) return false
     return cNetwork.off(...cArgs)
 })
 
+// @Desc: Emits to all attached non-callback handlers of specified network
 CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs) {
     if (isRemote) {
         if (CUtility.isServer && !self.isClient(isRemote)) return false
@@ -85,6 +93,7 @@ CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs
     return cNetwork.emit(...cArgs)
 })
 
+// @Desc: Emits to attached callback handler of specified network
 CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, ...cArgs) {
     if (isRemote) {
         if (CUtility.isServer && !self.isClient(isRemote)) return false
