@@ -34,7 +34,7 @@ CServer.socket.client.addMethod("fetch", function(clientVID) {
 })
 
 CServer.socket.client.addMethod("create", function(socket) {
-    if (!CServer.isConnected(true) || !CUtility.isObject(socket) || CServer.socket.client.fetch(CUtility.fetchVID(socket, null, true))) return false
+    if (!CUtility.isObject(socket) || CServer.socket.client.fetch(CUtility.fetchVID(socket, null, true))) return false
     const cInstance = new CServer.socket.client()
     const clientVID = CUtility.fetchVID(cInstance)
     CServer.socket.client.buffer[clientVID] = cInstance
