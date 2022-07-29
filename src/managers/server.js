@@ -52,7 +52,7 @@ CServer.isConnected = function(isSync) {
 }
 
 if (!CUtility.isServer) {
-// @Desc: Intializes & sets up server connections
+    // @Desc: Intializes & sets up server connections
     CServer.connect = function(port, options) {
         port = (CUtility.isNumber(port) && port) || false
         options = (CUtility.isObject(options) && options) || {}
@@ -95,7 +95,7 @@ if (!CUtility.isServer) {
     } 
 }
 else {
-// @Desc: Intializes & sets up server connections
+    // @Desc: Intializes & sets up server connections
     CServer.connect = function(port, options) {
         port = (CUtility.isNumber(port) && port) || false
         options = (CUtility.isObject(options) && options) || {}
