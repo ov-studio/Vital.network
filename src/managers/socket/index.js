@@ -219,6 +219,6 @@ else {
     ///////////////////////
 
     CServer.socket.addInstanceMethod("isClient", function(self, clientVID) {
-        return (CServer.socket.client.fetch(clientVID) && CUtility.isObject(self.instance[clientVID]) && true) || false
+        return (CServer.socket.client.fetch(clientVID) && self.instance[clientVID] && true) || false
     })
 }
