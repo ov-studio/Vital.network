@@ -54,12 +54,12 @@ CServer.socket.client.addMethod("destroy", function(clientVID) {
 ///////////////////////
 
 CServer.socket.client.addMethod("constructor", function(self) {
-    CUtility.fetchVID(self)
+    CUtility.fetchVID(self, CUtility.fetchVID(socket))
     self.socket = socket
 }, "isInstance")
 
 CServer.socket.client.addInstanceMethod("isInstance", function(self) {
-    return (!self.isUnloaded && CServer.socket.client.fetch(CUtility.fetchVID(self, null, true)) && true) || false
+    return (!self.isUnloaded && CServer.socket.client.fetch(CUtility.fetchVID(self.socket, null, true)) && true) || false
 })
 
 CServer.socket.client.addInstanceMethod("destroy", function(self) {
