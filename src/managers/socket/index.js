@@ -178,22 +178,22 @@ else {
             var [instance, query] = request.url.split("?")
             instance = CServer.socket.fetch(instance.slice(1))
             if (!instance) return false
-            const client = CServer.socket.client.create(socket)
-            const clientVID = CUtility.fetchVID(client, null, true)
-            self.instance[clientVID] = client
-            client.queue = {}, client.room = {}
+            const clientInstance = CServer.socket.client.create(socket)
+            const clientVID = CUtility.fetchVID(clientInstance, null, true)
+            self.instance[clientVID] = clientInstance
+            clientInstance.queue = {}, clientInstance.room = {}
             query = CUtility.queryString.parse(query)
             if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(clientVID)
-            client.socket.send(JSON.stringify({clientVID: clientVID}))
-            client.socket.onclose = function() {
-                for (const i in client.socket.room) {
+            clientInstance.socket.send(JSON.stringify({clientVID: clientVID}))
+            clientInstance.socket.onclose = function() {
+                for (const i in clientInstance.socket.room) {
                     self.leaveRoom(i, clientVID)
                 }
                 delete self.instance[clientVID]
                 if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(clientVID)
                 return true
             }
-            client.socket.onmessage = function(payload) {
+            clientInstance.socket.onmessage = function(payload) {
                 payload = JSON.parse(payload.data)
                 if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
                 if (CUtility.isObject(payload.networkCB)) {
@@ -202,7 +202,7 @@ else {
                         const cNetwork = CServer.socket.fetchNetwork(self, payload.networkName)
                         if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
                         else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
-                        client.socket.send(JSON.stringify(payload))
+                        clientInstance.socket.send(JSON.stringify(payload))
                     }
                     else CServer.socket.resolveCallback(self, clientVID, payload)
                     return true
