@@ -123,6 +123,7 @@ if (!CUtility.isServer) {
                 if (!CUtility.isObject(payload)) return false
                 if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
                     if (payload.clientVID) {
+                        // TODO: WTH IS GOING ON
                         const clientVID = CUtility.fetchVID(self.server, payload.clientVID)
                         if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(clientVID)
                     }
@@ -179,18 +180,18 @@ else {
             instance = CServer.socket.fetch(instance.slice(1))
             if (!instance) return false
             const clientInstance = CServer.socket.client.create(socket)
-            const clientVID = CUtility.fetchVID(clientInstance, null, true)
-            self.instance[clientVID] = clientInstance
+            const client = CUtility.fetchVID(clientInstance, null, true)
+            self.instance[client] = clientInstance
             clientInstance.queue = {}, clientInstance.room = {}
             query = CUtility.queryString.parse(query)
-            if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(clientVID)
-            clientInstance.socket.send(JSON.stringify({clientVID: clientVID}))
+            if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(client)
+            clientInstance.socket.send(JSON.stringify({clientVID: client}))
             clientInstance.socket.onclose = function() {
                 for (const i in clientInstance.socket.room) {
-                    self.leaveRoom(i, clientVID)
+                    self.leaveRoom(i, client)
                 }
-                delete self.instance[clientVID]
-                if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(clientVID)
+                delete self.instance[client]
+                if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(client)
                 return true
             }
             clientInstance.socket.onmessage = function(payload) {
@@ -204,7 +205,7 @@ else {
                         else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
                         clientInstance.socket.send(JSON.stringify(payload))
                     }
-                    else CServer.socket.resolveCallback(self, clientVID, payload)
+                    else CServer.socket.resolveCallback(self, client, payload)
                     return true
                 }
                 self.emit(payload.networkName, null, ...payload.networkArgs)
@@ -218,7 +219,7 @@ else {
     // Instance Members //
     ///////////////////////
 
-    CServer.socket.addInstanceMethod("isClient", function(self, clientVID) {
-        return (CServer.socket.client.fetch(clientVID) && self.instance[clientVID] && true) || false
+    CServer.socket.addInstanceMethod("isClient", function(self, client) {
+        return (CServer.socket.client.fetch(client) && self.instance[client] && true) || false
     })
 }
