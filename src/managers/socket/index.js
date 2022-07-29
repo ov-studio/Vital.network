@@ -170,9 +170,7 @@ else {
             path: `/${self.route}`
         })
         CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
-            self.server.handleUpgrade(request, socket, head, function(socket) {
-                self.server.emit("onClientConnect", socket, request)
-            })
+            self.server.handleUpgrade(request, socket, head, (socket) => self.server.emit("onClientConnect", socket, request))
         })
         self.server.on("onClientConnect", function(socket, request) {
             var [instance, query] = request.url.split("?")
