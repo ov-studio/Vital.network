@@ -30,20 +30,24 @@ CServer.socket = CUtility.createClass({
 // Static Members //
 /////////////////////
 
+// @Desc: Verifies socket's validity
 CServer.socket.addMethod("isVoid", function(route) {
     return (CUtility.isString(route) && !CUtility.isObject(CServer.socket.buffer[route]) && true) || false
 })
 
+// @Desc: Fetches socket instance by route
 CServer.socket.addMethod("fetch", function(route) {
     return (!CServer.socket.isVoid(route) && CServer.socket.buffer[route]) || false
 })
 
+// @Desc: Creates a fresh socket w/ specified route
 CServer.socket.addMethod("create", function(route) {
     if (!CServer.isConnected(true) || !CServer.socket.isVoid(route)) return false
     CServer.socket.buffer[route] = new CServer.socket(route)
     return CServer.socket.buffer[route]
 })
 
+// @Desc: Destroys an existing socket by specified route
 CServer.socket.addMethod("destroy", function(route) {
     if (CServer.socket.isVoid(route)) return false
     CServer.socket.buffer[route].isUnloaded = true
@@ -71,10 +75,12 @@ CServer.socket.addMethod("destroy", function(route) {
 // Instance Members //
 ///////////////////////
 
+// @Desc: Verifies instance's validity
 CServer.socket.addInstanceMethod("isInstance", function(self) {
     return (!self.isUnloaded && !CServer.socket.isVoid(self.route) && true) || false
 })
 
+// @Desc: Destroys the instance
 CServer.socket.addInstanceMethod("destroy", function(self) {
     self.server.close()
     for (const i in self.network) {
@@ -90,6 +96,7 @@ if (!CUtility.isServer) {
     // Static Members //
     /////////////////////
 
+    // @Desc: Instance Constructor
     CServer.socket.addMethod("constructor", function(self, route) {
         CUtility.fetchVID(self)
         self.config = {
@@ -151,6 +158,7 @@ if (!CUtility.isServer) {
     // Instance Members //
     ///////////////////////
 
+    // @Desc: Retrieves connection's status of instance
     CServer.socket.addInstanceMethod("isConnected", function(self, isSync) {
         if (isSync) return (CUtility.isBool(self.config.isConnected) && self.config.isConnected) || false
         return self.config.isAwaiting || self.config.isConnected || false
@@ -161,6 +169,7 @@ else {
     // Static Members //
     /////////////////////
 
+    // @Desc: Instance Constructor
     CServer.socket.addMethod("constructor", function(self, route) {
         CUtility.fetchVID(self)
         self.route = route, self.network = {}
@@ -216,6 +225,7 @@ else {
     // Instance Members //
     ///////////////////////
 
+    // @Desc: Verifies client's validity
     CServer.socket.addInstanceMethod("isClient", function(self, client) {
         return (CServer.socket.client.fetch(client) && self.instance[client] && true) || false
     })
