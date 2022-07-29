@@ -27,10 +27,13 @@ CServer.socket.addMethod("fetchNetwork", function(self, name) {
 CServer.socket.addMethod("resolveCallback", function(self, clientVID, payload) {
     if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
     if (CUtility.isServer && !self.isClient(clientVID)) return false
+    console.log("test 1")
     const cReceiver = (CUtility.isServer && CServer.socket.client.fetch(clientVID)) || self
     const cQueue = (cReceiver && cReceiver.queue) || false
+    console.log("test 2")
     const queueID = CUtility.fetchVID(payload.networkCB, null, true)
     if (!cQueue || !queueID || !CUtility.isObject(cQueue[queueID])) return false
+    console.log("test 3")
     if (payload.networkCB.isErrored) cQueue[queueID].reject(...payload.networkArgs)
     else cQueue[queueID].resolve(...payload.networkArgs)
     return true
@@ -74,7 +77,7 @@ CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs
     if (isRemote) {
         if (CUtility.isServer && !self.isClient(isRemote)) return false
         const cReceiver = (CUtility.isServer && CServer.socket.client.fetch(isRemote)) || self.server
-        cReceiver.send(JSON.stringify({
+        cReceiver.socket.send(JSON.stringify({
             networkName: name,
             networkArgs: cArgs
         }))
@@ -88,9 +91,9 @@ CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs
 CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, ...cArgs) {
     if (isRemote) {
         if (CUtility.isServer && !self.isClient(isRemote)) return false
-        const cQueue = (CUtility.isServer && isRemote.queue) || self.queue
-        if (!cQueue) return false
         const cReceiver = (CUtility.isServer && CServer.socket.client.fetch(isRemote)) || self.server
+        const cQueue = (cReceiver && cReceiver.queue) || false
+        if (!cQueue) return false
         const networkCB = {}
         const networkVID = CUtility.fetchVID(networkCB)
         const cPromise = new Promise(function(resolve, reject) {
@@ -105,7 +108,7 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
                 }
             }
         })
-        cReceiver.send(JSON.stringify({
+        cReceiver.socket.send(JSON.stringify({
             networkName: name,
             networkArgs: cArgs,
             networkCB: networkCB
