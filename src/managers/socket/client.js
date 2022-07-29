@@ -63,6 +63,6 @@ CServer.socket.client.addInstanceMethod("isInstance", function(self) {
 })
 
 CServer.socket.client.addInstanceMethod("destroy", function(self) {
-    CServer.socket.client.destroy(CUtility.fetchVID(self, null, true))
+    CServer.socket.client.destroy(CUtility.fetchVID(self.socket, null, true))
     return true
 })
