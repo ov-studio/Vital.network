@@ -20,12 +20,14 @@ const CServer = require("../server")
 // Instance Members //
 ///////////////////////
 
+// @Desc: Verifies room's validity
 CServer.socket.addInstanceMethod("isRoom", function(self, name) {
     const cInstance = (CUtility.isString(name) && CUtility.isObject(self.room[name]) && self.room[name]) || false
     if (CUtility.isServer && cInstance && !cInstance.isInstance()) cInstance = false
     return (cInstance && true) || false
 })
 
+// @Desc: Verifies whether the client belongs specified room
 CServer.socket.addInstanceMethod("isInRoom", function(self, name, client) {
     if (!self.isRoom(name) || !CServer.socket.client.fetch(client)) return false
     if (CUtility.isServer) {
@@ -43,6 +45,7 @@ else {
     // Instance Members //
     ///////////////////////
 
+    // @Desc: Creates a fresh room w/ specified name
     CServer.socket.addInstanceMethod("createRoom", function(self, name, ...cArgs) {
         if (self.isRoom(name)) return false
         self.room[name] = CServer.room.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
@@ -50,6 +53,7 @@ else {
         return true
     })
 
+    // @Desc: Destroys an existing room by specified name
     CServer.socket.addInstanceMethod("destroyRoom", function(self, name) {
         if (!self.isRoom(name)) return false
         self.room[name].destroy()
@@ -57,18 +61,21 @@ else {
         return true
     })
 
+    // @Desc: Joins client to specified room
     CServer.socket.addInstanceMethod("joinRoom", function(self, name, client) {
         if (!self.isClient(client) || !self.isRoom(name) || self.isInRoom(name, client)) return false
         self.room[name].member[client] = true
         return true
     })
 
+    // @Desc: Kicks client from specified room
     CServer.socket.addInstanceMethod("leaveRoom", function(self, name, client) {
         if (!self.isClient(client) || !self.isInRoom(name, client)) return false
         delete self.room[name].member[client]
         return true
     })
 
+    // @Desc: Emits a non-callback network to all clients connected to specified room
     CServer.socket.addInstanceMethod("emitRoom", function(self, name, network, ...cArgs) {
         if (!self.isRoom(name)) return false
         for (const i in self.room[name].member) {
