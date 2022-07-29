@@ -122,10 +122,9 @@ if (!CUtility.isServer) {
                 payload = JSON.parse(payload.data)
                 if (!CUtility.isObject(payload)) return false
                 if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
-                    if (payload.clientVID) {
-                        // TODO: WTH IS GOING ON
-                        const clientVID = CUtility.fetchVID(self.server, payload.clientVID)
-                        if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(clientVID)
+                    if (payload.client) {
+                        CUtility.fetchVID(self.server, payload.client)
+                        if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(payload.client)
                     }
                     return false
                 }
@@ -185,7 +184,7 @@ else {
             clientInstance.queue = {}, clientInstance.room = {}
             query = CUtility.queryString.parse(query)
             if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(client)
-            clientInstance.socket.send(JSON.stringify({clientVID: client}))
+            clientInstance.socket.send(JSON.stringify({client: client}))
             clientInstance.socket.onclose = function() {
                 for (const i in clientInstance.socket.room) {
                     self.leaveRoom(i, client)
