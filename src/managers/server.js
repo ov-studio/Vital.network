@@ -35,20 +35,24 @@ const onConnectionStatus = function(resolver, state) {
     return true
 }
 
+// @Desc: Retrieves connection confign
 CServer.fetchConfig = function() {
     return CServer.config
 }
 
+// @Desc: Retrieves specified server
 CServer.fetchServer = function(index) {
     return (index && CServer.instance[index]) || false
 }
 
+// @Desc: Retrieves connection's status
 CServer.isConnected = function(isSync) {
     if (isSync) return (CUtility.isBool(CServer.config.isConnected) && CServer.config.isConnected) || false
     return CServer.config.isAwaiting || CServer.config.isConnected || false
 }
 
 if (!CUtility.isServer) {
+// @Desc: Intializes & sets up server connections
     CServer.connect = function(port, options) {
         port = (CUtility.isNumber(port) && port) || false
         options = (CUtility.isObject(options) && options) || {}
@@ -91,6 +95,7 @@ if (!CUtility.isServer) {
     } 
 }
 else {
+// @Desc: Intializes & sets up server connections
     CServer.connect = function(port, options) {
         port = (CUtility.isNumber(port) && port) || false
         options = (CUtility.isObject(options) && options) || {}
