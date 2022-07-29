@@ -19,6 +19,7 @@ require("./managers/network")
 require("./managers/room")
 require("./managers/rest")
 require("./managers/socket/")
+require("./managers/socket/client")
 require("./managers/socket/network")
 require("./managers/socket/room")
 
@@ -31,6 +32,7 @@ const vNetworkify = CUtility.createAPIs(CNetworkify, {
     network: true,
     room: true,
     socket: {
+        client: true,
         fetchNetwork: true,
         resolveCallback: true
     }
