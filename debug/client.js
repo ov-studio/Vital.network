@@ -22,10 +22,10 @@ async function debug() {
     // @Socket API Examples
     const cSocket = vNetworkify.socket.create("Server:MyRoute")
     cSocket.onClientConnect = function(client) {
-        vNetworkify.utility.print(`* Client Connected [VID: ${client}]`)
+        vNetworkify.utility.print(`* Client Connected [${client}]`)
     }
     cSocket.onClientDisconnect = function(client) {
-        vNetworkify.utility.print(`* Client Disconnected [VID: ${client}]`)
+        vNetworkify.utility.print(`* Client Disconnected [${client}]`)
     }
     const isSocketConnected = await cSocket.isConnected()
     if (!isSocketConnected) return false
