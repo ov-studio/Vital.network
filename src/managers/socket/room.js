@@ -72,7 +72,7 @@ else {
     CServer.socket.addInstanceMethod("emitRoom", function(self, name, network, ...cArgs) {
         if (!self.isRoom(name)) return false
         for (const i in self.room[name].member) {
-            self.emit(network, self.instance[i], ...cArgs)
+            self.emit(network, i, ...cArgs)
         }
         return true
     })
