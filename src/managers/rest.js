@@ -35,16 +35,19 @@ CServer.rest = CUtility.createClass({
 /////////////////////
 
 if (!CUtility.isServer) {
+    // @Desc: Requests a fetch on specified REST API 
     CServer.rest.addMethod("fetch", function(type, ...cArgs) {
         if (!CServer.isConnected(true) || !CUtility.isObject(CServer.rest.buffer[type])) return false
         return CServer.instance.CExpress[type](...cArgs)
     })
 }
 else {
+    // @Desc: Verifies whether the REST API is void
     CServer.rest.addMethod("isVoid", function(type, route) {
         return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CServer.rest.buffer[type]) && (!CUtility.isObject(CServer.rest.buffer[type][route]) || !CServer.rest.buffer[type][route].handler) && true) || false
     })
     
+    // @Desc: Creates a fresh REST API
     CServer.rest.addMethod("create", function(type, route, exec) {
         if (!CServer.isConnected(true) || !CServer.rest.isVoid(type, route) || !CUtility.isFunction(exec)) return false
         CServer.rest.buffer[type][route] = CServer.rest.buffer[type][route] || {}
@@ -57,12 +60,14 @@ else {
         return true
     })
     
+    // @Desc: Destroys an existing REST API
     CServer.rest.addMethod("destroy", function(type, route) {
         if (CServer.rest.isVoid(type, route)) return false
         delete CServer.rest.buffer[type][route].handler
         return true
     })
     
+    // @Desc: Routing Middleware
     CServer.rest.addMethod("onMiddleware", function(request, response, next) {
         const type = request.method.toLowerCase()
         const route = request.url.slice(1)
