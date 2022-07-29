@@ -28,7 +28,7 @@ CUtility.exec = function(exec, ...cArgs) {
 }
 
 CUtility.fetchVID = function(buffer, vid, isReadOnly) {
-    if (CUtility.isNull(buffer) || CUtility.isBool(buffer) || CUtility.isNumber(buffer)) return false
+    if (CUtility.isNull(buffer) || CUtility.isBool(buffer) || CUtility.isString(buffer) || CUtility.isNumber(buffer)) return false
     buffer.prototype = buffer.prototype || {}
     if (!isReadOnly && !buffer.prototype.vid) {
         Object.defineProperty(buffer.prototype, "vid", {

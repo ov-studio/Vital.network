@@ -29,9 +29,9 @@ CServer.socket.client = CUtility.createClass({
 // Static Members //
 /////////////////////
 
-CServer.socket.client.addMethod("fetch", function(vid, socket) {
+CServer.socket.client.addMethod("fetch", function(vid, socket, fetchSocket) {
     vid = vid || CUtility.fetchVID(socket, null, true)
-    return (vid && CUtility.isObject(CServer.socket.client[vid]) && CServer.socket.client[vid]) || false
+    return (vid && CUtility.isObject(CServer.socket.client.buffer[vid]) && CServer.socket.client.buffer[vid] && ((fetchSocket && CServer.socket.client.buffer[vid].socket) || CServer.socket.client.buffer[vid])) || false
 })
 
 CServer.socket.client.addMethod("create", function(socket) {
@@ -39,7 +39,7 @@ CServer.socket.client.addMethod("create", function(socket) {
     const cInstance = new CServer.socket.client(socket)
     const vid = CUtility.fetchVID(cInstance, null, true)
     CServer.socket.client.buffer[vid] = cInstance
-    return vid
+    return cInstance
 })
 
 CServer.socket.client.addMethod("destroy", function(vid, socket) {
