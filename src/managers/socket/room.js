@@ -26,15 +26,13 @@ CServer.socket.addInstanceMethod("isRoom", function(self, name) {
     return (cInstance && true) || false
 })
 
-CServer.socket.addInstanceMethod("isInRoom", function(self, name, client) {
-    if (!self.isRoom(name)) return false
+CServer.socket.addInstanceMethod("isInRoom", function(self, name, clientVID) {
+    if (!self.isRoom(name) || !CServer.socket.client.fetch(clientVID)) return false
     if (CUtility.isServer) {
-        if (!self.isClient(client)) return false
-        const clientVID = CUtility.fetchVID(client, null, true)
-        return (clientVID && self.room[name].member[clientVID] && true) || false   
+        if (!self.isClient(clientVID)) return false
+        return (self.room[name].member[clientVID] && true) || false   
     }
-    const clientVID = CUtility.fetchVID(self, null, true)
-    return (clientVID && self.room[name][clientVID] && true) || false
+    return (self.room[name][clientVID] && true) || false
 })
 
 if (!CUtility.isServer) {
@@ -59,18 +57,14 @@ else {
         return true
     })
 
-    CServer.socket.addInstanceMethod("joinRoom", function(self, name, client) {
-        if (!self.isClient(client) || !self.isRoom(name) || self.isInRoom(name, client)) return false
-        const clientVID = CUtility.fetchVID(client, null, true)
-        if (!clientVID) return false
+    CServer.socket.addInstanceMethod("joinRoom", function(self, name, clientVID) {
+        if (!self.isClient(clientVID) || !self.isRoom(name) || self.isInRoom(name, clientVID)) return false
         self.room[name].member[clientVID] = true
         return true
     })
 
-    CServer.socket.addInstanceMethod("leaveRoom", function(self, name, client) {
-        if (!self.isClient(client) || !self.isInRoom(name, client)) return false
-        const clientVID = CUtility.fetchVID(client, null, true)
-        if (!clientVID) return false
+    CServer.socket.addInstanceMethod("leaveRoom", function(self, name, clientVID) {
+        if (!self.isClient(clientVID) || !self.isInRoom(name, clientVID)) return false
         delete self.room[name].member[clientVID]
         return true
     })
