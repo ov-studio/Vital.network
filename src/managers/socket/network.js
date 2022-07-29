@@ -24,10 +24,10 @@ CServer.socket.addMethod("fetchNetwork", function(self, name) {
     return (self.isNetwork(name) && self.network[name]) || false
 })
 
-CServer.socket.addMethod("resolveCallback", function(self, clientVID, payload) {
+CServer.socket.addMethod("resolveCallback", function(self, client, payload) {
     if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
-    if (CUtility.isServer && !self.isClient(clientVID)) return false
-    const cReceiver = (CUtility.isServer && CServer.socket.client.fetch(clientVID)) || self
+    if (CUtility.isServer && !self.isClient(client)) return false
+    const cReceiver = (CUtility.isServer && CServer.socket.client.fetch(client)) || self
     const cQueue = (cReceiver && cReceiver.queue) || false
     const queueID = CUtility.fetchVID(payload.networkCB, null, true)
     if (!cQueue || !queueID || !CUtility.isObject(cQueue[queueID])) return false
