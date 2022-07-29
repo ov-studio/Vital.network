@@ -24,12 +24,13 @@ CServer.socket.addMethod("fetchNetwork", function(self, name) {
     return (self.isNetwork(name) && self.network[name]) || false
 })
 
-CServer.socket.addMethod("resolveCallback", function(self, client, payload) {
+CServer.socket.addMethod("resolveCallback", function(self, clientVID, payload) {
     if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
-    if (CUtility.isServer && !self.isClient(client)) return false
+    if (CUtility.isServer && !self.isClient(clientVID)) return false
+    const cReceiver = (CUtility.isServer && CServer.socket.client.fetch(clientVID)) || self
+    const cQueue = (cReceiver && cReceiver.queue) || false
     const queueID = CUtility.fetchVID(payload.networkCB, null, true)
-    const cQueue = (CUtility.isServer && client.queue) || self.queue
-    if (!queueID || !cQueue || !CUtility.isObject(cQueue[queueID])) return false
+    if (!cQueue || !queueID || !CUtility.isObject(cQueue[queueID])) return false
     if (payload.networkCB.isErrored) cQueue[queueID].reject(...payload.networkArgs)
     else cQueue[queueID].resolve(...payload.networkArgs)
     return true
@@ -72,7 +73,7 @@ CServer.socket.addInstanceMethod("off", function(self, name, ...cArgs) {
 CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs) {
     if (isRemote) {
         if (CUtility.isServer && !self.isClient(isRemote)) return false
-        const cReceiver = (CUtility.isServer && isRemote) || self.server
+        const cReceiver = (CUtility.isServer && CServer.socket.client.fetch(isRemote)) || self.server
         cReceiver.send(JSON.stringify({
             networkName: name,
             networkArgs: cArgs
