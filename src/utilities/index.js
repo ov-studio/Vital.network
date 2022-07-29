@@ -22,11 +22,13 @@ CUtility.crypto = (CUtility.isServer && require("crypto")) || crypto
 CUtility.global = (CUtility.isServer && global) || window
 CUtility.identifier = `vNetworkify-${(CUtility.isServer && "Server") || "Client"}`
 
+// @Desc: Executes the specified handler
 CUtility.exec = function(exec, ...cArgs) {
     if (!CUtility.isFunction(exec)) return false
     return exec(...cArgs)
 }
 
+// @Desc: Assigns/Fetches VID (Virtual ID) on/from valid instance
 CUtility.fetchVID = function(buffer, vid, isReadOnly) {
     if (CUtility.isNull(buffer) || CUtility.isBool(buffer) || CUtility.isString(buffer) || CUtility.isNumber(buffer)) return false
     buffer.prototype = buffer.prototype || {}
@@ -41,6 +43,7 @@ CUtility.fetchVID = function(buffer, vid, isReadOnly) {
     return buffer.prototype.vid
 }
 
+// @Desc: Creates dynamic whitelisted module APIs
 CUtility.createAPIs = function(buffer, blacklist) {
     if (!CUtility.isObject(buffer) && !CUtility.isClass(buffer)) return false
     blacklist = (blacklist && CUtility.isObject(blacklist) && blacklist) || false
