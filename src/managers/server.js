@@ -35,7 +35,7 @@ const onConnectionStatus = function(resolver, state) {
     return true
 }
 
-// @Desc: Retrieves connection confign
+// @Desc: Retrieves connection's confign
 CServer.fetchConfig = function() {
     return CServer.config
 }
