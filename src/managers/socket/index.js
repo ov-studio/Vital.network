@@ -204,7 +204,7 @@ else {
                         else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
                         client.socket.send(JSON.stringify(payload))
                     }
-                    else CServer.socket.resolveCallback(self, client.socket, payload)
+                    else CServer.socket.resolveCallback(self, clientVID, payload)
                     return true
                 }
                 self.emit(payload.networkName, null, ...payload.networkArgs)

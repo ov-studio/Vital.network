@@ -27,13 +27,10 @@ CServer.socket.addMethod("fetchNetwork", function(self, name) {
 CServer.socket.addMethod("resolveCallback", function(self, clientVID, payload) {
     if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
     if (CUtility.isServer && !self.isClient(clientVID)) return false
-    console.log("test 1")
     const cReceiver = (CUtility.isServer && CServer.socket.client.fetch(clientVID)) || self
     const cQueue = (cReceiver && cReceiver.queue) || false
-    console.log("test 2")
     const queueID = CUtility.fetchVID(payload.networkCB, null, true)
     if (!cQueue || !queueID || !CUtility.isObject(cQueue[queueID])) return false
-    console.log("test 3")
     if (payload.networkCB.isErrored) cQueue[queueID].reject(...payload.networkArgs)
     else cQueue[queueID].resolve(...payload.networkArgs)
     return true
