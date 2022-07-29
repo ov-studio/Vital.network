@@ -36,22 +36,28 @@ CType.forEach(function(j) {
     }
 })
 
+
+// @Desc: Verifies whether specified data is null
 CUtility.isNull = function(data) {
     return data == null
 }
 
+// @Desc: Verifies specified data's type
 CUtility.isType = function(data, type) {
     return (!CUtility.isNull(data) && !CUtility.isNull(type) && (typeof(type) == "string") && (typeof(data) == type) && true) || false
 }
 
+// @Desc: Verifies whether specified data is an array
 CUtility.isArray = function(data) {
     return CUtility.isObject(data, true)
 }
 
+// @Desc: Verifies whether specified data is a class
 CUtility.isClass = function(data) {
     return (CUtility.isFunction(data, "function") && data.isClass && true) || false
 }
 
+// @Desc: Creates a new dynamic class
 CUtility.createClass = function(parent) {
     class __C{
         static isClass = true
