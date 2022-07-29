@@ -33,8 +33,12 @@ CServer.socket.client.addMethod("fetch", function(clientVID) {
     return (clientVID && CUtility.isObject(CServer.socket.client[clientVID]) && CServer.socket.client[clientVID]) || false
 })
 
+CServer.socket.client.addMethod("fetchVID", function(socket, isReadOnly) {
+    return CUtility.fetchVID(socket, null, isReadOnly)
+})
+
 CServer.socket.client.addMethod("create", function(socket) {
-    if (!CUtility.isObject(socket) || CServer.socket.client.fetch(CUtility.fetchVID(socket, null, true))) return false
+    if (!CUtility.isObject(socket) || CServer.socket.client.fetch(CServer.socket.client.fetchVID(socket))) return false
     const cInstance = new CServer.socket.client(socket)
     const clientVID = CUtility.fetchVID(cInstance)
     CServer.socket.client.buffer[clientVID] = cInstance
@@ -59,10 +63,10 @@ CServer.socket.client.addMethod("constructor", function(self) {
 }, "isInstance")
 
 CServer.socket.client.addInstanceMethod("isInstance", function(self) {
-    return (!self.isUnloaded && CServer.socket.client.fetch(CUtility.fetchVID(self.socket, null, true)) && true) || false
+    return (!self.isUnloaded && CServer.socket.client.fetch(CServer.socket.client.fetchVID(self.socket, true)) && true) || false
 })
 
 CServer.socket.client.addInstanceMethod("destroy", function(self) {
-    CServer.socket.client.destroy(CUtility.fetchVID(self.socket, null, true))
+    CServer.socket.client.destroy(CUtility.CServer.socket.client(self.socket, true))
     return true
 })
