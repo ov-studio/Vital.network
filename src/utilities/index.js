@@ -17,6 +17,12 @@ const CUtility = {
     loadString: eval,
     queryString: require("querystring")
 }
+const CCache = {
+    vid: {
+        blacklist: {},
+        counter: 0
+    }
+}
 CUtility.isServer = ((typeof(process) != "undefined") && !process.browser && true) || false
 CUtility.crypto = (CUtility.isServer && require("crypto")) || crypto
 CUtility.global = (CUtility.isServer && global) || window
@@ -30,13 +36,27 @@ CUtility.exec = function(exec, ...cArgs) {
     return exec(...cArgs)
 }
 
+// @Desc: Creates a unique VID
+CUtility.createVID = function() {
+    var cvid = false
+    while(!cvid) {
+        const vvid = CUtility.toBase64(CUtility.crypto.randomUUID() + (Date.now() + CCache.vid.counter))
+        if (!CCache.vid.blacklist[vvid]) {
+            CCache.vid.blacklist[vvid] = true
+            cvid = vvid
+        }
+        CCache.vid.counter += 1
+    }
+    return cvid
+}
+
 // @Desc: Assigns/Fetches VID (Virtual ID) on/from valid instance
 CUtility.fetchVID = function(buffer, vid, isReadOnly) {
     if (CUtility.isNull(buffer) || CUtility.isBool(buffer) || CUtility.isString(buffer) || CUtility.isNumber(buffer)) return false
     buffer.prototype = buffer.prototype || {}
     if (!isReadOnly && !buffer.prototype.vid) {
         Object.defineProperty(buffer.prototype, "vid", {
-            value: vid || `${CUtility.identifier}:${CUtility.crypto.randomUUID()}`,
+            value: vid || `${CUtility.identifier}:${CUtility.createVID()}`,
             enumerable: true,
             configurable: false,
             writable: false
