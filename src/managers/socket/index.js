@@ -148,11 +148,11 @@ if (!CUtility.isServer) {
                             self.room[(payload.room)] = self.room[(payload.room)] || {}
                             self.room[(payload.room)].member = self.room[(payload.room)].member || {}
                             self.room[(payload.room)].member[client] = true
-                            if (CUtility.isFunction(self.onClientJoinRoom)) self.onClientJoinRoom(payload.room, payload.client)
+                            if (CUtility.isFunction(self.onClientJoinRoom)) self.onClientJoinRoom(payload.room, client)
                         }
                         else if (payload.action == "leave") {
                             delete self.room[(payload.room)]
-                            if (CUtility.isFunction(self.onClientLeaveRoom)) self.onClientLeaveRoom(payload.room, payload.client)
+                            if (CUtility.isFunction(self.onClientLeaveRoom)) self.onClientLeaveRoom(payload.room, client)
                         }
                     }
                     return false
