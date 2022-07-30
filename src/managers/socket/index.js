@@ -101,9 +101,9 @@ CServer.socket.addInstanceMethod("destroy", function(self) {
 })
 
 if (!CUtility.isServer) {
-    /////////////////////
-    // Static Members //
-    /////////////////////
+    ///////////////////////
+    // Instance Members //
+    ///////////////////////
 
     // @Desc: Instance Constructor
     CServer.socket.addMethod("constructor", function(self, route) {
@@ -129,9 +129,9 @@ if (!CUtility.isServer) {
                 return true
             }
             self.server.onerror = function(error) {
-                console.log(error)
                 self.config.isConnected = false
                 cResolver(self.config.isConnected)
+                if (CUtility.isFunction(self.onClientError)) self.onClientError(CUtility.fetchVID(self.server, null, true) || false)
                 self.connect()
                 return true
             }
@@ -176,11 +176,6 @@ if (!CUtility.isServer) {
         self.connect()
     })
 
-
-    ///////////////////////
-    // Instance Members //
-    ///////////////////////
-
     // @Desc: Retrieves connection's status of instance
     CServer.socket.addInstanceMethod("isConnected", function(self, isSync) {
         if (isSync) return (CUtility.isBool(self.config.isConnected) && self.config.isConnected) || false
@@ -188,9 +183,9 @@ if (!CUtility.isServer) {
     })
 }
 else {
-    /////////////////////
-    // Static Members //
-    /////////////////////
+    ///////////////////////
+    // Instance Members //
+    ///////////////////////
 
     // @Desc: Instance Constructor
     CServer.socket.addMethod("constructor", function(self, route) {
@@ -242,11 +237,6 @@ else {
             }
         })
     }, "isInstance")
-
-    
-    ///////////////////////
-    // Instance Members //
-    ///////////////////////
 
     // @Desc: Verifies client's validity
     CServer.socket.addInstanceMethod("isClient", function(self, client) {
