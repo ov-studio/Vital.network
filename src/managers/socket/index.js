@@ -92,18 +92,18 @@ const onSocketMessage = function(self, client, socket, payload) {
         if (!CUtility.isServer) {
             if (payload.client) {
                 CUtility.fetchVID(socket, payload.client)
-                if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(payload.client)
+                CUtility.exec(self.onClientConnect, payload.client)
             }
             else if (payload.room) {
                 if (payload.action == "join") {
                     self.room[(payload.room)] = self.room[(payload.room)] || {}
                     self.room[(payload.room)].member = self.room[(payload.room)].member || {}
                     self.room[(payload.room)].member[client] = true
-                    if (CUtility.isFunction(self.onClientJoinRoom)) self.onClientJoinRoom(payload.room, client)
+                    CUtility.exec(self.onClientJoinRoom, payload.room, client)
                 }
                 else if (payload.action == "leave") {
                     delete self.room[(payload.room)]
-                    if (CUtility.isFunction(self.onClientLeaveRoom)) self.onClientLeaveRoom(payload.room, client)
+                    CUtility.exec(self.onClientLeaveRoom, payload.room, client)
                 }
             }
         }
@@ -165,13 +165,13 @@ if (!CUtility.isServer) {
                 return true
             }
             self.server.onclose = function() {
-                if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(CUtility.fetchVID(self.server, null, true) || false)
+                CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false)
                 return true
             }
             self.server.onerror = function(error) {
                 self.config.isConnected = false
                 cResolver(self.config.isConnected)
-                if (CUtility.isFunction(self.onClientError)) self.onClientError(error)
+                CUtility.exec(self.onConnectionError, error)
                 self.connect()
                 return true
             }
@@ -202,6 +202,10 @@ else {
             noServer: true,
             path: `/${self.route}`
         })
+        self.server.onerror = function(error) {
+            CUtility.exec(self.onConnectionError, error)
+            return true
+        }
         CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
             self.server.handleUpgrade(request, socket, head, function(socket) {
                 var [instance, query] = request.url.split("?")
@@ -213,13 +217,13 @@ else {
                 clientInstance.queue = {}, clientInstance.room = {}
                 query = CUtility.queryString.parse(query)
                 clientInstance.socket.send(JSON.stringify({client: client}))
-                if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(client)
+                CUtility.exec(self.onClientConnect, client)
                 clientInstance.socket.onclose = function() {
                     for (const i in clientInstance.socket.room) {
                         self.leaveRoom(i, client)
                     }
                     delete self.instance[client]
-                    if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(client)
+                    CUtility.exec(self.onClientDisconnect, client)
                     return true
                 }
                 clientInstance.socket.onmessage = function(payload) {
