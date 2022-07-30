@@ -222,7 +222,7 @@ else {
                     if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(client)
                     return true
                 }
-                clientInstance.socket.onmessage = (payload) {
+                clientInstance.socket.onmessage = function(payload) {
                     return onSocketMessage(self, client, clientInstance.socket, payload)
                 }
             })
