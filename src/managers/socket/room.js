@@ -36,6 +36,16 @@ CServer.socket.addInstanceMethod("fetchRooms", function(self) {
     return result
 })
 
+// @Desc: Fetches an array of existing room's members
+CServer.socket.addInstanceMethod("fetchRoomMembers", function(self, name) {
+    if (!self.isRoom(name)) return false
+    const result = []
+    for (const i in self.room[name].member) {
+        if (!CUtility.isServer || self.isClient(i)) result.push(i)
+    }
+    return result
+})
+
 // @Desc: Verifies whether the client belongs specified room
 CServer.socket.addInstanceMethod("isInRoom", function(self, name, client) {
     if (!self.isRoom(name) || !CServer.socket.client.fetch(client)) return false
@@ -53,16 +63,6 @@ else {
     ///////////////////////
     // Instance Members //
     ///////////////////////
-
-    // @Desc: Fetches an array of existing room's members
-    CServer.socket.addInstanceMethod("fetchRoomMembers", function(self, name) {
-        if (!self.isRoom(name)) return false
-        const result = []
-        for (const i in self.room[name].member) {
-            if (self.isClient(i)) result.push(i)
-        }
-        return result
-    })
 
     // @Desc: Creates a fresh room w/ specified name
     CServer.socket.addInstanceMethod("createRoom", function(self, name, ...cArgs) {
