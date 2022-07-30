@@ -23,6 +23,7 @@ async function debug() {
     const cSocket = vNetworkify.socket.create("Server:MyRoute")
     vNetworkify.utility.print("Socket List:")
     vNetworkify.utility.print(vNetworkify.socket.fetchSockets())
+
     cSocket.onClientConnect = function(client) {
         vNetworkify.utility.print(`* Client Connected [${client}]`)
     }

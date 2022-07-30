@@ -58,9 +58,15 @@ async function debug() {
     cSocket.createRoom("Server:MyRoom")
     cSocket.destroyRoom("Server:MyRoom")
     cSocket.createRoom("Server:MyRoom")
+    vNetworkify.utility.print("Room List:")
+    vNetworkify.utility.print(cSocket.fetchRooms())
+
     cSocket.onClientConnect = async function(client) {
         vNetworkify.utility.print(`* Client Connected [${client}]`)
         cSocket.joinRoom("Server:MyRoom", client)
+        vNetworkify.utility.print("Room - 'Server:MyRoom' Members:")
+        vNetworkify.utility.print(cSocket.fetchRoomMembers("Server:MyRoom"))
+
         cSocket.emitRoom("Server:MyRoom", "Client:MyNetwork")
         const networkRemoteCBResult = await cSocket.emitCallback("Client:MyCBNetwork", client, 10, 20)
         vNetworkify.utility.print(`Remote Callback Network | Result: ${networkRemoteCBResult}`)

@@ -77,7 +77,7 @@ CServer.network.addMethod("emit", function(name, ...cArgs) {
 
 
 ///////////////////////
-// Instance Mmebers //
+// Instance Members //
 //////////////////////
 
 // @Desc: Instance Constructor
