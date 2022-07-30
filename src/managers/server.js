@@ -31,7 +31,7 @@ const CServer = {
 const onConnectionStatus = function(resolver, state) {
     CServer.config.isAwaiting = null
     CServer.config.isConnected = state
-    if (CUtility.isFunction(resolver)) resolver(CServer.config.isConnected)
+    CUtility.exec(resolver, CServer.config.isConnected)
     CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} [Port: ${CServer.config.port}]`)
     return true
 }
