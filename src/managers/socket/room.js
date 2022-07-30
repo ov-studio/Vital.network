@@ -22,9 +22,18 @@ const CServer = require("../server")
 
 // @Desc: Verifies room's validity
 CServer.socket.addInstanceMethod("isRoom", function(self, name) {
-    const cInstance = (CUtility.isString(name) && CUtility.isObject(self.room[name]) && self.room[name]) || false
+    var cInstance = (CUtility.isString(name) && CUtility.isObject(self.room[name]) && self.room[name]) || false
     if (CUtility.isServer && cInstance && !cInstance.isInstance()) cInstance = false
     return (cInstance && true) || false
+})
+
+// @Desc: Fetches aa array of existing rooms
+CServer.socket.addInstanceMethod("fetchRooms", function(self) {
+    const result = []
+    for (const i in self.room) {
+        if (self.isRoom(i)) result.push(i)
+    }
+    return result
 })
 
 // @Desc: Verifies whether the client belongs specified room
