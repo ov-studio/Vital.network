@@ -229,4 +229,13 @@ else {
     CServer.socket.addInstanceMethod("isClient", function(self, client) {
         return (CServer.socket.client.fetch(client) && self.instance[client] && true) || false
     })
+
+    // @Desc: Fetches an array of existing clients
+    CServer.socket.addInstanceMethod("fetchClients", function(self) {
+        const result = []
+        for (const i in self.instance) {
+            if (self.isClient(i)) result.push(i)
+        }
+        return result
+    })
 }
