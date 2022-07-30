@@ -42,9 +42,9 @@ CServer.socket.addMethod("fetch", function(route) {
 
 // @Desc: Fetches an array of existing sockets
 CServer.socket.addMethod("fetchSockets", function() {
-    const result = []
+    const result = {}
     for (const i in CServer.socket.buffer) {
-        if (CServer.socket.fetch(i)) result.push(i)
+        if (CServer.socket.fetch(i)) result[i] = CServer.socket.buffer[i]
     }
     return result
 })
