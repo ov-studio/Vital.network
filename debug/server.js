@@ -28,7 +28,7 @@ async function debug() {
 
     // @Socket API Examples
     const cSocket = vNetworkify.socket.create("Server:MyRoute")
-    vNetworkify.utility.print("Socket List:")
+    vNetworkify.utility.print("* Socket List:")
     vNetworkify.utility.print(Object.keys(vNetworkify.socket.fetchSockets()))
 
 
@@ -58,7 +58,7 @@ async function debug() {
     cSocket.createRoom("Server:MyRoom")
     cSocket.destroyRoom("Server:MyRoom")
     cSocket.createRoom("Server:MyRoom")
-    vNetworkify.utility.print("Room List:")
+    vNetworkify.utility.print("* Room List:")
     vNetworkify.utility.print(cSocket.fetchRooms())
 
     cSocket.onClientConnect = async function(client) {
