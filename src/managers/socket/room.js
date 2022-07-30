@@ -84,6 +84,8 @@ else {
     CServer.socket.addInstanceMethod("joinRoom", function(self, name, client) {
         if (!self.isClient(client) || !self.isRoom(name) || self.isInRoom(name, client)) return false
         self.room[name].member[client] = true
+        const clientInstance = CServer.socket.client.fetch(client)
+        clientInstance.socket.send(JSON.stringify({room: name, action: "join"}))
         return true
     })
 
@@ -91,6 +93,8 @@ else {
     CServer.socket.addInstanceMethod("leaveRoom", function(self, name, client) {
         if (!self.isClient(client) || !self.isInRoom(name, client)) return false
         delete self.room[name].member[client]
+        const clientInstance = CServer.socket.client.fetch(client)
+        clientInstance.socket.send(JSON.stringify({room: name, action: "leave"}))
         return true
     })
 
