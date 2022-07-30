@@ -212,8 +212,8 @@ else {
             self.instance[client] = clientInstance
             clientInstance.queue = {}, clientInstance.room = {}
             query = CUtility.queryString.parse(query)
-            if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(client)
             clientInstance.socket.send(JSON.stringify({client: client}))
+            if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(client)
             clientInstance.socket.onclose = function() {
                 for (const i in clientInstance.socket.room) {
                     self.leaveRoom(i, client)
