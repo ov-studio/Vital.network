@@ -176,8 +176,7 @@ if (!CUtility.isServer) {
                 return true
             }
             self.server.onmessage = function(payload) {
-                onSocketMessage(self, CUtility.fetchVID(self.server, null, true), self.server, payload)
-                return true
+                return onSocketMessage(self, CUtility.fetchVID(self.server, null, true), self.server, payload)
             }
         }
         self.connect()
@@ -225,7 +224,9 @@ else {
                 if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(client)
                 return true
             }
-            clientInstance.socket.onmessage = (payload) => onSocketMessage(self, client, clientInstance.socket, payload)
+            clientInstance.socket.onmessage = (payload) {
+                return onSocketMessage(self, client, clientInstance.socket, payload)
+            }
         })
     }, "isInstance")
 
