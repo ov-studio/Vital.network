@@ -142,6 +142,17 @@ if (!CUtility.isServer) {
                         CUtility.fetchVID(self.server, payload.client)
                         if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(payload.client)
                     }
+                    else if (payload.room) {
+                        if (payload.action == "join") {
+                            const client = CUtility.fetchVID(self.server, null, true)
+                            self.room[(payload.room)] = self.room[(payload.room)] || {}
+                            self.room[(payload.room)].member = self.room[(payload.room)].member || {}
+                            self.room[(payload.room)].member[client] = true
+                        }
+                        else if (payload.action == "leave") {
+                            delete self.room[(payload.room)]
+                        }
+                    }
                     return false
                 }
                 if (CUtility.isObject(payload.networkCB)) {

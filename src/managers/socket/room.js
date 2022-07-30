@@ -43,7 +43,7 @@ CServer.socket.addInstanceMethod("isInRoom", function(self, name, client) {
         if (!self.isClient(client)) return false
         return (self.room[name].member[client] && true) || false   
     }
-    return (self.room[name][client] && true) || false
+    return (self.room[name].member[client] && true) || false
 })
 
 if (!CUtility.isServer) {
