@@ -203,30 +203,29 @@ else {
             path: `/${self.route}`
         })
         CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
-            self.server.handleUpgrade(request, socket, head, (socket) => self.server.emit("onClientConnect", socket, request))
-        })
-        self.server.on("onClientConnect", function(socket, request) {
-            var [instance, query] = request.url.split("?")
-            instance = CServer.socket.fetch(instance.slice(1))
-            if (!instance) return false
-            const clientInstance = CServer.socket.client.create(socket)
-            const client = CUtility.fetchVID(clientInstance, null, true)
-            self.instance[client] = clientInstance
-            clientInstance.queue = {}, clientInstance.room = {}
-            query = CUtility.queryString.parse(query)
-            clientInstance.socket.send(JSON.stringify({client: client}))
-            if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(client)
-            clientInstance.socket.onclose = function() {
-                for (const i in clientInstance.socket.room) {
-                    self.leaveRoom(i, client)
+            self.server.handleUpgrade(request, socket, head, function(socket) {
+                var [instance, query] = request.url.split("?")
+                instance = CServer.socket.fetch(instance.slice(1))
+                if (!instance) return false
+                const clientInstance = CServer.socket.client.create(socket)
+                const client = CUtility.fetchVID(clientInstance, null, true)
+                self.instance[client] = clientInstance
+                clientInstance.queue = {}, clientInstance.room = {}
+                query = CUtility.queryString.parse(query)
+                clientInstance.socket.send(JSON.stringify({client: client}))
+                if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(client)
+                clientInstance.socket.onclose = function() {
+                    for (const i in clientInstance.socket.room) {
+                        self.leaveRoom(i, client)
+                    }
+                    delete self.instance[client]
+                    if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(client)
+                    return true
                 }
-                delete self.instance[client]
-                if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(client)
-                return true
-            }
-            clientInstance.socket.onmessage = (payload) {
-                return onSocketMessage(self, client, clientInstance.socket, payload)
-            }
+                clientInstance.socket.onmessage = (payload) {
+                    return onSocketMessage(self, client, clientInstance.socket, payload)
+                }
+            })
         })
     }, "isInstance")
 
