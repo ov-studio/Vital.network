@@ -84,7 +84,7 @@ CServer.socket.addMethod("destroy", function(route) {
 // Instance Members //
 ///////////////////////
 
-// @Desc: Handles Connection Status
+// @Desc: Handles Socket Message
 const onSocketMessage = function(self, client, socket, payload) {
     payload = JSON.parse(payload.data)
     if (!socket || !CUtility.isObject(payload)) return false
