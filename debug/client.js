@@ -63,13 +63,13 @@ async function debug() {
 
     //@Room Examples
     cSocket.onClientJoinRoom = function(room, client) {
-        vNetworkify.utility.print(`* Client [${client}] Joined Room: ${room}`)
-        vNetworkify.utility.print(`Room - '${room}' Members:`)
+        vNetworkify.utility.print(`* Client [${client}] Joined Room [${room}]`)
+        vNetworkify.utility.print(`* Member List:`)
         vNetworkify.utility.print(cSocket.fetchRoomMembers(room))
     }
     cSocket.onClientLeaveRoom = function(room, client) {
-        vNetworkify.utility.print(`* Client [${client}] Left Room: ${room}`)
-        vNetworkify.utility.print(`Room - '${room}' Members:`)
+        vNetworkify.utility.print(`* Client [${client}] Left Room [${room}]`)
+        vNetworkify.utility.print(`* Member List:`)
         vNetworkify.utility.print(cSocket.fetchRoomMembers(room))
     }
 
