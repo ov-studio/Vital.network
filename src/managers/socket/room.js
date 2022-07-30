@@ -86,6 +86,7 @@ else {
         self.room[name].member[client] = true
         const clientInstance = CServer.socket.client.fetch(client)
         clientInstance.socket.send(JSON.stringify({room: name, action: "join"}))
+        if (CUtility.isFunction(self.onClientJoinRoom)) self.onClientJoinRoom(name, client)
         return true
     })
 
@@ -95,6 +96,7 @@ else {
         delete self.room[name].member[client]
         const clientInstance = CServer.socket.client.fetch(client)
         clientInstance.socket.send(JSON.stringify({room: name, action: "leave"}))
+        if (CUtility.isFunction(self.onClientLeaveRoom)) self.onClientLeaveRoom(name, client)
         return true
     })
 
