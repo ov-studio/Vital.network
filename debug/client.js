@@ -61,6 +61,19 @@ async function debug() {
     vNetworkify.utility.print(`Remote Callback Network | Result: ${networkRemoteCBResult}`)
 
 
+    //@Room Examples
+    cSocket.onClientJoinRoom = function(room, client) {
+        vNetworkify.utility.print(`* Client [${client}] Joined Room: ${room}`)
+        vNetworkify.utility.print(`Room - '${room}' Members:`)
+        vNetworkify.utility.print(cSocket.fetchRoomMembers(room))
+    }
+    cSocket.onClientLeaveRoom = function(room, client) {
+        vNetworkify.utility.print(`* Client [${client}] Left Room: ${room}`)
+        vNetworkify.utility.print(`Room - '${room}' Members:`)
+        vNetworkify.utility.print(cSocket.fetchRoomMembers(room))
+    }
+
+
     // @Rest API Examples
     var restAPIResult = await vNetworkify.rest.fetch("get", "http://localhost:33021/")
     restAPIResult = await restAPIResult.json()
