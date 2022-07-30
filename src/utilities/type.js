@@ -62,7 +62,7 @@ CUtility.createClass = function(parent) {
     class __C{
         static isClass = true
         constructor(...cArgs) {
-            if (CUtility.isFunction(__C.constructor)) __C.constructor(this, ...cArgs)
+            CUtility.exec(__C.constructor, this, ...cArgs)
         }
     }
     if (CUtility.isObject(parent)) {
