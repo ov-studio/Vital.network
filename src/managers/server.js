@@ -27,6 +27,7 @@ const CServer = {
     instance: {}
 }
 
+// @Desc: Handles Connection Status
 const onConnectionStatus = function(resolver, state) {
     CServer.config.isAwaiting = null
     CServer.config.isConnected = state
