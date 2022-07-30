@@ -105,6 +105,15 @@ if (!CUtility.isServer) {
     // Instance Members //
     ///////////////////////
 
+    // @Desc: Handles Connection Status
+    const onConnectionStatus = function(resolver, state) {
+        CServer.config.isAwaiting = null
+        CServer.config.isConnected = state
+        if (CUtility.isFunction(resolver)) resolver(CServer.config.isConnected)
+        CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} [Port: ${CServer.config.port}]`)
+        return true
+    }
+
     // @Desc: Instance Constructor
     CServer.socket.addMethod("constructor", function(self, route) {
         CUtility.fetchVID(self)
