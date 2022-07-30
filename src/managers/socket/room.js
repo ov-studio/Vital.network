@@ -27,7 +27,7 @@ CServer.socket.addInstanceMethod("isRoom", function(self, name) {
     return (cInstance && true) || false
 })
 
-// @Desc: Fetches aa array of existing rooms
+// @Desc: Fetches an array of existing rooms
 CServer.socket.addInstanceMethod("fetchRooms", function(self) {
     const result = []
     for (const i in self.room) {
@@ -68,6 +68,16 @@ else {
         self.room[name].destroy()
         delete self.room[name]
         return true
+    })
+
+    // @Desc: Fetches an array of existing room's members
+    CServer.socket.addInstanceMethod("fetchRoomMembers", function(self, name) {
+        if (!self.isRoom(name)) return false
+        const result = []
+        for (const i in self.room[name].member) {
+            if (self.isClient(i)) result.push(i)
+        }
+        return result
     })
 
     // @Desc: Joins client to specified room

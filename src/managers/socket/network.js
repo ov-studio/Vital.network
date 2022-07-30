@@ -48,7 +48,7 @@ CServer.socket.addInstanceMethod("isNetwork", function(self, name) {
     return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && self.network[name].isInstance() && true) || false
 })
 
-// @Desc: Fetches aa array of existing networks
+// @Desc: Fetches an array of existing networks
 CServer.socket.addInstanceMethod("fetchNetworks", function(self) {
     const result = []
     for (const i in self.network) {
