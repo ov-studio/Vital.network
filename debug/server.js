@@ -63,6 +63,9 @@ async function debug() {
 
     cSocket.onClientConnect = async function(client) {
         vNetworkify.utility.print(`* Client Connected [${client}]`)
+        vNetworkify.utility.print("* Client List:")
+        vNetworkify.utility.print(cSocket.fetchClients())
+    
         cSocket.joinRoom("Server:MyRoom", client)
         vNetworkify.utility.print("Room - 'Server:MyRoom' Members:")
         vNetworkify.utility.print(cSocket.fetchRoomMembers("Server:MyRoom"))
