@@ -52,6 +52,9 @@ async function debug() {
     cSocket.on("Client:MyCBNetwork", function(argA, argB) {
         return argA + argB
     })
+    vNetworkify.utility.print("* Network List:")
+    vNetworkify.utility.print(cSocket.fetchNetworks())
+
     const networkCBResult = await cSocket.emitCallback("Client:MyCBNetwork", false, 1, 4)
     vNetworkify.utility.print(`Callback Network | Result: ${networkCBResult}`)
     const networkRemoteCBResult = await cSocket.emitCallback("Server:MyCBNetwork", true, 100, 200)
