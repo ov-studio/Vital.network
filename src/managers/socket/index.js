@@ -84,6 +84,46 @@ CServer.socket.addMethod("destroy", function(route) {
 // Instance Members //
 ///////////////////////
 
+// @Desc: Handles Connection Status
+const onSocketMessage = function(self, client, socket, payload) {
+    payload = JSON.parse(payload.data)
+    if (!socket || !CUtility.isObject(payload)) return false
+    if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
+        if (!CUtility.isServer) {
+            if (payload.client) {
+                CUtility.fetchVID(socket, payload.client)
+                if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(payload.client)
+            }
+            else if (payload.room) {
+                if (payload.action == "join") {
+                    self.room[(payload.room)] = self.room[(payload.room)] || {}
+                    self.room[(payload.room)].member = self.room[(payload.room)].member || {}
+                    self.room[(payload.room)].member[client] = true
+                    if (CUtility.isFunction(self.onClientJoinRoom)) self.onClientJoinRoom(payload.room, client)
+                }
+                else if (payload.action == "leave") {
+                    delete self.room[(payload.room)]
+                    if (CUtility.isFunction(self.onClientLeaveRoom)) self.onClientLeaveRoom(payload.room, client)
+                }
+            }
+        }
+        return false
+    }
+    if (CUtility.isObject(payload.networkCB)) {
+        if (!payload.networkCB.isProcessed) {
+            payload.networkCB.isProcessed = true
+            const cNetwork = CServer.socket.fetchNetwork(self, payload.networkName)
+            if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
+            else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
+            socket.send(JSON.stringify(payload))
+        }
+        else CServer.socket.resolveCallback(self, client, payload)
+        return true
+    }
+    self.emit(payload.networkName, null, ...payload.networkArgs)
+    return true
+}
+
 // @Desc: Verifies instance's validity
 CServer.socket.addInstanceMethod("isInstance", function(self) {
     return (!self.isUnloaded && !CServer.socket.isVoid(self.route) && true) || false
@@ -104,15 +144,6 @@ if (!CUtility.isServer) {
     ///////////////////////
     // Instance Members //
     ///////////////////////
-
-    // @Desc: Handles Connection Status
-    const onConnectionStatus = function(resolver, state) {
-        CServer.config.isAwaiting = null
-        CServer.config.isConnected = state
-        if (CUtility.isFunction(resolver)) resolver(CServer.config.isConnected)
-        CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} [Port: ${CServer.config.port}]`)
-        return true
-    }
 
     // @Desc: Instance Constructor
     CServer.socket.addMethod("constructor", function(self, route) {
@@ -144,43 +175,7 @@ if (!CUtility.isServer) {
                 self.connect()
                 return true
             }
-            self.server.onmessage = function(payload) {
-                payload = JSON.parse(payload.data)
-                if (!CUtility.isObject(payload)) return false
-                if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
-                    if (payload.client) {
-                        CUtility.fetchVID(self.server, payload.client)
-                        if (CUtility.isFunction(self.onClientConnect)) self.onClientConnect(payload.client)
-                    }
-                    else if (payload.room) {
-                        if (payload.action == "join") {
-                            const client = CUtility.fetchVID(self.server, null, true)
-                            self.room[(payload.room)] = self.room[(payload.room)] || {}
-                            self.room[(payload.room)].member = self.room[(payload.room)].member || {}
-                            self.room[(payload.room)].member[client] = true
-                            if (CUtility.isFunction(self.onClientJoinRoom)) self.onClientJoinRoom(payload.room, client)
-                        }
-                        else if (payload.action == "leave") {
-                            delete self.room[(payload.room)]
-                            if (CUtility.isFunction(self.onClientLeaveRoom)) self.onClientLeaveRoom(payload.room, client)
-                        }
-                    }
-                    return false
-                }
-                if (CUtility.isObject(payload.networkCB)) {
-                    if (!payload.networkCB.isProcessed) {
-                        payload.networkCB.isProcessed = true
-                        const cNetwork = CServer.socket.fetchNetwork(self, payload.networkName)
-                        if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
-                        else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
-                        self.server.send(JSON.stringify(payload))
-                    }
-                    else CServer.socket.resolveCallback(self, null, payload)
-                    return true
-                }
-                self.emit(payload.networkName, null, ...payload.networkArgs)
-                return true
-            }
+            self.server.onmessage = (payload) => onSocketMessage(self, CUtility.fetchVID(self.server, null, true), self.server, payload)
         }
         self.connect()
     })
@@ -227,23 +222,7 @@ else {
                 if (CUtility.isFunction(self.onClientDisconnect)) self.onClientDisconnect(client)
                 return true
             }
-            clientInstance.socket.onmessage = function(payload) {
-                payload = JSON.parse(payload.data)
-                if (!CUtility.isObject(payload) || !CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) return false
-                if (CUtility.isObject(payload.networkCB)) {
-                    if (!payload.networkCB.isProcessed) {
-                        payload.networkCB.isProcessed = true
-                        const cNetwork = CServer.socket.fetchNetwork(self, payload.networkName)
-                        if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
-                        else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
-                        clientInstance.socket.send(JSON.stringify(payload))
-                    }
-                    else CServer.socket.resolveCallback(self, client, payload)
-                    return true
-                }
-                self.emit(payload.networkName, null, ...payload.networkArgs)
-                return true
-            }
+            clientInstance.socket.onmessage = (payload) => onSocketMessage(self, client, clientInstance.socket, payload)
         })
     }, "isInstance")
 
