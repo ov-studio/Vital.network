@@ -20,8 +20,8 @@ const CUtility = {
 CUtility.isServer = ((typeof(process) != "undefined") && !process.browser && true) || false
 CUtility.crypto = (CUtility.isServer && require("crypto")) || crypto
 CUtility.global = (CUtility.isServer && global) || window
-CUtility.toBase64 = (!CUtility.isServer && btoa) || function(data) { return Buffer.from(data).toString("base64") }
-CUtility.fromBase64 = (!CUtility.isServer && atob) || function(data) { return Buffer.from(data, "base64").toString("binary") }
+CUtility.toBase64 = (!CUtility.isServer && btoa.bind(window)) || function(data) { return Buffer.from(data).toString("base64") }
+CUtility.fromBase64 = (!CUtility.isServer && atob.bind(window)) || function(data) { return Buffer.from(data, "base64").toString("binary") }
 CUtility.identifier = CUtility.toBase64(`vNetworkify-${(CUtility.isServer && "Server") || "Client"}`)
 
 // @Desc: Executes the specified handler
