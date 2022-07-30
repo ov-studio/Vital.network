@@ -86,7 +86,7 @@ CServer.socket.addMethod("destroy", function(route) {
 
 // @Desc: Handles Socket Message
 const onSocketMessage = function(self, client, socket, payload) {
-    payload = JSON.parse(payload.data)
+    payload = JSON.parse(CUtility.fromBase64(payload.data))
     if (!socket || !CUtility.isObject(payload)) return false
     if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
         if (!CUtility.isServer) {
@@ -115,7 +115,7 @@ const onSocketMessage = function(self, client, socket, payload) {
             const cNetwork = CServer.socket.fetchNetwork(self, payload.networkName)
             if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
             else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
-            socket.send(JSON.stringify(payload))
+            socket.send(CUtility.toBase64(JSON.stringify(payload)))
         }
         else CServer.socket.resolveCallback(self, client, payload)
         return true
@@ -216,7 +216,7 @@ else {
                 self.instance[client] = clientInstance
                 clientInstance.queue = {}, clientInstance.room = {}
                 query = CUtility.queryString.parse(query)
-                clientInstance.socket.send(JSON.stringify({client: client}))
+                clientInstance.socket.send(CUtility.toBase64(JSON.stringify({client: client})))
                 CUtility.exec(self.onClientConnect, client)
                 clientInstance.socket.onclose = function() {
                     for (const i in clientInstance.socket.room) {

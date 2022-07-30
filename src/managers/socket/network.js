@@ -91,10 +91,10 @@ CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs
     if (isRemote) {
         if (CUtility.isServer && !self.isClient(isRemote)) return false
         const cReceiver = (CUtility.isServer && CServer.socket.client.fetch(isRemote)) || self.server
-        cReceiver.socket.send(JSON.stringify({
+        cReceiver.socket.send(CUtility.toBase64(JSON.stringify({
             networkName: name,
             networkArgs: cArgs
-        }))
+        })))
         return true
     }
     const cNetwork = CServer.socket.fetchNetwork(self, name)
@@ -123,11 +123,11 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
                 }
             }
         })
-        cReceiver.socket.send(JSON.stringify({
+        cReceiver.socket.send(CUtility.toBase64(JSON.stringify({
             networkName: name,
             networkArgs: cArgs,
             networkCB: networkCB
-        }))
+        })))
         return cPromise
     }
     const cNetwork = CServer.socket.fetchNetwork(self, name)
