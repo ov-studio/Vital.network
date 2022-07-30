@@ -84,11 +84,6 @@ CServer.socket.addMethod("destroy", function(route) {
 // Instance Members //
 ///////////////////////
 
-const onSocketError = function(self, client, socket, error) {
-    if (CUtility.isFunction(self.onClientError)) self.onClientError(error)
-    return true
-}
-
 // @Desc: Handles Socket Message
 const onSocketMessage = function(self, client, socket, payload) {
     payload = JSON.parse(payload.data)
@@ -176,7 +171,7 @@ if (!CUtility.isServer) {
             self.server.onerror = function(error) {
                 self.config.isConnected = false
                 cResolver(self.config.isConnected)
-                onSocketError(self, CUtility.fetchVID(self.server, null, true), self.server, error)
+                if (CUtility.isFunction(self.onClientError)) self.onClientError(error)
                 self.connect()
                 return true
             }
