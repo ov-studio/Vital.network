@@ -129,8 +129,9 @@ if (!CUtility.isServer) {
                 return true
             }
             self.server.onerror = function(error) {
+                console.log(error)
                 self.config.isConnected = false
-                cResolver(self.config.isConnected, error)
+                cResolver(self.config.isConnected)
                 self.connect()
                 return true
             }
