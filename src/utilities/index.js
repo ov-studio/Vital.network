@@ -42,12 +42,19 @@ CUtility.createVID = function() {
     while(!cvid) {
         const vvid = CUtility.toBase64(CUtility.crypto.randomUUID() + (Date.now() + CCache.vid.counter))
         if (!CCache.vid.blacklist[vvid]) {
-            CCache.vid.blacklist[vvid] = true
+            CUtility.blacklistVID(vvid)
             cvid = vvid
         }
         CCache.vid.counter += 1
     }
     return cvid
+}
+
+// @Desc: Blacklists a VID
+CUtility.blacklistVID = function(vid) {
+    if (!CUtility.isString(vid) || CCache.vid.blacklist[vid]) return false
+    CCache.vid.blacklist[vid] = true
+    return true
 }
 
 // @Desc: Assigns/Fetches VID (Virtual ID) on/from valid instance
