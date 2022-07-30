@@ -40,6 +40,15 @@ CServer.socket.addMethod("fetch", function(route) {
     return (!CServer.socket.isVoid(route) && CServer.socket.buffer[route]) || false
 })
 
+// @Desc: Fetches an array of existing sockets
+CServer.socket.addMethod("fetchSockets", function() {
+    const result = []
+    for (const i in CServer.socket.buffer) {
+        if (CServer.socket.fetch(i)) result.push(i)
+    }
+    return result
+})
+
 // @Desc: Creates a fresh socket w/ specified route
 CServer.socket.addMethod("create", function(route) {
     if (!CServer.isConnected(true) || !CServer.socket.isVoid(route)) return false
