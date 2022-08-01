@@ -24,8 +24,8 @@ const CServer = require("../server")
 CServer.socket = CUtility.createClass({
     buffer: {},
     heartbeat: {
-        interval: 1000,
-        timeout: 2000
+        interval: 10000,
+        timeout: 60000
     },
     reconnection: {
         attempts: -1,
