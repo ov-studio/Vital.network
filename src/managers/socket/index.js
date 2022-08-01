@@ -124,6 +124,7 @@ CServer.socket.addInstanceMethod("destroy", function(self, isFlush) {
                 delete self.room[i]
             }
         }
+    }
     else {
         self["@disconnect-forced"] = true
         self["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnected`
