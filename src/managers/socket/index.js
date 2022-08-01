@@ -77,9 +77,7 @@ const onSocketMessage = function(self, client, socket, payload) {
                 CUtility.fetchVID(socket, payload.client)
                 CUtility.exec(self.onClientConnect, payload.client)
             }
-            else if (payload.disconnect) {
-                self["@disconnect-reason"] = payload.disconnect
-            }
+            else if (payload["@disconnect-reason"]) self["@disconnect-reason"] = payload["@disconnect-reason"]
             else if (payload.room) {
                 if (payload.action == "join") {
                     self.room[(payload.room)] = self.room[(payload.room)] || {}
@@ -117,7 +115,7 @@ CServer.socket.addInstanceMethod("isInstance", function(self) {
 
 // @Desc: Destroys the instance
 CServer.socket.addInstanceMethod("destroy", function(self) {
-    self["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnect`
+    self["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnected`
     for (const i in self.network) {
         const j = self.network[i]
         j.destroy()
@@ -132,7 +130,7 @@ CServer.socket.addInstanceMethod("destroy", function(self) {
                 const v = j[k]
                 v.reject()
             }
-            j.socket.send(CUtility.toBase64(JSON.stringify({disconnect: self["@disconnect-reason"]})))
+            j.socket.send(CUtility.toBase64(JSON.stringify({["@disconnect-reason"]: self["@disconnect-reason"]})))
             j.socket.close()
         }
     }
@@ -166,7 +164,7 @@ if (!CUtility.isServer) {
                 return true
             }
             self.server.onclose = function() {
-                CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, self["@disconnect-reason"] || "n/a")
+                CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, self["@disconnect-reason"] || "client-disconnected")
                 self.destroy()
                 return true
             }
@@ -224,8 +222,9 @@ else {
                     for (const i in clientInstance.socket.room) {
                         self.leaveRoom(i, client)
                     }
+                    clientInstance.destroy()
                     delete self.instance[client]
-                    CUtility.exec(self.onClientDisconnect, client, self["@disconnect-reason"])
+                    CUtility.exec(self.onClientDisconnect, client, self["@disconnect-reason"] || "client-disconnected")
                     return true
                 }
                 clientInstance.socket.onmessage = function(payload) {
