@@ -219,8 +219,8 @@ if (!CUtility.isServer) {
             }
         }
         reconnect = function() {
+            reconCounter += 1
             if (self.config.options.reconnection.attempts != -1) {
-                reconCounter += 1
                 if (reconCounter > self.config.options.reconnection.attempts) {
                     self["@disconnect-reason"] = "client-reconnection-expired"
                     return false
