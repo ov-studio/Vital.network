@@ -91,7 +91,7 @@ const onSocketMessage = function(self, client, socket, payload) {
                 socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
             }, self.config.options.heartbeat.interval)
             self.heartbeatTerminator = setTimeout(function() {
-                self.destroy(null, {reason: "heartbeat-timeout", isForced: true})
+                self.destroy(null, {reason: "heartbeat-timeout"})
             }, self.config.options.heartbeat.timeout)
         }
         else {
