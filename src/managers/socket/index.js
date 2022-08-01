@@ -140,6 +140,7 @@ CServer.socket.addInstanceMethod("destroy", function(self, isFlush) {
             const j = self.network[i]
             j.destroy()
         }
+        if (self.hearbeatTimer) clearInterval(self.hearbeatTimer)
         if (!CUtility.isServer) {
             if (self.reconnectTimer) clearTimeout(self.reconnectTimer)
         }
@@ -272,6 +273,10 @@ else {
         }
         self.server.on("error", self.server.onerror)
         self.server.on("close", self.server.onclose)
+        self.heartbeat = function(instance) {
+            instance.socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
+            return true
+        }
         upgrade = function(request, socket, head) {
             self.server.handleUpgrade(request, socket, head, function(socket) {
                 var [instance, query] = request.url.split("?")
@@ -283,6 +288,7 @@ else {
                 clientInstance.queue = {}, clientInstance.room = {}
                 query = CUtility.queryString.parse(query)
                 clientInstance.socket.send(CUtility.toBase64(JSON.stringify({client: client})))
+                self.heartbeat(clientInstance)
                 CUtility.exec(self.onClientConnect, client)
                 clientInstance.socket.onclose = function() {
                     for (const i in clientInstance.socket.room) {
