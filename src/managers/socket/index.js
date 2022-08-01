@@ -85,7 +85,7 @@ const onSocketMessage = function(self, client, socket, payload) {
             self.heatbeatTick = Date.now()
             const deltaTick = self.heatbeatTick - (prevTick || self.heatbeatTick)
             if (!CUtility.isServer) CUtility.exec(self.onHeartbeat, deltaTick)
-            else (CUtility.isServer) CUtility.exec(self.onHeartbeat, client, deltaTick)
+            else CUtility.exec(self.onHeartbeat, client, deltaTick)
             clearTimeout(self.heartbeatTerminator)
             self.heartbeatTimer = setTimeout(function() {
                 socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
