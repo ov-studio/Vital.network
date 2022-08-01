@@ -64,7 +64,7 @@ async function debug() {
     vNetworkify.utility.print(cSocket.fetchRooms())
 
     cSocket.onClientConnect = async function(client) {
-        vNetworkify.utility.print(`* Client Connected [${client}]`)
+        vNetworkify.utility.print(`* Client connected [${client}]`)
         vNetworkify.utility.print("* Client-list:")
         vNetworkify.utility.print(cSocket.fetchClients())
 
@@ -78,12 +78,12 @@ async function debug() {
     }
 
     cSocket.onClientJoinRoom = function(room, client) {
-        vNetworkify.utility.print(`* Client [${client}] Joined Room [${room}]`)
+        vNetworkify.utility.print(`* Client [${client}] joined Room [${room}]`)
         vNetworkify.utility.print(`* Member-list:`)
         vNetworkify.utility.print(cSocket.fetchRoomMembers(room))
     }
     cSocket.onClientLeaveRoom = function(room, client) {
-        vNetworkify.utility.print(`* Client [${client}] Left Room [${room}]`)
+        vNetworkify.utility.print(`* Client [${client}] left Room [${room}]`)
     }
 
 
