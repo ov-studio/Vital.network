@@ -208,6 +208,7 @@ if (!CUtility.isServer) {
             }
             self.reconnectTimer = setTimeout(function() {
                 self.reconnectTimer = null
+                CUtility.exec(self.onClientReconnect, CUtility.fetchVID(self.server, null, true) || false, reconCounter - 1)
                 connect(true)
             }, self.config.options.reconnection.interval)
             return true
