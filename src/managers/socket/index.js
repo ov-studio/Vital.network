@@ -89,6 +89,10 @@ const onSocketMessage = function(self, client, socket, payload) {
                 self["@disconnect-forced"] = true
                 self["@disconnect-reason"] = payload["@disconnect-reason"]
             }
+            else if (payload.heartbeat) {
+                console.log("RECEIVED HEARTBEAT")
+                socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
+            }
             else if (payload.room) {
                 if (payload.action == "join") {
                     self.room[(payload.room)] = self.room[(payload.room)] || {}

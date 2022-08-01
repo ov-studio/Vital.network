@@ -37,7 +37,6 @@ async function debug() {
     cSocket.onServerDisconnect = function() {
         vNetworkify.utility.print("* Server successfully disconnected!")
     }
-    cSocket.destroy()
 
 
     // @Non-Callback Network Examples
