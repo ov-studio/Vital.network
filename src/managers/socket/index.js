@@ -93,7 +93,6 @@ CServer.socket.addInstanceMethod("destroy", function(self, isFlush) {
     else {
         self["@disconnect-forced"] = true
         self["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnected`
-        console.log(self["@disconnect-forced"] + " | " + self["@disconnect-reason"])
         for (const i in self.network) {
             const j = self.network[i]
             j.destroy()
