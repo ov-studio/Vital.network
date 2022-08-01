@@ -203,12 +203,12 @@ if (!CUtility.isServer) {
         reconnect = function() {
             reconCounter += 1
             if (reconCounter > self.config.options.reconnection.attempts) {
-                self["@disconnect-reason"] = "reconnection-expired"
+                self["@disconnect-reason"] = "client-reconnection-expired"
                 return false
             }
             self.reconnectTimer = setTimeout(function() {
                 self.reconnectTimer = null
-                CUtility.exec(self.onClientReconnect, CUtility.fetchVID(self.server, null, true) || false, reconCounter - 1)
+                CUtility.exec(self.onClientReconnect, CUtility.fetchVID(self.server, null, true) || false, reconCounter - 1, self.config.options.reconnection.attempts)
                 connect(true)
             }, self.config.options.reconnection.interval)
             return true
