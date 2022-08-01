@@ -164,8 +164,9 @@ if (!CUtility.isServer) {
                 cResolver(self.config.isConnected)
                 return true
             }
-            self.server.onclose = function() {
-                CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, self["@disconnect-reason"] || "client-disconnected")
+            self.server.onclose = function(issue) {
+                console.log(issue)
+                CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, (self.config.isConnected && (self["@disconnect-reason"] || "client-disconnected")) || "server-nonexistent")
                 self.destroy()
                 return true
             }
