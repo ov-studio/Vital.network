@@ -81,8 +81,8 @@ const onSocketMessage = function(self, client, socket, payload) {
     if (!socket || !CUtility.isObject(payload)) return false
     if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
         if (payload.heartbeat) {
-            CUtility.exec(self.onHeartbeat, (CUtility.isServer && client))
             self.heatbeatTick = Date.now()
+            CUtility.exec(self.onHeartbeat, (CUtility.isServer && client))
             clearTimeout(self.heartbeatTerminator)
             self.heartbeatTimer = setTimeout(function() {
                 socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
