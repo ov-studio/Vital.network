@@ -134,6 +134,9 @@ CServer.socket.addInstanceMethod("destroy", function(self) {
             j.socket.close()
         }
     }
+    else {
+        if (self.reconnectTimer) clearTimeout(self.reconnectTimer)
+    }
     self.isUnloaded = true
     self.server.close()
     delete CServer.socket.buffer[(this.route)]
@@ -162,26 +165,28 @@ if (!CUtility.isServer) {
         }
         self.route = route
         self.queue = {}, self.network = {}, self.room = {}
-        var cResolver = false
+        var cResolver, reconCounter = false, 0
         var connect = false, reconnect = false
         connect = function(isReconnection) {
             if (!isReconnection && self.isConnected()) return false
             self.config.isAwaiting = self.config.isAwaiting || new Promise((resolver) => cResolver = resolver)
             self.server = new WebSocket(`${((CServer.config.protocol == "https") && "wss") || "ws"}://${CServer.config.hostname}:${CServer.config.port}/${self.route}`)
             self.server.onopen = function() {
+                reconCounter = 0
                 self.config.isAwaiting = null
                 self.config.isConnected = true
                 cResolver(self.config.isConnected)
                 return true
             }
             self.server.onclose = function() {
-                var isToBeReconnected = true
+                var isToBeReconnected = (!self.isUnloaded && true) || false
+                isToBeReconnected = true
                 isToBeReconnected = (isToBeReconnected && reconnect()) || false
                 if (!isToBeReconnected) {
                     self.destroy()
                     self.config.isConnected = false
                     cResolver(self.config.isConnected)
-                    CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, (self.config.isConnected && (self["@disconnect-reason"] || "client-disconnected")) || "server-nonexistent")
+                    CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, self["@disconnect-reason"] || (self.config.isConnected && "client-disconnected") || "server-nonexistent")
                 }
                 return true
             }
@@ -196,9 +201,14 @@ if (!CUtility.isServer) {
             }
         }
         reconnect = function() {
-            console.log("attempting to reconnect...")
+            reconCounter += 1
+            if (reconCounter > self.config.options.reconnection.attempts) {
+                self["@disconnect-reason"] = "reconnection-expired"
+                return false
+            }
             self.reconnectTimer = setTimeout(function() {
                 console.log("Reconnecting")
+                self.reconnectTimer = null
                 connect(true)
             }, self.config.options.reconnection.interval)
             return true
