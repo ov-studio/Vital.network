@@ -22,7 +22,11 @@ const CServer = require("../server")
 ////////////////////
 
 CServer.socket = CUtility.createClass({
-    buffer: {}
+    buffer: {},
+    reconnection: {
+        attempts: -1,
+        interval: 2500
+    }
 })
 
 
@@ -169,12 +173,10 @@ if (!CUtility.isServer) {
             options: {}
         }
         if (CUtility.isObject(options)) {
+            self.config.options.reconnection = CUtility.cloneObject(CServer.socket.reconnection)
             if (CUtility.isObject(options.reconnection) && CUtility.isNumber(options.reconnection.attempts) && CUtility.isNumber(options.reconnection.interval)) {
-                if (options.reconnection.attempts != -1) options.reconnection.attempts = Math.max(1, options.reconnection.attempts)
-                self.config.options.reconnection = {
-                    attempts: options.reconnection.attempts,
-                    interval: Math.max(1, options.reconnection.interval)
-                }
+                self.config.options.reconnection.attempts = ((options.reconnection.attempts == -1) && options.reconnection.attempts) || Math.max(1, options.reconnection.attempts)
+                self.config.options.reconnection.interval = Math.max(1, options.reconnection.interval)
             }
         }
         self.route = route
@@ -198,7 +200,7 @@ if (!CUtility.isServer) {
             }
             self.server.onclose = function() {
                 self.destroy(true)
-                const isReconnection = (!self.isUnloaded && self.config.options.reconnection && !self["@disconnect-forced"] && reconnect()) || false
+                const isReconnection = (!self.isUnloaded && !self["@disconnect-forced"] && reconnect()) || false
                 if (!isReconnection) {
                     const reason = self["@disconnect-reason"] || (self.config.isConnected && "client-disconnected") || "server-nonexistent"
                     self.destroy()
@@ -217,7 +219,6 @@ if (!CUtility.isServer) {
             }
         }
         reconnect = function() {
-            if (!self.config.options.reconnection) return false
             reconCounter += 1
             if (reconCounter > self.config.options.reconnection.attempts) {
                 self["@disconnect-reason"] = "client-reconnection-expired"
