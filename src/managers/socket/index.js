@@ -186,11 +186,11 @@ if (!CUtility.isServer) {
             self.server = new WebSocket(`${((CServer.config.protocol == "https") && "wss") || "ws"}://${CServer.config.hostname}:${CServer.config.port}/${self.route}`)
             self.server.onopen = function() {
                 reconCounter = 0
-                self.config.isAwaiting = null
+                delete self.config.isAwaiting
                 self.config.isConnected = true
                 if (self.reconnectTimer) {
                     clearTimeout(self.reconnectTimer)
-                    self.reconnectTimer = null
+                    delete self.reconnectTimer
                 }
                 cResolver(self.config.isConnected)
                 return true
@@ -223,7 +223,7 @@ if (!CUtility.isServer) {
                 return false
             }
             self.reconnectTimer = setTimeout(function() {
-                self.reconnectTimer = null
+                delete self.reconnectTimer
                 CUtility.exec(self.onClientReconnect, CUtility.fetchVID(self.server, null, true) || false, reconCounter, self.config.options.reconnection.attempts)
                 connect(true)
             }, self.config.options.reconnection.interval)

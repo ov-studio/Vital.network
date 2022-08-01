@@ -29,7 +29,7 @@ const CServer = {
 
 // @Desc: Handles Connection Status
 const onConnectionStatus = function(resolver, state) {
-    CServer.config.isAwaiting = null
+    delete CServer.config.isAwaiting
     CServer.config.isConnected = state
     CUtility.exec(resolver, CServer.config.isConnected)
     CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} [Port: ${CServer.config.port}]`)
