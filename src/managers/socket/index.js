@@ -131,7 +131,9 @@ CServer.socket.addInstanceMethod("destroy", function(self, isFlush) {
             const j = self.network[i]
             j.destroy()
         }
-        if (CUtility.isServer) {
+        if (!CUtility.isServer) {
+            if (self.reconnectTimer) clearTimeout(self.reconnectTimer)
+        else {
             for (const i in self.room) {
                 self.destroyRoom(i)
             }
@@ -144,9 +146,6 @@ CServer.socket.addInstanceMethod("destroy", function(self, isFlush) {
                 j.socket.send(CUtility.toBase64(JSON.stringify({["@disconnect-reason"]: self["@disconnect-reason"]})))
                 j.socket.close()
             }
-        }
-        else {
-            if (self.reconnectTimer) clearTimeout(self.reconnectTimer)
         }
         self.isUnloaded = true
         self.server.close()
