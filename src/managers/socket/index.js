@@ -83,6 +83,7 @@ const onSocketMessage = function(self, client, socket, payload) {
         if (payload.heartbeat) {
             console.log("RECEIVED HEARTBEAT")
             socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
+            CUtility.exec(self.onHeartbeat)
         }
         else {
             if (!CUtility.isServer) {
