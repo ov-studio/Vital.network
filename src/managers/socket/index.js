@@ -170,8 +170,9 @@ if (!CUtility.isServer) {
         }
         if (CUtility.isObject(options)) {
             if (CUtility.isObject(options.reconnection) && CUtility.isNumber(options.reconnection.attempts) && CUtility.isNumber(options.reconnection.interval)) {
+                if (options.reconnection.attempts != -1) options.reconnection.attempts = Math.max(1, options.reconnection.attempts)
                 self.config.options.reconnection = {
-                    attempts: Math.max(1, options.reconnection.attempts),
+                    attempts: options.reconnection.attempts,
                     interval: Math.max(1, options.reconnection.interval)
                 }
             }
