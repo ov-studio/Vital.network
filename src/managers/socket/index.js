@@ -22,7 +22,10 @@ const CServer = require("../server")
 ////////////////////
 
 CServer.socket = CUtility.createClass({
-    buffer: {}
+    buffer: {},
+    reasons: [
+        "Server - Shutdown"
+    ]
 })
 
 
@@ -59,24 +62,7 @@ CServer.socket.addMethod("create", function(route) {
 // @Desc: Destroys an existing socket by specified route
 CServer.socket.addMethod("destroy", function(route) {
     if (CServer.socket.isVoid(route)) return false
-    CServer.socket.buffer[route].isUnloaded = true
-    if (CUtility.isServer) {
-        for (const i in CServer.socket.buffer[route].instance) {
-            const j = CServer.socket.buffer[route].instance[i]
-            for (const k in j.queue) {
-                const v = j[k]
-                v.reject()
-            }
-        }
-        for (const i in CServer.socket.buffer[route].room) {
-            CServer.socket.buffer[route].destroyRoom(i)
-        }
-    }
-    for (const i in CServer.socket.buffer[route].network) {
-        CServer.socket.buffer[route].destroyNetwork(i)
-    }
-    delete CServer.socket.buffer[route]
-    return true
+    return CServer.socket.buffer[route].destroy()
 })
 
 
@@ -93,6 +79,11 @@ const onSocketMessage = function(self, client, socket, payload) {
             if (payload.client) {
                 CUtility.fetchVID(socket, payload.client)
                 CUtility.exec(self.onClientConnect, payload.client)
+            }
+            else if (payload.disconnect) {
+                console.log("DISCONNECTING CLIENT")
+                console.log("REASON:")
+                console.log(payload)
             }
             else if (payload.room) {
                 if (payload.action == "join") {
@@ -131,12 +122,28 @@ CServer.socket.addInstanceMethod("isInstance", function(self) {
 
 // @Desc: Destroys the instance
 CServer.socket.addInstanceMethod("destroy", function(self) {
-    self.server.close()
+    self.isUnloaded = true
+    if (CUtility.isServer) {
+        for (const i in self.instance) {
+            const j = self.instance[i]
+            for (const k in j.queue) {
+                const v = j[k]
+                v.reject()
+            }
+            j.socket.send(CUtility.toBase64(JSON.stringify({
+                disconnect: true,
+                reason: 1
+            })))
+        }
+        for (const i in self.room) {
+            self.destroyRoom(i)
+        }
+    }
     for (const i in self.network) {
         const j = self.network[i]
         j.destroy()
     }
-    CServer.socket.destroy(this.route)
+    delete CServer.socket.buffer[(this.route)]
     return true
 })
 
