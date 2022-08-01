@@ -21,14 +21,14 @@ async function debug() {
 
     // @Socket API Examples
     const cSocket = vNetworkify.socket.create("Server:MyRoute")
-    vNetworkify.utility.print("* Socket List:")
+    vNetworkify.utility.print("* Socket-list:")
     vNetworkify.utility.print(Object.keys(vNetworkify.socket.fetchSockets()))
 
     cSocket.onClientConnect = function(client) {
         vNetworkify.utility.print(`* Client Connected [${client}]`)
     }
     cSocket.onClientDisconnect = function(client, reason) {
-        vNetworkify.utility.print(`* Client Disconnected [${client}] | Reason: ${reason}`)
+        vNetworkify.utility.print(`* Client disconnected [${client}] | Reason: ${reason}`)
     }
     const isSocketConnected = await cSocket.isConnected()
     if (!isSocketConnected) return false
@@ -52,7 +52,7 @@ async function debug() {
     cSocket.on("Client:MyCBNetwork", function(argA, argB) {
         return argA + argB
     })
-    vNetworkify.utility.print("* Network List:")
+    vNetworkify.utility.print("* Network-list:")
     vNetworkify.utility.print(cSocket.fetchNetworks())
 
     const networkCBResult = await cSocket.emitCallback("Client:MyCBNetwork", false, 1, 4)
@@ -64,7 +64,7 @@ async function debug() {
     //@Room Examples
     cSocket.onClientJoinRoom = function(room, client) {
         vNetworkify.utility.print(`* Client [${client}] Joined Room [${room}]`)
-        vNetworkify.utility.print(`* Member List:`)
+        vNetworkify.utility.print(`* Member-list:`)
         vNetworkify.utility.print(cSocket.fetchRoomMembers(room))
     }
     cSocket.onClientLeaveRoom = function(room, client) {
