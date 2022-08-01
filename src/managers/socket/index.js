@@ -160,21 +160,12 @@ if (!CUtility.isServer) {
                 }
             }
         }
-        console.log(self.config.options)
         self.route = route
         self.queue = {}, self.network = {}, self.room = {}
-        self.reconnect = function() {
-            console.log("attempting to reconnect...")
-            self.reconnectTimer = setTimeout(function() {
-                console.log("Reconnecting")
-                self.server.close()
-                self.connect()
-            }, self.config.options.reconnection.interval)
-            return true
-        }
-        self.connect = function() {
-            if (self.isConnected()) return false
-            var cResolver = false // TODO: PROMISE HANDLER MUST BE FIXED
+        var cResolver = false
+        var connect = false, reconnect = false
+        connect = function(isReconnection) {
+            if (!isReconnection && self.isConnected()) return false
             self.config.isAwaiting = self.config.isAwaiting || new Promise((resolver) => cResolver = resolver)
             self.server = new WebSocket(`${((CServer.config.protocol == "https") && "wss") || "ws"}://${CServer.config.hostname}:${CServer.config.port}/${self.route}`)
             self.server.onopen = function() {
@@ -185,7 +176,7 @@ if (!CUtility.isServer) {
             }
             self.server.onclose = function() {
                 var isToBeReconnected = true
-                isToBeReconnected = (isToBeReconnected && self.reconnect()) || false
+                isToBeReconnected = (isToBeReconnected && reconnect()) || false
                 if (!isToBeReconnected) {
                     self.destroy()
                     self.config.isConnected = false
@@ -204,7 +195,17 @@ if (!CUtility.isServer) {
                 return onSocketMessage(self, CUtility.fetchVID(self.server, null, true), self.server, payload)
             }
         }
-        self.connect()
+        reconnect = function() {
+            console.log("attempting to reconnect...")
+            self.reconnectTimer = setTimeout(function() {
+                console.log("Reconnecting")
+                self.connect(true)
+            }, self.config.options.reconnection.interval)
+            return true
+        }
+        self.connect = function() {
+            return connect()
+        }
     })
 
     // @Desc: Retrieves connection's status of instance
