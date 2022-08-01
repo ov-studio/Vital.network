@@ -117,33 +117,41 @@ CServer.socket.addInstanceMethod("isInstance", function(self) {
 })
 
 // @Desc: Destroys the instance
-CServer.socket.addInstanceMethod("destroy", function(self) {
-    self["@disconnect-forced"] = true
-    self["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnected`
-    for (const i in self.network) {
-        const j = self.network[i]
-        j.destroy()
-    }
-    if (CUtility.isServer) {
-        for (const i in self.room) {
-            self.destroyRoom(i)
-        }
-        for (const i in self.instance) {
-            const j = self.instance[i]
-            for (const k in j.queue) {
-                const v = j[k]
-                v.reject()
+CServer.socket.addInstanceMethod("destroy", function(self, isFlush) {
+    if (isFlush) {
+        if (!CUtility.isServer) {
+            for (const i in self.room) {
+                delete self.room[i]
             }
-            j.socket.send(CUtility.toBase64(JSON.stringify({["@disconnect-reason"]: self["@disconnect-reason"]})))
-            j.socket.close()
         }
-    }
     else {
-        if (self.reconnectTimer) clearTimeout(self.reconnectTimer)
+        self["@disconnect-forced"] = true
+        self["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnected`
+        for (const i in self.network) {
+            const j = self.network[i]
+            j.destroy()
+        }
+        if (CUtility.isServer) {
+            for (const i in self.room) {
+                self.destroyRoom(i)
+            }
+            for (const i in self.instance) {
+                const j = self.instance[i]
+                for (const k in j.queue) {
+                    const v = j[k]
+                    v.reject()
+                }
+                j.socket.send(CUtility.toBase64(JSON.stringify({["@disconnect-reason"]: self["@disconnect-reason"]})))
+                j.socket.close()
+            }
+        }
+        else {
+            if (self.reconnectTimer) clearTimeout(self.reconnectTimer)
+        }
+        self.isUnloaded = true
+        self.server.close()
+        delete CServer.socket.buffer[(this.route)]
     }
-    self.isUnloaded = true
-    self.server.close()
-    delete CServer.socket.buffer[(this.route)]
     return true
 })
 
@@ -187,6 +195,7 @@ if (!CUtility.isServer) {
                 return true
             }
             self.server.onclose = function() {
+                self.destroy(true)
                 const isReconnection = (!self.isUnloaded && self.config.options.reconnection && !self["@disconnect-forced"] && reconnect()) || false
                 if (!isReconnection) {
                     const reason = self["@disconnect-reason"] || (self.config.isConnected && "client-disconnected") || "server-nonexistent"
