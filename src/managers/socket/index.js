@@ -82,7 +82,7 @@ const onSocketMessage = function(self, client, socket, payload) {
     if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
         if (payload.heartbeat) {
             CUtility.exec(self.onHeartbeat, (CUtility.isServer && client))
-            self.hearbeatTimer = setTimeout(function() {
+            self.heartbeatTimer = setTimeout(function() {
                 socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
             }, self.config.options.heartbeat.interval)
         }
@@ -148,7 +148,8 @@ CServer.socket.addInstanceMethod("destroy", function(self, isFlush) {
             const j = self.network[i]
             j.destroy()
         }
-        if (self.hearbeatTimer) clearInterval(self.hearbeatTimer)
+        if (self.heartbeatTimer) clearTimeout(self.heartbeatTimer)
+        if (self.heartbeatTerminator) clearTimeout(self.heartbeatTerminator)
         if (!CUtility.isServer) {
             if (self.reconnectTimer) clearTimeout(self.reconnectTimer)
         }
