@@ -195,6 +195,7 @@ if (!CUtility.isServer) {
         CUtility.fetchVID(self)
         self.config = {
             isConnected: false,
+            timestamp: new Date(),
             options: {}
         }
         self.config.options.heartbeat = CUtility.cloneObject(CServer.socket.heartbeat)
@@ -281,6 +282,7 @@ else {
     CServer.socket.addMethod("constructor", function(self, route, options) {
         CUtility.fetchVID(self)
         self.config = {
+            timestamp: new Date(),
             options: {}
         }
         self.config.options.heartbeat = CUtility.cloneObject(CServer.socket.heartbeat)
@@ -299,9 +301,11 @@ else {
         })
         setTimeout(function() {CUtility.exec(self.onServerConnect)}, 1)
         self.server.onclose = function() {
-            CServer.instance.CHTTP.off("upgrade", upgrade)
+            const timestamp_start = self.config.timestamp, timestamp_end = new Date()
+            const deltaTick = timestamp_end.getTime() - timestamp_start.getTime()
             self.destroy()
-            setTimeout(function() {CUtility.exec(self.onServerDisconnect)}, 1)
+            CServer.instance.CHTTP.off("upgrade", upgrade)
+            setTimeout(function() {CUtility.exec(self.onServerDisconnect, timestamp_start, timestamp_end, deltaTick)}, 1)
             return true
         }
         self.server.onerror = function(error) {

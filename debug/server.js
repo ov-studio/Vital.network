@@ -42,8 +42,8 @@ async function debug() {
     cSocket.onServerConnect = function() {
         vNetworkify.utility.print("* Server successfully connected!")
     }
-    cSocket.onServerDisconnect = function() {
-        vNetworkify.utility.print("* Server successfully disconnected!")
+    cSocket.onServerDisconnect = function(timestamp_start, timestamp_end, deltaTick) {
+        vNetworkify.utility.print(`* Server successfully disconnected! | Life-Span: [${deltaTick}ms]`)
     }
 
 
