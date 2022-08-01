@@ -135,7 +135,7 @@ CServer.socket.addInstanceMethod("destroy", function(self) {
         }
     }
     self.isUnloaded = true
-    j.server.close()
+    self.server.close()
     delete CServer.socket.buffer[(this.route)]
     return true
 })
