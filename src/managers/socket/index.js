@@ -23,9 +23,10 @@ const CServer = require("../server")
 
 CServer.socket = CUtility.createClass({
     buffer: {},
-    reasons: [
-        "Server - Shutdown"
-    ]
+    reason: {
+        ["client-disconnect"]: "Client Shutdown",
+        ["server-disconnect"]: "Server Shutdown"
+    }
 })
 
 
@@ -81,9 +82,7 @@ const onSocketMessage = function(self, client, socket, payload) {
                 CUtility.exec(self.onClientConnect, payload.client)
             }
             else if (payload.disconnect) {
-                console.log("DISCONNECTING CLIENT")
-                console.log("REASON:")
-                console.log(payload)
+                self["@disconnect-reason"] = payload.disconnect
             }
             else if (payload.room) {
                 if (payload.action == "join") {
@@ -122,25 +121,23 @@ CServer.socket.addInstanceMethod("isInstance", function(self) {
 
 // @Desc: Destroys the instance
 CServer.socket.addInstanceMethod("destroy", function(self) {
+    for (const i in self.network) {
+        const j = self.network[i]
+        j.destroy()
+    }
     if (CUtility.isServer) {
+        for (const i in self.room) {
+            self.destroyRoom(i)
+        }
         for (const i in self.instance) {
             const j = self.instance[i]
             for (const k in j.queue) {
                 const v = j[k]
                 v.reject()
             }
-            j.socket.send(CUtility.toBase64(JSON.stringify({
-                disconnect: true,
-                reason: 1
-            })))
+            j.socket.send(CUtility.toBase64(JSON.stringify({disconnect: "server-disconnect"})))
+            j.socket.close()
         }
-        for (const i in self.room) {
-            self.destroyRoom(i)
-        }
-    }
-    for (const i in self.network) {
-        const j = self.network[i]
-        j.destroy()
     }
     self.isUnloaded = true
     delete CServer.socket.buffer[(this.route)]
@@ -172,7 +169,7 @@ if (!CUtility.isServer) {
                 return true
             }
             self.server.onclose = function() {
-                CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false)
+                CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, (self["@disconnect-reason"] && CServer.socket.reason[(self["@disconnect-reason"])]) || CServer.socket.reason[(self["client-disconnect"])])
                 return true
             }
             self.server.onerror = function(error) {

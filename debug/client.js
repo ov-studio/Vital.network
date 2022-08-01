@@ -27,8 +27,8 @@ async function debug() {
     cSocket.onClientConnect = function(client) {
         vNetworkify.utility.print(`* Client Connected [${client}]`)
     }
-    cSocket.onClientDisconnect = function(client) {
-        vNetworkify.utility.print(`* Client Disconnected [${client}]`)
+    cSocket.onClientDisconnect = function(client, reason) {
+        vNetworkify.utility.print(`* Client Disconnected [${client}]    |  Reason ${reason}`)
     }
     const isSocketConnected = await cSocket.isConnected()
     if (!isSocketConnected) return false
