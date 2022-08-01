@@ -142,7 +142,7 @@ CServer.socket.addInstanceMethod("isInstance", function(self) {
 
 // @Desc: Destroys the instance
 CServer.socket.addInstanceMethod("destroy", function(self, isFlush, isReason) {
-    isReason = (CUtility.isObject(isReason) && CUtility.isString(isReason.reason) && isReason) || false
+    isReason = (CUtility.isObject(isReason) && isReason) || false
     if (isFlush) {
         if (!CUtility.isServer) {
             for (const i in self.room) {
