@@ -80,29 +80,31 @@ const onSocketMessage = function(self, client, socket, payload) {
     payload = JSON.parse(CUtility.fromBase64(payload.data))
     if (!socket || !CUtility.isObject(payload)) return false
     if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
-        if (!CUtility.isServer) {
-            if (payload.client) {
-                CUtility.fetchVID(socket, payload.client)
-                CUtility.exec(self.onClientConnect, payload.client)
-            }
-            else if (payload["@disconnect-reason"]) {
-                self["@disconnect-forced"] = true
-                self["@disconnect-reason"] = payload["@disconnect-reason"]
-            }
-            else if (payload.heartbeat) {
-                console.log("RECEIVED HEARTBEAT")
-                socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
-            }
-            else if (payload.room) {
-                if (payload.action == "join") {
-                    self.room[(payload.room)] = self.room[(payload.room)] || {}
-                    self.room[(payload.room)].member = self.room[(payload.room)].member || {}
-                    self.room[(payload.room)].member[client] = true
-                    CUtility.exec(self.onClientJoinRoom, payload.room, client)
+        if (payload.heartbeat) {
+            console.log("RECEIVED HEARTBEAT")
+            socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
+        }
+        else {
+            if (!CUtility.isServer) {
+                if (payload.client) {
+                    CUtility.fetchVID(socket, payload.client)
+                    CUtility.exec(self.onClientConnect, payload.client)
                 }
-                else if (payload.action == "leave") {
-                    delete self.room[(payload.room)]
-                    CUtility.exec(self.onClientLeaveRoom, payload.room, client)
+                else if (payload["@disconnect-reason"]) {
+                    self["@disconnect-forced"] = true
+                    self["@disconnect-reason"] = payload["@disconnect-reason"]
+                }
+                else if (payload.room) {
+                    if (payload.action == "join") {
+                        self.room[(payload.room)] = self.room[(payload.room)] || {}
+                        self.room[(payload.room)].member = self.room[(payload.room)].member || {}
+                        self.room[(payload.room)].member[client] = true
+                        CUtility.exec(self.onClientJoinRoom, payload.room, client)
+                    }
+                    else if (payload.action == "leave") {
+                        delete self.room[(payload.room)]
+                        CUtility.exec(self.onClientLeaveRoom, payload.room, client)
+                    }
                 }
             }
         }
