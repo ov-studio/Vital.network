@@ -183,10 +183,10 @@ if (!CUtility.isServer) {
                 isToBeReconnected = true
                 isToBeReconnected = (isToBeReconnected && reconnect()) || false
                 if (!isToBeReconnected) {
+                    CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, self["@disconnect-reason"] || (self.config.isConnected && "client-disconnected") || "server-nonexistent")
                     self.destroy()
                     self.config.isConnected = false
                     cResolver(self.config.isConnected)
-                    CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, self["@disconnect-reason"] || (self.config.isConnected && "client-disconnected") || "server-nonexistent")
                 }
                 return true
             }
