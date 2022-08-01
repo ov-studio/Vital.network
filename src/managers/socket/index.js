@@ -91,7 +91,9 @@ const onSocketMessage = function(self, client, socket, payload) {
                 socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
             }, self.config.options.heartbeat.interval)
             self.heartbeatTerminator = setTimeout(function() {
-                self.destroy(null, {reason: "heartbeat-timeout"})
+                if (!CUtility.isServer) self["@disconnect-reason"] = "heartbeat-timeout"
+                else if (self.isClient(client)) self.instance[client]["@disconnect-reason"] = "heartbeat-timeout"
+                socket.close()
             }, self.config.options.heartbeat.timeout)
         }
         else {
@@ -141,8 +143,7 @@ CServer.socket.addInstanceMethod("isInstance", function(self) {
 })
 
 // @Desc: Destroys the instance
-CServer.socket.addInstanceMethod("destroy", function(self, isFlush, isReason) {
-    isReason = (CUtility.isObject(isReason) && isReason) || false
+CServer.socket.addInstanceMethod("destroy", function(self, isFlush) {
     if (isFlush) {
         if (!CUtility.isServer) {
             for (const i in self.room) {
@@ -152,8 +153,8 @@ CServer.socket.addInstanceMethod("destroy", function(self, isFlush, isReason) {
     }
     else {
         self["@disconnect-forced"] = true
-        self["@disconnect-reason"] = (isReason && isReason.reason) || `${(CUtility.isServer && "server") || "client"}-disconnected`
-        if (isReason) self["@disconnect-forced"] = (isReason.isForced && true) || false
+        self["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnected`
+        console.log(self["@disconnect-forced"] + " | " + self["@disconnect-reason"])
         for (const i in self.network) {
             const j = self.network[i]
             j.destroy()
@@ -327,12 +328,13 @@ else {
                 self.heartbeat(clientInstance)
                 CUtility.exec(self.onClientConnect, client)
                 clientInstance.socket.onclose = function() {
+                    const reason = self.instance[client]["@disconnect-reason"] || self["@disconnect-reason"] || "client-disconnected"
                     for (const i in clientInstance.socket.room) {
                         self.leaveRoom(i, client)
                     }
                     clientInstance.destroy()
                     delete self.instance[client]
-                    CUtility.exec(self.onClientDisconnect, client, self["@disconnect-reason"] || "client-disconnected")
+                    CUtility.exec(self.onClientDisconnect, client, reason)
                     return true
                 }
                 clientInstance.socket.onmessage = function(payload) {

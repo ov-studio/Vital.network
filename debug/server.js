@@ -31,8 +31,8 @@ async function debug() {
     vNetworkify.utility.print("* Socket-list:")
     vNetworkify.utility.print(Object.keys(vNetworkify.socket.fetchSockets()))
 
-    cSocket.onHeartbeat = function(client) {
-        vNetworkify.utility.print(`* Client [${client}] heartbeat received!`)
+    cSocket.onHeartbeat = function(client, deltaTick) {
+        vNetworkify.utility.print(`* Client's [${client}] heartbeat [${deltaTick}] received!`)
     }
     cSocket.onServerConnect = function() {
         vNetworkify.utility.print("* Server successfully connected!")
