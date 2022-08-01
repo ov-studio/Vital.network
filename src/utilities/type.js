@@ -57,6 +57,17 @@ CUtility.isClass = function(data) {
     return (CUtility.isFunction(data, "function") && data.isClass && true) || false
 }
 
+CUtility.cloneObject = function(parent, isRecursive) {
+    if (!CUtility.isObject(parent)) return false
+    const result = {}
+    for (const i in parent) {
+        const j = parent[i]
+        if (isRecursive && CUtility.isObject(j)) result[i] = CUtility.cloneObject(j, isRecursive)
+        else result[i] = j
+    }
+    return result
+}
+
 // @Desc: Creates a new dynamic class
 CUtility.createClass = function(parent) {
     class __C{
