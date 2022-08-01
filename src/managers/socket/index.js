@@ -150,7 +150,7 @@ if (!CUtility.isServer) {
         CUtility.fetchVID(self)
         self.config = {
             isConnected: false,
-            options = {}
+            options: {}
         }
         if (CUtility.isObject(options)) {
             if (CUtility.isObject(options.reconnection) && CUtility.isNumber(options.reconnection.attempts) && CUtility.isNumber(options.reconnection.interval)) {
