@@ -262,18 +262,19 @@ else {
             noServer: true,
             path: `/${self.route}`
         })
-        self.server.onerror = function(error) {
-            CUtility.exec(self.onConnectionError, error)
-            CUtility.exec(self.onServerDisconnect)
-            return true
-        }
+        CUtility.exec(self.onServerConnect)
         self.server.onclose = function() {
             CServer.instance.CHTTP.off("upgrade", upgrade)
             self.destroy()
+            CUtility.exec(self.onServerDisconnect)
             return true
         }
-        self.server.on("error", self.server.onerror)
+        self.server.onerror = function(error) {
+            CUtility.exec(self.onConnectionError, error)
+            return true
+        }
         self.server.on("close", self.server.onclose)
+        self.server.on("error", self.server.onerror)
         self.heartbeat = function(instance) {
             instance.socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
             return true
