@@ -198,8 +198,6 @@ if (!CUtility.isServer) {
                 return true
             }
             self.server.onerror = function(error) {
-                self.config.isConnected = false
-                cResolver(self.config.isConnected)
                 CUtility.exec(self.onConnectionError, error)
                 return true
             }
