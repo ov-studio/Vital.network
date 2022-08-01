@@ -77,7 +77,10 @@ const onSocketMessage = function(self, client, socket, payload) {
                 CUtility.fetchVID(socket, payload.client)
                 CUtility.exec(self.onClientConnect, payload.client)
             }
-            else if (payload["@disconnect-reason"]) self["@disconnect-reason"] = payload["@disconnect-reason"]
+            else if (payload["@disconnect-reason"]) {
+                self["@disconnect-forced"] = true
+                self["@disconnect-reason"] = payload["@disconnect-reason"]
+            }
             else if (payload.room) {
                 if (payload.action == "join") {
                     self.room[(payload.room)] = self.room[(payload.room)] || {}
@@ -115,6 +118,7 @@ CServer.socket.addInstanceMethod("isInstance", function(self) {
 
 // @Desc: Destroys the instance
 CServer.socket.addInstanceMethod("destroy", function(self) {
+    self["@disconnect-forced"] = true
     self["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnected`
     for (const i in self.network) {
         const j = self.network[i]
@@ -179,8 +183,7 @@ if (!CUtility.isServer) {
                 return true
             }
             self.server.onclose = function() {
-                var isReconnection = (!self.isUnloaded && true) || false
-                isReconnection = (isReconnection && reconnect()) || false
+                const isReconnection = (!self.isUnloaded && self.config.options.reconnection && !self["@disconnect-forced"] && reconnect()) || false
                 if (!isReconnection) {
                     const reason = self["@disconnect-reason"] || (self.config.isConnected && "client-disconnected") || "server-nonexistent"
                     self.destroy()
@@ -202,6 +205,7 @@ if (!CUtility.isServer) {
             }
         }
         reconnect = function() {
+            if (!self.config.options.reconnection) return false
             reconCounter += 1
             if (reconCounter > self.config.options.reconnection.attempts) {
                 self["@disconnect-reason"] = "client-reconnection-expired"
