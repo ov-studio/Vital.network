@@ -169,7 +169,7 @@ if (!CUtility.isServer) {
                 return true
             }
             self.server.onclose = function() {
-                CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, (self["@disconnect-reason"] && CServer.socket.reason[(self["@disconnect-reason"])]) || CServer.socket.reason["self-disconnect"])
+                CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, self["@disconnect-reason"] || "n/a")
                 return true
             }
             self.server.onerror = function(error) {
