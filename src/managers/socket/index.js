@@ -22,11 +22,7 @@ const CServer = require("../server")
 ////////////////////
 
 CServer.socket = CUtility.createClass({
-    buffer: {},
-    reason: {
-        ["self-disconnect"]: "Instance Shutdown",
-        ["server-disconnect"]: "Server Shutdown"
-    }
+    buffer: {}
 })
 
 
