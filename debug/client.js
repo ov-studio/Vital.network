@@ -21,9 +21,13 @@ async function debug() {
 
     // @Socket API Examples
     const cSocket = vNetworkify.socket.create("Server:MyRoute", {
+        heartbeat: {
+            interval: 10000, // Interval at which heartbeat should be executed
+            timeout: 60000 // Duration b/w each heartbeat
+        },
         reconnection: {
-            attempts: -1, // Max 5 connnection attempts
-            interval: 1000 // 1000ms delay b/w each attemp
+            attempts: -1, // Number of attempts before onClientDisconnect is reached. [Note: -1 = infinite attempts]
+            interval: 2500 // Duration b/w each attempt
         }
     })
     vNetworkify.utility.print("* Socket-list:")
