@@ -256,6 +256,7 @@ else {
         CUtility.fetchVID(self)
         self.route = route, self.network = {}
         self.instance = {}, self.room = {}
+        var upgrade = false
         self.server = new CWS.Server({
             noServer: true,
             path: `/${self.route}`
@@ -264,7 +265,14 @@ else {
             CUtility.exec(self.onConnectionError, error)
             return true
         }
-        CServer.instance.CHTTP.on("upgrade", function(request, socket, head) {
+        self.server.onclose = function() {
+            CServer.instance.CHTTP.off("upgrade", upgrade)
+            self.destroy()
+            return true
+        }
+        self.server.on("error", self.server.onerror)
+        self.server.on("close", self.server.onclose)
+        upgrade = function(request, socket, head) {
             self.server.handleUpgrade(request, socket, head, function(socket) {
                 var [instance, query] = request.url.split("?")
                 instance = CServer.socket.fetch(instance.slice(1))
@@ -289,7 +297,8 @@ else {
                     return onSocketMessage(self, client, clientInstance.socket, payload)
                 }
             })
-        })
+        }
+        CServer.instance.CHTTP.on("upgrade", upgrade)
     }, "isInstance")
 
     // @Desc: Verifies client's validity
