@@ -163,10 +163,19 @@ if (!CUtility.isServer) {
         console.log(self.config.options)
         self.route = route
         self.queue = {}, self.network = {}, self.room = {}
+        self.reconnect = function() {
+            console.log("attempting to reconnect...")
+            self.reconnectTimer = setTimeout(function() {
+                console.log("Reconnecting")
+                self.server.close()
+                self.connect()
+            }, self.config.options.reconnection.interval)
+            return true
+        }
         self.connect = function() {
             if (self.isConnected()) return false
-            var cResolver = false
-            self.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
+            var cResolver = false // TODO: PROMISE HANDLER MUST BE FIXED
+            self.config.isAwaiting = self.config.isAwaiting || new Promise((resolver) => cResolver = resolver)
             self.server = new WebSocket(`${((CServer.config.protocol == "https") && "wss") || "ws"}://${CServer.config.hostname}:${CServer.config.port}/${self.route}`)
             self.server.onopen = function() {
                 self.config.isAwaiting = null
@@ -174,16 +183,21 @@ if (!CUtility.isServer) {
                 cResolver(self.config.isConnected)
                 return true
             }
-            self.server.onclose = function(issue) {
-                CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, (self.config.isConnected && (self["@disconnect-reason"] || "client-disconnected")) || "server-nonexistent")
-                self.destroy()
+            self.server.onclose = function() {
+                var isToBeReconnected = true
+                isToBeReconnected = (isToBeReconnected && self.reconnect()) || false
+                if (!isToBeReconnected) {
+                    self.destroy()
+                    self.config.isConnected = false
+                    cResolver(self.config.isConnected)
+                    CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, (self.config.isConnected && (self["@disconnect-reason"] || "client-disconnected")) || "server-nonexistent")
+                }
                 return true
             }
             self.server.onerror = function(error) {
                 self.config.isConnected = false
                 cResolver(self.config.isConnected)
                 CUtility.exec(self.onConnectionError, error)
-                self.connect()
                 return true
             }
             self.server.onmessage = function(payload) {
