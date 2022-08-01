@@ -28,7 +28,7 @@ async function debug() {
 
     // @Socket API Examples
     const cSocket = vNetworkify.socket.create("Server:MyRoute")
-    vNetworkify.utility.print("* Socket List:")
+    vNetworkify.utility.print("* Socket-list:")
     vNetworkify.utility.print(Object.keys(vNetworkify.socket.fetchSockets()))
 
 
@@ -52,7 +52,7 @@ async function debug() {
     })
     const networkCBResult = await cSocket.emitCallback("Server:MyCBNetwork", false, 1, 4)
     vNetworkify.utility.print(`Callback Network | Result: ${networkCBResult}`)
-    vNetworkify.utility.print("* Network List:")
+    vNetworkify.utility.print("* Network-list:")
     vNetworkify.utility.print(cSocket.fetchNetworks())
 
 
@@ -60,12 +60,12 @@ async function debug() {
     cSocket.createRoom("Server:MyRoom")
     cSocket.destroyRoom("Server:MyRoom")
     cSocket.createRoom("Server:MyRoom")
-    vNetworkify.utility.print("* Room List:")
+    vNetworkify.utility.print("* Room-list:")
     vNetworkify.utility.print(cSocket.fetchRooms())
 
     cSocket.onClientConnect = async function(client) {
         vNetworkify.utility.print(`* Client Connected [${client}]`)
-        vNetworkify.utility.print("* Client List:")
+        vNetworkify.utility.print("* Client-list:")
         vNetworkify.utility.print(cSocket.fetchClients())
 
         cSocket.joinRoom("Server:MyRoom", client)
@@ -74,12 +74,12 @@ async function debug() {
         vNetworkify.utility.print(`Remote Callback Network | Result: ${networkRemoteCBResult}`)
     }
     cSocket.onClientDisconnect = function(client, reason) {
-        vNetworkify.utility.print(`* Client Disconnected [${client}] | Reason: ${reason}`)
+        vNetworkify.utility.print(`* Client disconnected [${client}] | Reason: ${reason}`)
     }
 
     cSocket.onClientJoinRoom = function(room, client) {
         vNetworkify.utility.print(`* Client [${client}] Joined Room [${room}]`)
-        vNetworkify.utility.print(`* Member List:`)
+        vNetworkify.utility.print(`* Member-list:`)
         vNetworkify.utility.print(cSocket.fetchRoomMembers(room))
     }
     cSocket.onClientLeaveRoom = function(room, client) {
