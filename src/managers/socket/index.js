@@ -179,15 +179,14 @@ if (!CUtility.isServer) {
                 return true
             }
             self.server.onclose = function() {
-                var isToBeReconnected = (!self.isUnloaded && true) || false
-                isToBeReconnected = true
-                isToBeReconnected = (isToBeReconnected && reconnect()) || false
-                if (!isToBeReconnected) {
-                    const cReason = self["@disconnect-reason"] || (self.config.isConnected && "client-disconnected") || "server-nonexistent"
+                var isReconnection = (!self.isUnloaded && true) || false
+                isReconnection = (isReconnection && reconnect()) || false
+                if (!isReconnection) {
+                    const reason = self["@disconnect-reason"] || (self.config.isConnected && "client-disconnected") || "server-nonexistent"
                     self.destroy()
                     self.config.isConnected = false
                     cResolver(self.config.isConnected)
-                    CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, cReason)
+                    CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, reason)
                 }
                 return true
             }
