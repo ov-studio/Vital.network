@@ -199,7 +199,7 @@ if (!CUtility.isServer) {
             console.log("attempting to reconnect...")
             self.reconnectTimer = setTimeout(function() {
                 console.log("Reconnecting")
-                self.connect(true)
+                connect(true)
             }, self.config.options.reconnection.interval)
             return true
         }
