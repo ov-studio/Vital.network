@@ -70,6 +70,7 @@ CServer.socket.client.addInstanceMethod("isInstance", function(self) {
 // @Desc: Destroys the instance
 CServer.socket.client.addInstanceMethod("destroy", function(self) {
     self.isUnloaded = true
+    const vid = CUtility.fetchVID(self, null, true)
     delete CServer.socket.client.buffer[vid]
     return true
 })
