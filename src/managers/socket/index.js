@@ -203,9 +203,7 @@ if (!CUtility.isServer) {
             }, self.config.options.reconnection.interval)
             return true
         }
-        self.connect = function() {
-            return connect()
-        }
+        connect()
     })
 
     // @Desc: Retrieves connection's status of instance
