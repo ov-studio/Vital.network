@@ -25,7 +25,7 @@ CServer.socket = CUtility.createClass({
     buffer: {},
     heartbeat: {
         interval: 1000,
-        timeout: 5000
+        timeout: 2000
     },
     reconnection: {
         attempts: -1,
@@ -88,7 +88,7 @@ const onSocketMessage = function(self, client, socket, payload) {
                 socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
             }, self.config.options.heartbeat.interval)
             self.heartbeatTerminator = setTimeout(function() {
-                console.log("DESTROY THE SOCKET")
+                self.destroy(null, "heartbeat-timeout")
             }, self.config.options.heartbeat.timeout)
         }
         else {
@@ -138,7 +138,7 @@ CServer.socket.addInstanceMethod("isInstance", function(self) {
 })
 
 // @Desc: Destroys the instance
-CServer.socket.addInstanceMethod("destroy", function(self, isFlush) {
+CServer.socket.addInstanceMethod("destroy", function(self, isFlush, isReason) {
     if (isFlush) {
         if (!CUtility.isServer) {
             for (const i in self.room) {
@@ -148,7 +148,7 @@ CServer.socket.addInstanceMethod("destroy", function(self, isFlush) {
     }
     else {
         self["@disconnect-forced"] = true
-        self["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnected`
+        self["@disconnect-reason"] = (CUtility.isString(isReason) && isReason) || `${(CUtility.isServer && "server") || "client"}-disconnected`
         for (const i in self.network) {
             const j = self.network[i]
             j.destroy()
