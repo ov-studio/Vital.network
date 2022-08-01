@@ -262,11 +262,11 @@ else {
             noServer: true,
             path: `/${self.route}`
         })
-        CUtility.exec(self.onServerConnect)
+        setTimeout(function() {CUtility.exec(self.onServerConnect)}, 1)
         self.server.onclose = function() {
             CServer.instance.CHTTP.off("upgrade", upgrade)
             self.destroy()
-            CUtility.exec(self.onServerDisconnect)
+            setTimeout(function() {CUtility.exec(self.onServerDisconnect)}, 1)
             return true
         }
         self.server.onerror = function(error) {

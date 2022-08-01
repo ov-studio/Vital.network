@@ -20,9 +20,9 @@ require("../src/importer")
 ///////////////
 
 async function debug() {
-    const isConnected = await(vNetworkify.connect(33021, {
+    const isConnected = await vNetworkify.connect(33021, {
         isCaseSensitive: true
-    }))
+    })
     if (!isConnected) return false
 
 
@@ -30,6 +30,14 @@ async function debug() {
     const cSocket = vNetworkify.socket.create("Server:MyRoute")
     vNetworkify.utility.print("* Socket-list:")
     vNetworkify.utility.print(Object.keys(vNetworkify.socket.fetchSockets()))
+
+    cSocket.onServerConnect = function() {
+        vNetworkify.utility.print("* Server successfully connected!")
+    }
+    cSocket.onServerDisconnect = function() {
+        vNetworkify.utility.print("* Server successfully disconnected!")
+    }
+    cSocket.destroy()
 
 
     // @Non-Callback Network Examples
