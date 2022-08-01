@@ -264,6 +264,7 @@ else {
         })
         self.server.onerror = function(error) {
             CUtility.exec(self.onConnectionError, error)
+            CUtility.exec(self.onServerDisconnect)
             return true
         }
         self.server.onclose = function() {
