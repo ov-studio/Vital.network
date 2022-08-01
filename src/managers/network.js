@@ -49,9 +49,7 @@ CServer.network.addMethod("create", function(name, ...cArgs) {
 // @Desc: Destroys an existing network by specified name
 CServer.network.addMethod("destroy", function(name) {
     if (CServer.network.isVoid(name)) return false
-    CServer.network.buffer[name].isUnloaded = true
-    delete CServer.network.buffer[name]
-    return true
+    return CServer.network.buffer[name].destroy()
 })
 
 // @Desc: Attaches a handler on specified network
@@ -94,7 +92,8 @@ CServer.network.addInstanceMethod("isInstance", function(self) {
 
 // @Desc: Destroys the instance
 CServer.network.addInstanceMethod("destroy", function(self) {
-    CServer.network.destroy(self.name)
+    CServer.network.buffer[(self.name)].isUnloaded = true
+    delete CServer.network.buffer[(self.name)]
     return true
 })
 

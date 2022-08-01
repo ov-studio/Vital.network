@@ -49,9 +49,7 @@ CServer.room.addMethod("create", function(name, ...cArgs) {
 // @Desc: Destroys an existing room by specified name
 CServer.room.addMethod("destroy", function(name) {
     if (CServer.room.isVoid(name)) return false
-    CServer.room.buffer[name].isUnloaded = true
-    delete CServer.room.buffer[name]
-    return true
+    return CServer.room.buffer[name].destroy()
 })
 
 
@@ -71,6 +69,7 @@ CServer.room.addInstanceMethod("isInstance", function(self) {
 
 // @Desc: Destroys the instance
 CServer.room.addInstanceMethod("destroy", function(self) {
-    CServer.room.destroy(self.name)
+    self.isUnloaded = true
+    delete CServer.room.buffer[(self.name)]
     return true
 })
