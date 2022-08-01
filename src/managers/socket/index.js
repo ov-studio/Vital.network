@@ -179,6 +179,10 @@ if (!CUtility.isServer) {
                 reconCounter = 0
                 self.config.isAwaiting = null
                 self.config.isConnected = true
+                if (self.reconnectTimer) {
+                    clearTimeout(self.reconnectTimer)
+                    self.reconnectTimer = null
+                }
                 cResolver(self.config.isConnected)
                 return true
             }
