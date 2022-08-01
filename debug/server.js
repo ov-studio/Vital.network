@@ -35,10 +35,10 @@ async function debug() {
     // @Non-Callback Network Examples
     cSocket.createNetwork("Server:MyNetwork")
     cSocket.on("Server:MyNetwork", function() {
-        vNetworkify.utility.print("Non Callback Network | Handler 1")
+        vNetworkify.utility.print("Non-Callback network | Handler 1")
     })
     const secondaryExec = function(...cArgs) {
-        vNetworkify.utility.print("Non Callback Network | Handler 2")
+        vNetworkify.utility.print("Non-Callback network | Handler 2")
         vNetworkify.utility.print(...cArgs)
     }
     cSocket.on("Server:MyNetwork", secondaryExec)
@@ -51,7 +51,7 @@ async function debug() {
         return argA + argB
     })
     const networkCBResult = await cSocket.emitCallback("Server:MyCBNetwork", false, 1, 4)
-    vNetworkify.utility.print(`Callback Network | Result: ${networkCBResult}`)
+    vNetworkify.utility.print(`Callback network | Result: ${networkCBResult}`)
     vNetworkify.utility.print("* Network-list:")
     vNetworkify.utility.print(cSocket.fetchNetworks())
 
@@ -71,7 +71,7 @@ async function debug() {
         cSocket.joinRoom("Server:MyRoom", client)
         cSocket.emitRoom("Server:MyRoom", "Client:MyNetwork")
         const networkRemoteCBResult = await cSocket.emitCallback("Client:MyCBNetwork", client, 10, 20)
-        vNetworkify.utility.print(`Remote Callback Network | Result: ${networkRemoteCBResult}`)
+        vNetworkify.utility.print(`Remote-Callback network | Result: ${networkRemoteCBResult}`)
     }
     cSocket.onClientDisconnect = function(client, reason) {
         vNetworkify.utility.print(`* Client disconnected [${client}] | Reason: ${reason}`)
