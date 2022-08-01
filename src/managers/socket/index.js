@@ -146,11 +146,21 @@ if (!CUtility.isServer) {
     ///////////////////////
 
     // @Desc: Instance Constructor
-    CServer.socket.addMethod("constructor", function(self, route) {
+    CServer.socket.addMethod("constructor", function(self, route, options) {
         CUtility.fetchVID(self)
         self.config = {
-            isConnected: false
+            isConnected: false,
+            options = {}
         }
+        if (CUtility.isObject(options)) {
+            if (CUtility.isObject(options.reconnection) && CUtility.isNumber(options.reconnection.attempts) && CUtility.isNumber(options.reconnection.interval)) {
+                self.config.options.reconnection = {
+                    attempts: Math.max(1, options.reconnection.attempts),
+                    interval: Math.max(1, options.reconnection.interval)
+                }
+            }
+        }
+        console.log(self.config.options)
         self.route = route
         self.queue = {}, self.network = {}, self.room = {}
         self.connect = function() {
@@ -195,18 +205,8 @@ else {
     ///////////////////////
 
     // @Desc: Instance Constructor
-    CServer.socket.addMethod("constructor", function(self, route, options) {
+    CServer.socket.addMethod("constructor", function(self, route) {
         CUtility.fetchVID(self)
-        self.options = {}
-        if (CUtility.isObject(options)) {
-            if (CUtility.isObject(options.reconnection) && CUtility.isNumber(options.reconnection.attempts) && CUtility.isNumber(options.reconnection.interval)) {
-                self.options.reconnection = {
-                    attempts: Math.max(1, options.reconnection.attempts),
-                    interval: Math.max(1, options.reconnection.interval)
-                }
-            }
-        }
-        console.log(self.options)
         self.route = route, self.network = {}
         self.instance = {}, self.room = {}
         self.server = new CWS.Server({

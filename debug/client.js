@@ -20,7 +20,12 @@ async function debug() {
     
 
     // @Socket API Examples
-    const cSocket = vNetworkify.socket.create("Server:MyRoute")
+    const cSocket = vNetworkify.socket.create("Server:MyRoute", {
+        reconnection: {
+            attempts: 5, // Max 5 connnection attempts
+            interval: 1000 // 1000ms delay b/w each attemp
+        }
+    })
     vNetworkify.utility.print("* Socket-list:")
     vNetworkify.utility.print(Object.keys(vNetworkify.socket.fetchSockets()))
 
