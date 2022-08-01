@@ -91,7 +91,7 @@ const onSocketMessage = function(self, client, socket, payload) {
                 socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
             }, self.config.options.heartbeat.interval)
             self.heartbeatTerminator = setTimeout(function() {
-                self.destroy(null, "heartbeat-timeout")
+                self.destroy(null, {reason: "heartbeat-timeout", isForced: false})
             }, self.config.options.heartbeat.timeout)
         }
         else {
@@ -142,6 +142,7 @@ CServer.socket.addInstanceMethod("isInstance", function(self) {
 
 // @Desc: Destroys the instance
 CServer.socket.addInstanceMethod("destroy", function(self, isFlush, isReason) {
+    isReason = (CUtility.isObject(isReason) && CUtility.isString(isReason.reason) && isReason) || false
     if (isFlush) {
         if (!CUtility.isServer) {
             for (const i in self.room) {
@@ -151,7 +152,8 @@ CServer.socket.addInstanceMethod("destroy", function(self, isFlush, isReason) {
     }
     else {
         self["@disconnect-forced"] = true
-        self["@disconnect-reason"] = (CUtility.isString(isReason) && isReason) || `${(CUtility.isServer && "server") || "client"}-disconnected`
+        self["@disconnect-reason"] = (isReason && isReason.reason) || `${(CUtility.isServer && "server") || "client"}-disconnected`
+        if (isReason) self["@disconnect-forced"] = (isReason.isForced && true) || false
         for (const i in self.network) {
             const j = self.network[i]
             j.destroy()
