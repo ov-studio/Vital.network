@@ -134,6 +134,7 @@ CServer.socket.addInstanceMethod("destroy", function(self, isFlush) {
         }
         if (!CUtility.isServer) {
             if (self.reconnectTimer) clearTimeout(self.reconnectTimer)
+        }
         else {
             for (const i in self.room) {
                 self.destroyRoom(i)
