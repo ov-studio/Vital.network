@@ -165,7 +165,7 @@ if (!CUtility.isServer) {
         }
         self.route = route
         self.queue = {}, self.network = {}, self.room = {}
-        var cResolver, reconCounter = false, 0
+        var cResolver = false, reconCounter = 0
         var connect = false, reconnect = false
         connect = function(isReconnection) {
             if (!isReconnection && self.isConnected()) return false
