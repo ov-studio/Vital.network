@@ -50,9 +50,9 @@ CServer.socket.addMethod("fetchSockets", function() {
 })
 
 // @Desc: Creates a fresh socket w/ specified route
-CServer.socket.addMethod("create", function(route) {
+CServer.socket.addMethod("create", function(route, ...cArgs) {
     if (!CServer.isConnected(true) || !CServer.socket.isVoid(route)) return false
-    CServer.socket.buffer[route] = new CServer.socket(route)
+    CServer.socket.buffer[route] = new CServer.socket(route, ...cArgs)
     return CServer.socket.buffer[route]
 })
 
@@ -195,8 +195,18 @@ else {
     ///////////////////////
 
     // @Desc: Instance Constructor
-    CServer.socket.addMethod("constructor", function(self, route) {
+    CServer.socket.addMethod("constructor", function(self, route, options) {
         CUtility.fetchVID(self)
+        self.options = {}
+        if (CUtility.isObject(options)) {
+            if (CUtility.isObject(options.reconnection) && CUtility.isNumber(options.reconnection.attempts) && CUtility.isNumber(options.reconnection.interval)) {
+                self.options.reconnection = {
+                    attempts: Math.max(1, options.reconnection.attempts),
+                    interval: Math.max(1, options.reconnection.interval)
+                }
+            }
+        }
+        console.log(self.options)
         self.route = route, self.network = {}
         self.instance = {}, self.room = {}
         self.server = new CWS.Server({
