@@ -81,7 +81,6 @@ const onSocketMessage = function(self, client, socket, payload) {
     if (!socket || !CUtility.isObject(payload)) return false
     if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
         if (payload.heartbeat) {
-            console.log("RECEIVED HEARTBEAT")
             CUtility.exec(self.onHeartbeat)
             self.hearbeatTimer = setTimeout(function() {
                 socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
@@ -186,9 +185,9 @@ if (!CUtility.isServer) {
             isConnected: false,
             options: {}
         }
+        self.config.options.heartbeat = CUtility.cloneObject(CServer.socket.heartbeat)
+        self.config.options.reconnection = CUtility.cloneObject(CServer.socket.reconnection)
         if (CUtility.isObject(options)) {
-            self.config.options.heartbeat = CUtility.cloneObject(CServer.socket.heartbeat)
-            self.config.options.reconnection = CUtility.cloneObject(CServer.socket.reconnection)
             if (CUtility.isObject(options.heartbeat) && CUtility.isNumber(options.heartbeat.interval) && CUtility.isNumber(options.heartbeat.timeout)) {
                 self.config.options.heartbeat.interval = Math.max(1, options.heartbeat.interval)
                 self.config.options.heartbeat.timeout = Math.max(self.config.options.heartbeat.interval + 1, options.heartbeat.timeout)
@@ -272,8 +271,8 @@ else {
         self.config = {
             options: {}
         }
+        self.config.options.heartbeat = CUtility.cloneObject(CServer.socket.heartbeat)
         if (CUtility.isObject(options)) {
-            self.config.options.heartbeat = CUtility.cloneObject(CServer.socket.heartbeat)
             if (CUtility.isObject(options.heartbeat) && CUtility.isNumber(options.heartbeat.interval) && CUtility.isNumber(options.heartbeat.timeout)) {
                 self.config.options.heartbeat.interval = Math.max(1, options.heartbeat.interval)
                 self.config.options.heartbeat.timeout = Math.max(self.config.options.heartbeat.interval + 1, options.heartbeat.timeout)
