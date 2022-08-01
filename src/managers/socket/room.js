@@ -75,6 +75,9 @@ else {
     // @Desc: Destroys an existing room by specified name
     CServer.socket.addInstanceMethod("destroyRoom", function(self, name) {
         if (!self.isRoom(name)) return false
+        for (const i in self.room[name].member) {
+            self.leaveRoom(name, i)
+        }
         self.room[name].destroy()
         delete self.room[name]
         return true

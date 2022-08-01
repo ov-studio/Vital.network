@@ -122,7 +122,6 @@ CServer.socket.addInstanceMethod("isInstance", function(self) {
 
 // @Desc: Destroys the instance
 CServer.socket.addInstanceMethod("destroy", function(self) {
-    self.isUnloaded = true
     if (CUtility.isServer) {
         for (const i in self.instance) {
             const j = self.instance[i]
@@ -143,6 +142,7 @@ CServer.socket.addInstanceMethod("destroy", function(self) {
         const j = self.network[i]
         j.destroy()
     }
+    self.isUnloaded = true
     delete CServer.socket.buffer[(this.route)]
     return true
 })
