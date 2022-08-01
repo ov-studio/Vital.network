@@ -239,6 +239,7 @@ else {
             path: `/${self.route}`
         })
         self.server.onerror = function(error) {
+            self.destroy()
             CUtility.exec(self.onConnectionError, error)
             return true
         }
