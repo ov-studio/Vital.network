@@ -45,16 +45,7 @@ module.exports = [
                 "http": false,
                 "ws": false
             }
-        },
-        devServer: {
-          host: "0.0.0.0",
-          publicPath: "/assets/",
-          contentBase: CPath.resolve(__dirname, "./views"),
-          watchContentBase: true,
-          compress: true,
-          port: 9001
-        },
-        devtool: "inline-source-map"
+        }
     },
 
 
