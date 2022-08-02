@@ -20,7 +20,7 @@ const CServer = require("../server")
 // Static Members //
 /////////////////////
 
-// @Desc: Handles Socket Initialization
+// @Desc: Handles socket initialization
 const onSocketInitialize = function(self, route, options) {
     CUtility.fetchVID(self)
     self.config = {
@@ -52,7 +52,7 @@ const onSocketInitialize = function(self, route, options) {
 }
 
 
-// @Desc: Handles Socket Message
+// @Desc: Handles socket message
 const onSocketMessage = function(self, client, socket, payload) {
     payload = JSON.parse(CUtility.fromBase64(payload.data))
     if (!socket || !CUtility.isObject(payload)) return false
