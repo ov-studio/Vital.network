@@ -128,7 +128,7 @@ if (!CUtility.isServer) {
     // Instance Members //
     ///////////////////////
 
-    // @Desc: Instance Constructor
+    // @Desc: Instance constructor
     CServer.socket.addMethod("constructor", function(self, route, options) {
         onSocketInitialize(self, route, options)
         var cResolver = false, reconCounter = 0
@@ -197,7 +197,7 @@ else {
     // Instance Members //
     ///////////////////////
 
-    // @Desc: Instance Constructor
+    // @Desc: Instance constructor
     CServer.socket.addMethod("constructor", function(self, route, options) {
         onSocketInitialize(self, route, options)
         var heartbeat = false, upgrade = false

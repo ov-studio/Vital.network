@@ -78,7 +78,7 @@ CServer.network.addMethod("emit", function(name, ...cArgs) {
 // Instance Members //
 ///////////////////////
 
-// @Desc: Instance Constructor
+// @Desc: Instance constructor
 CServer.network.addMethod("constructor", function(self, name, isCallback) {
     self.name = name
     self.isCallback = (CUtility.isBool(isCallback) && true) || false

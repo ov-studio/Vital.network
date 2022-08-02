@@ -57,7 +57,7 @@ CServer.room.addMethod("destroy", function(name) {
 // Instance Members //
 ///////////////////////
 
-// @Desc: Instance Constructor
+// @Desc: Instance constructor
 CServer.room.addMethod("constructor", function(self, name) {
     self.name = name
 }, "isInstance")

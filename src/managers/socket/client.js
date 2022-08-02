@@ -56,7 +56,7 @@ CServer.socket.client.addMethod("destroy", function(vid, socket) {
 // Instance Members //
 ///////////////////////
 
-// @Desc: Instance Constructor
+// @Desc: Instance constructor
 CServer.socket.client.addMethod("constructor", function(self, socket) {
     CUtility.fetchVID(self, CUtility.fetchVID(socket))
     self.socket = socket
