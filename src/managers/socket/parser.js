@@ -1,10 +1,10 @@
 /*----------------------------------------------------------------
      Resource: vNetworkify
-     Script: managers: socket: message.js
+     Script: managers: socket: parser.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
      DOC: 22/07/2022
-     Desc: Socket: Message Manager
+     Desc: Socket: Parser Manager
 ----------------------------------------------------------------*/
 
 
@@ -19,6 +19,38 @@ const CServer = require("../server")
 /////////////////////
 // Static Members //
 /////////////////////
+
+// @Desc: Handles Socket Initialization
+const onSocketInitialize = function(self, route, options) {
+    CUtility.fetchVID(self)
+    self.config = {
+        timestamp: new Date(),
+        options: {}
+    }
+    self.config.options.heartbeat = CUtility.cloneObject(CServer.socket.heartbeat)
+    if (CUtility.isObject(options)) {
+        if (CUtility.isObject(options.heartbeat) && CUtility.isNumber(options.heartbeat.interval) && CUtility.isNumber(options.heartbeat.timeout)) {
+            self.config.options.heartbeat.interval = Math.max(1, options.heartbeat.interval)
+            self.config.options.heartbeat.timeout = Math.max(self.config.options.heartbeat.interval + 1, options.heartbeat.timeout)
+        }
+    }
+    self.route = route, self.network = {}, self.room = {}
+    if (!CUtility.isServer) {
+        self.config.options.reconnection = CUtility.cloneObject(CServer.socket.reconnection)
+        if (CUtility.isObject(options)) {
+            if (CUtility.isObject(options.reconnection) && CUtility.isNumber(options.reconnection.attempts) && CUtility.isNumber(options.reconnection.interval)) {
+                self.config.options.reconnection.attempts = ((options.reconnection.attempts == -1) && options.reconnection.attempts) || Math.max(1, options.reconnection.attempts)
+                self.config.options.reconnection.interval = Math.max(1, options.reconnection.interval)
+            }
+        }
+        self.queue = {}
+    }
+    else {
+        self.instance = {}
+    }
+    return true
+}
+
 
 // @Desc: Handles Socket Message
 const onSocketMessage = function(self, client, socket, payload) {
@@ -87,4 +119,7 @@ const onSocketMessage = function(self, client, socket, payload) {
 // Exports //
 //////////////
 
-module.exports = onSocketMessage
+module.exports = {
+    onSocketInitialize,
+    onSocketMessage
+}

@@ -15,7 +15,7 @@
 const CWS = require("ws")
 const CUtility = require("../../utilities")
 const CServer = require("../server")
-const onSocketMessage = require("./message")
+const {onSocketInitialize, onSocketMessage} = require("./parser")
 
 
 ////////////////////
@@ -130,26 +130,7 @@ if (!CUtility.isServer) {
 
     // @Desc: Instance Constructor
     CServer.socket.addMethod("constructor", function(self, route, options) {
-        CUtility.fetchVID(self)
-        self.config = {
-            isConnected: false,
-            timestamp: new Date(),
-            options: {}
-        }
-        self.config.options.heartbeat = CUtility.cloneObject(CServer.socket.heartbeat)
-        self.config.options.reconnection = CUtility.cloneObject(CServer.socket.reconnection)
-        if (CUtility.isObject(options)) {
-            if (CUtility.isObject(options.heartbeat) && CUtility.isNumber(options.heartbeat.interval) && CUtility.isNumber(options.heartbeat.timeout)) {
-                self.config.options.heartbeat.interval = Math.max(1, options.heartbeat.interval)
-                self.config.options.heartbeat.timeout = Math.max(self.config.options.heartbeat.interval + 1, options.heartbeat.timeout)
-            }
-            if (CUtility.isObject(options.reconnection) && CUtility.isNumber(options.reconnection.attempts) && CUtility.isNumber(options.reconnection.interval)) {
-                self.config.options.reconnection.attempts = ((options.reconnection.attempts == -1) && options.reconnection.attempts) || Math.max(1, options.reconnection.attempts)
-                self.config.options.reconnection.interval = Math.max(1, options.reconnection.interval)
-            }
-        }
-        self.route = route
-        self.queue = {}, self.network = {}, self.room = {}
+        onSocketInitialize(self, route, options)
         var cResolver = false, reconCounter = 0
         var connect = false, reconnect = false
         connect = function(isReconnection) {
@@ -218,21 +199,8 @@ else {
 
     // @Desc: Instance Constructor
     CServer.socket.addMethod("constructor", function(self, route, options) {
-        CUtility.fetchVID(self)
-        self.config = {
-            timestamp: new Date(),
-            options: {}
-        }
-        self.config.options.heartbeat = CUtility.cloneObject(CServer.socket.heartbeat)
-        if (CUtility.isObject(options)) {
-            if (CUtility.isObject(options.heartbeat) && CUtility.isNumber(options.heartbeat.interval) && CUtility.isNumber(options.heartbeat.timeout)) {
-                self.config.options.heartbeat.interval = Math.max(1, options.heartbeat.interval)
-                self.config.options.heartbeat.timeout = Math.max(self.config.options.heartbeat.interval + 1, options.heartbeat.timeout)
-            }
-        }
-        self.route = route, self.network = {}
-        self.instance = {}, self.room = {}
-        var upgrade = false
+        onSocketInitialize(self, route, options)
+        var heartbeat = false, upgrade = false
         self.server = new CWS.Server({
             noServer: true,
             path: `/${self.route}`
@@ -252,7 +220,7 @@ else {
         }
         self.server.on("close", self.server.onclose)
         self.server.on("error", self.server.onerror)
-        self.heartbeat = function(instance) {
+        heartbeat = function(instance) {
             instance.socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
             return true
         }
@@ -267,7 +235,7 @@ else {
                 clientInstance.queue = {}, clientInstance.room = {}
                 query = CUtility.queryString.parse(query)
                 clientInstance.socket.send(CUtility.toBase64(JSON.stringify({client: client})))
-                self.heartbeat(clientInstance)
+                heartbeat(clientInstance)
                 CUtility.exec(self.onClientConnect, client)
                 clientInstance.socket.onclose = function() {
                     const reason = self.instance[client]["@disconnect-reason"] || self["@disconnect-reason"] || "client-disconnected"
@@ -283,6 +251,7 @@ else {
                     return onSocketMessage(self, client, clientInstance.socket, payload)
                 }
             })
+            return true
         }
         CServer.instance.CHTTP.on("upgrade", upgrade)
     }, "isInstance")
