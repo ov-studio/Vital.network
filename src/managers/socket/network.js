@@ -13,6 +13,7 @@
 //////////////
 
 const CUtility = require("../../utilities")
+const CNetwork = require("../../utilities/network")
 const CServer = require("../server")
 
 
@@ -60,7 +61,7 @@ CServer.socket.addInstanceMethod("fetchNetworks", function(self) {
 // @Desc: Creates a fresh network w/ specified name
 CServer.socket.addInstanceMethod("createNetwork", function(self, name, ...cArgs) {
     if (self.isNetwork(name)) return false
-    self.network[name] = CServer.network.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
+    self.network[name] = CNetwork.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
     return true
 })
 
