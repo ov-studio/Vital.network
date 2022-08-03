@@ -58,7 +58,7 @@ CServer.public.addMethod("constructor", function(self, options) {
     private.config = {}, private.instance = {}
     private.config.port = (CUtility.isNumber(options.port) && options.port) || false
     if (!CUtility.isServer) {
-        private.config.protocol = (CUtility.isString(options.protocol) && options.protocol) || window.location.protocol
+        private.config.protocol = (options.isSSL && "https") || "http"
         private.config.hostname = (CUtility.isString(options.hostname) && options.hostname) || window.location.hostname
     }
     else {
