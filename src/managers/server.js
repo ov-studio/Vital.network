@@ -16,6 +16,7 @@ const CCors = require("cors")
 const CHTTP = require("http")
 const CExpress = require("express")
 const CUtility = require("../utilities")
+const CNetwork = require("../utilities/network")
 
 
 ////////////////////
@@ -25,6 +26,7 @@ const CUtility = require("../utilities")
 const CServer = CUtility.createClass({
     buffer: {}
 })
+CNetwork.create("vNetworkify:Server:onCreate")
 
 
 /////////////////////
@@ -36,7 +38,7 @@ CServer.public.addMethod("create", function(...cArgs) {
     return CServer.public.createInstance(...cArgs)
 })
 
-// @Desc: Handles Connection Status
+// @Desc: Handles connection status
 CServer.private.onConnectionStatus = function(self, state) {
     const private = CServer.instance.get(self)
     delete private.isAwaiting
@@ -65,6 +67,7 @@ CServer.public.addMethod("constructor", function(self, options) {
         private.config.isCaseSensitive = (options.isCaseSensitive && true) || false
         private.config.cors = (CUtility.isObject(options.cors) && options.cors) || false
     }
+    CNetwork.emit("vNetworkify:Server:onCreate", self, private)
 })
 
 // @Desc: Destroys the instance
