@@ -103,7 +103,7 @@ else {
         if (!options.port || CServer.isConnected()) return false
         var cResolver = false
         CServer.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
-        CServer.config.port = port
+        CServer.config.port = options.port
         CServer.config.isCaseSensitive = (options.isCaseSensitive && true) || false
         CServer.config.cors = (CUtility.isObject(options.cors) && options.cors) || false
         CServer.instance.CExpress = CExpress()
