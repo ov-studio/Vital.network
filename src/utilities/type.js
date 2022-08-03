@@ -36,7 +36,6 @@ CType.forEach(function(j) {
     }
 })
 
-
 // @Desc: Verifies whether specified data is null
 CUtility.isNull = function(data) {
     return data == null
