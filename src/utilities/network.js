@@ -82,7 +82,7 @@ CNetwork.public.addMethod("constructor", function(self, name, isCallback) {
     const private = CServer.instance.get(self)
     private.name = name
     private.isCallback = (CUtility.isBool(isCallback) && true) || false
-    private.handler = (!private.isCallback && new WeakMap()) || false
+    private.handler = (!private.isCallback && {}) || false
 }, "isInstance")
 
 // @Desc: Verifies instance's validity
@@ -104,10 +104,11 @@ CNetwork.public.addInstanceMethod("on", function(self, exec) {
     const private = CServer.instance.get(self)
     if (!CUtility.isFunction(exec)) return false
     if (!private.isCallback) {
-        if (private.handler.has(exec)) return false
-        private.handler.set(exec, {
+        const execVID = CUtility.fetchVID(exec)
+        if (private.handler[execVID]) return false
+        private.handler[execVID] = {
             exec: exec
-        })
+        }
     }
     else {
         if (private.handler) return false
@@ -123,8 +124,9 @@ CNetwork.public.addInstanceMethod("off", function(self, exec) {
     const private = CServer.instance.get(self)
     if (!CUtility.isFunction(exec)) return false
     if (!private.isCallback) {
-        if (!private.handler.has(exec)) return false
-        private.handler.delete(exec)
+        const execVID = CUtility.fetchVID(exec, null, true)
+        if (!execVID || !private.handler[execVID]) return false
+        delete private.handler[execVID]
     }
     else {
         if (!private.handler || (exec != private.handler.exec)) return false
