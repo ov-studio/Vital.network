@@ -43,16 +43,17 @@ CServer.public.addMethod("create", function(...cArgs) {
 
 // @Desc: Instance constructor
 CServer.public.addMethod("constructor", function(self, options) {
-    options = (CUtility.isObject(options) && options) || {}
-    self.config = {}, self.instance = {}
-    self.config.port = (CUtility.isNumber(options.port) && options.port) || false
+    const private = CServer.instance.get(self)
+    private.options = (CUtility.isObject(options) && options) || {}
+    private.config = {}, private.instance = {}
+    private.config.port = (CUtility.isNumber(options.port) && options.port) || false
     if (!CUtility.isServer) {
-        self.config.protocol = (CUtility.isString(options.protocol) && options.protocol) || window.location.protocol
-        self.config.hostname = (CUtility.isString(options.hostname) && options.hostname) || window.location.hostname
+        private.config.protocol = (CUtility.isString(options.protocol) && options.protocol) || window.location.protocol
+        private.config.hostname = (CUtility.isString(options.hostname) && options.hostname) || window.location.hostname
     }
     else {
-        self.config.isCaseSensitive = (options.isCaseSensitive && true) || false
-        self.config.cors = (CUtility.isObject(options.cors) && options.cors) || false
+        private.config.isCaseSensitive = (options.isCaseSensitive && true) || false
+        private.config.cors = (CUtility.isObject(options.cors) && options.cors) || false
     }
 })
 
