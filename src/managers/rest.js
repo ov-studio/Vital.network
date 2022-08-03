@@ -25,14 +25,13 @@ CNetwork.fetch("vNetworkify:Server:onCreate").on(function(self, private) {
     // Class: Rest //
     //////////////////
 
-    const CRest = CUtility.createClass({
-        buffer: {
-            post: {},
-            get: {},
-            put: {},
-            delete: {}
-        }
-    })
+    const CRest = CUtility.createClass({})
+    CRest.private = {
+        post: {},
+        get: {},
+        put: {},
+        delete: {}
+    }
     self.rest = CRest.public
 
 
@@ -43,33 +42,33 @@ CNetwork.fetch("vNetworkify:Server:onCreate").on(function(self, private) {
     if (!CUtility.isServer) {
         // @Desc: Requests a fetch on specified REST API 
         CRest.public.addMethod("fetch", function(type, ...cArgs) {
-            if (!CUtility.isObject(CRest.public.buffer[type])) return false
+            if (!CUtility.isObject(CRest.private[type])) return false
             return private.instance.CExpress[type](...cArgs)
         })
     }
     else {
         // @Desc: Verifies whether the REST API is void
         CRest.public.addMethod("isVoid", function(type, route) {
-            return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CRest.public.buffer[type]) && (!CUtility.isObject(CRest.public.buffer[type][route]) || !CRest.public.buffer[type][route].handler) && true) || false
+            return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CRest.private[type]) && (!CUtility.isObject(CRest.private[type][route]) || !CRest.private[type][route].handler) && true) || false
         })
         
         // @Desc: Creates a fresh REST API
         CRest.public.addMethod("create", function(type, route, exec) {
             if (!CRest.public.isVoid(type, route) || !CUtility.isFunction(exec)) return false
-            CRest.public.buffer[type][route] = CRest.public.buffer[type][route] || {}
-            CRest.public.buffer[type][route].manager = CRest.public.buffer[type][route].manager || function(...cArgs) {
-                CUtility.exec(CRest.public.buffer[type][route].handler, ...cArgs)
+            CRest.private[type][route] = CRest.private[type][route] || {}
+            CRest.private[type][route].manager = CRest.private[type][route].manager || function(...cArgs) {
+                CUtility.exec(CRest.private[type][route].handler, ...cArgs)
                 return true
             }
-            CRest.public.buffer[type][route].handler = exec
-            private.instance.CExpress[type](`/${route}`, CRest.public.buffer[type][route].manager)
+            CRest.private[type][route].handler = exec
+            private.instance.CExpress[type](`/${route}`, CRest.private[type][route].manager)
             return true
         })
         
         // @Desc: Destroys an existing REST API
         CRest.public.addMethod("destroy", function(type, route) {
             if (CRest.public.isVoid(type, route)) return false
-            delete CRest.public.buffer[type][route].handler
+            delete CRest.private[type][route].handler
             return true
         })
         
