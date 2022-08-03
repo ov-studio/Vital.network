@@ -157,11 +157,10 @@ const test = CServer.public.create({
     port: 33021,
     isCaseSensitive: true
 })
-console.log(test)
-test.public.connect()
+test.connect()
 
 const test2 = CServer.public.create({
     port: 33022,
     isCaseSensitive: true
 })
-test2.public.connect()
+test2.connect()
