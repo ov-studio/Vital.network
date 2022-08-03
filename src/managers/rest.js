@@ -13,7 +13,12 @@
 //////////////
 
 const CUtility = require("../utilities")
-const CServer = require("./server")(true)
+const CServer = require("./server")
+const CNetwork = require("../utilities/network")
+CNetwork.fetch("vNetworkify:Server:onCreate").on(function(...cArgs) {
+    console.log("hey")
+    console.log(...cArgs)
+})
 
 
 //////////////////

@@ -14,7 +14,7 @@
 
 const CUtility = require("../../utilities")
 const CRoom = require("../../utilities/room")
-const CServer = require("../server")()
+const CServer = require("../server")
 
 
 ///////////////////////
