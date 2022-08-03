@@ -69,6 +69,10 @@ CServer.public.addMethod("constructor", function(self, options) {
 
 // @Desc: Destroys the instance
 CServer.public.addInstanceMethod("destroy", function(self) {
+    const private = CServer.instance.get(self)
+    if (CUtility.isServer) {
+        private.instance.CHTTP.close()
+    }
     self.destroyInstance()
     return true
 })
