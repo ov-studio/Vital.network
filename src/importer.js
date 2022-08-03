@@ -38,3 +38,25 @@ const vNetworkify = CUtility.createAPIs(CServer, {
 vNetworkify.util = CUtility
 CUtility.global.vNetworkify = vNetworkify
 module.exports = vNetworkify
+
+
+// TODO: TESTING
+
+
+async function exec() {
+    const test = CServer.create({
+        port: 33021,
+        isCaseSensitive: true
+    })
+    const isConnected = await test.connect()
+    if (!isConnected) return false
+
+    test.rest.create("get", "", function(request, response) {
+        response.status(200).send("API Status Message")
+    })
+    test.rest.destroy("get", "")
+    test.rest.create("get", "", function(request, response) {
+        response.status(200).send({test: "Updated Status Message"})
+    })
+}
+setTimeout(() => exec(), 2000)

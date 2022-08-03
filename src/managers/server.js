@@ -156,24 +156,3 @@ CServer.public.addInstanceMethod("connect", function(self) {
 //////////////
 
 module.exports = CServer.public
-
-// TODO: TESTING
-
-
-async function exec() {
-    const test = CServer.public.create({
-        port: 33021,
-        isCaseSensitive: true
-    })
-    const isConnected = await test.connect()
-    if (!isConnected) return false
-
-    test.rest.create("get", "", function(request, response) {
-        response.status(200).send("API Status Message")
-    })
-    test.rest.destroy("get", "")
-    test.rest.create("get", "", function(request, response) {
-        response.status(200).send({test: "Updated Status Message"})
-    })
-}
-setTimeout(() => exec(), 2000)
