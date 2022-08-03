@@ -69,7 +69,7 @@ CUtility.cloneObject = function(parent, isRecursive) {
 
 // @Desc: Creates a new dynamic class
 CUtility.createClass = function(parent) {
-    class __C{
+    class __C {
         static isClass = true
         constructor(...cArgs) {
             CUtility.exec(__C.constructor, this, ...cArgs)
