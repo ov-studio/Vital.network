@@ -75,16 +75,18 @@ CServer.public.addInstanceMethod("fetchServer", function(self, index) {
 
 // @Desc: Retrieves connection's status
 CServer.public.addInstanceMethod("isConnected", function(self, isSync) {
-    if (isSync) return (CUtility.isBool(self.config.isConnected) && self.config.isConnected) || false
-    return self.isAwaiting || self.config.isConnected || false
+    const private = CServer.instance.get(self)
+    if (isSync) return (CUtility.isBool(private.isConnected) && private.isConnected) || false
+    return private.isAwaiting || private.isConnected || false
 })
 
 // @Desc: Handles Connection Status
 const onConnectionStatus = function(self, resolver, state) {
-    delete self.isAwaiting
-    self.config.isConnected = state
-    CUtility.exec(resolver, self.config.isConnected)
-    CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(self.config.port && ("[Port: " + self.config.port + "]")) || ""}`)
+    const private = CServer.instance.get(self)
+    delete private.isAwaiting
+    private.isConnected = state
+    CUtility.exec(resolver, private.isConnected)
+    CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || ""}`)
     return true
 }
 
@@ -126,16 +128,16 @@ CServer.public.addInstanceMethod("connect", function(self) {
     }
     else {
         var cResolver = false
-        self.isAwaiting = new Promise((resolver) => cResolver = resolver)
+        private.isAwaiting = new Promise((resolver) => cResolver = resolver)
         self.instance.CExpress = CExpress()
         self.instance.CHTTP = CHTTP.Server(self.instance.CExpress)
-        self.instance.CExpress.use(CCors(self.config.cors))
+        self.instance.CExpress.use(CCors(private.config.cors))
         self.instance.CExpress.use(CExpress.json())
         self.instance.CExpress.use(CExpress.urlencoded({extended: true}))
-        self.instance.CExpress.set("case sensitive routing", self.config.isCaseSensitive)
+        self.instance.CExpress.set("case sensitive routing", private.config.isCaseSensitive)
         // TODO: ADD THIS MIDDLEWARE
         //self.instance.CExpress.all("*", CServer.rest.onMiddleware)
-        self.instance.CHTTP.listen(self.config.port, () => onConnectionStatus(self, cResolver, true))
+        self.instance.CHTTP.listen(private.config.port, () => onConnectionStatus(self, cResolver, true))
         return true
     }
     return true
