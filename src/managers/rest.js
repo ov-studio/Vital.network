@@ -23,7 +23,6 @@ const CNetwork = require("../utilities/network")
 CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     const CRest = CUtility.createClass({})
     CRest.private = {
-        isUnloaded = false,
         post: {},
         get: {},
         put: {},
@@ -36,7 +35,6 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     // Static Members //
     /////////////////////
 
-    var isUnloaded = false
     CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {
         if (server == __server) CRest.private.isUnloaded = true
         delete __server.public.rest
