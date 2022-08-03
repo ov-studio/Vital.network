@@ -79,6 +79,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             next()
             return true
         })
+        server.private.instance.CExpress.all("*", CRest.public.onMiddleware)
     }
 })
 

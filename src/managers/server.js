@@ -143,8 +143,6 @@ CServer.public.addInstanceMethod("connect", function(self) {
         private.instance.CExpress.use(CExpress.json())
         private.instance.CExpress.use(CExpress.urlencoded({extended: true}))
         private.instance.CExpress.set("case sensitive routing", private.config.isCaseSensitive)
-        // TODO: ADD THIS MIDDLEWARE
-        //private.instance.CExpress.all("*", CServer.rest.onMiddleware)
         private.instance.CHTTP.listen(private.config.port, () => CServer.private.onConnectionStatus(self, true))
         .on("error", () => CServer.private.onConnectionStatus(self, false))
         return true
