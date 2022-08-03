@@ -42,8 +42,18 @@ CServer.addMethod("create", function(...cArgs) {
 ///////////////////////
 
 // @Desc: Instance constructor
-CServer.addMethod("constructor", function(self) {
-    self.config = {}, self.options = {}
+CServer.addMethod("constructor", function(self, options) {
+    options = (CUtility.isObject(options) && options) || {}
+    self.config = {}
+    self.config.port = (CUtility.isNumber(options.port) && options.port) || false
+    if (!CUtility.isServer) {
+        self.config.protocol = (CUtility.isString(options.protocol) && options.protocol) || window.location.protocol
+        self.config.hostname = (CUtility.isString(options.hostname) && options.hostname) || window.location.hostname
+    }
+    else {
+        self.config.isCaseSensitive = (options.isCaseSensitive && true) || false
+        self.config.cors = (CUtility.isObject(options.cors) && options.cors) || false
+    }
 }, "isInstance")
 
 // @Desc: Verifies instance's validity
@@ -59,13 +69,12 @@ CServer.addInstanceMethod("destroy", function(self) {
 
 
 /*
-
 // @Desc: Handles Connection Status
 const onConnectionStatus = function(resolver, state) {
-    delete CServer.config.isAwaiting
-    CServer.config.isConnected = state
-    CUtility.exec(resolver, CServer.config.isConnected)
-    CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} [Port: ${CServer.config.port}]`)
+    delete self.config.isAwaiting
+    self.config.isConnected = state
+    CUtility.exec(resolver, self.config.isConnected)
+    CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} [Port: ${self.config.port}]`)
     return true
 }
 
@@ -81,19 +90,14 @@ CServer.fetchServer = function(index) {
 
 // @Desc: Retrieves connection's status
 CServer.isConnected = function(isSync) {
-    if (isSync) return (CUtility.isBool(CServer.config.isConnected) && CServer.config.isConnected) || false
-    return CServer.config.isAwaiting || CServer.config.isConnected || false
+    if (isSync) return (CUtility.isBool(self.config.isConnected) && self.config.isConnected) || false
+    return self.config.isAwaiting || self.config.isConnected || false
 }
 
 if (!CUtility.isServer) {
     // @Desc: Intializes & sets up server connections
     CServer.connect = function(options) {
-        options = (CUtility.isObject(options) && options) || {}
-        options.port = (CUtility.isNumber(options.port) && options.port) || false
         if (CServer.isConnected()) return false
-        CServer.config.port = options.port 
-        CServer.config.protocol = (CUtility.isString(options.protocol) && options.protocol) || window.location.protocol
-        CServer.config.hostname = (CUtility.isString(options.hostname) && options.hostname) || window.location.hostname
         CServer.instance.CExpress = {
             post: function(route, data) {
                 if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
@@ -131,22 +135,17 @@ if (!CUtility.isServer) {
 else {
     // @Desc: Intializes & sets up server connections
     CServer.connect = function(options) {
-        options = (CUtility.isObject(options) && options) || {}
-        options.port = (CUtility.isNumber(options.port) && options.port) || false
-        if (!options.port || CServer.isConnected()) return false
+        if (CServer.isConnected()) return false
         var cResolver = false
-        CServer.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
-        CServer.config.port = options.port
-        CServer.config.isCaseSensitive = (options.isCaseSensitive && true) || false
-        CServer.config.cors = (CUtility.isObject(options.cors) && options.cors) || false
+        self.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
         CServer.instance.CExpress = CExpress()
         CServer.instance.CHTTP = CHTTP.Server(CServer.instance.CExpress)
-        CServer.instance.CExpress.use(CCors(CServer.config.cors))
+        CServer.instance.CExpress.use(CCors(self.config.cors))
         CServer.instance.CExpress.use(CExpress.json())
         CServer.instance.CExpress.use(CExpress.urlencoded({extended: true}))
-        CServer.instance.CExpress.set("case sensitive routing", CServer.config.isCaseSensitive)
+        CServer.instance.CExpress.set("case sensitive routing", self.config.isCaseSensitive)
         CServer.instance.CExpress.all("*", CServer.rest.onMiddleware)
-        CServer.instance.CHTTP.listen(CServer.config.port, () => onConnectionStatus(cResolver, true))
+        CServer.instance.CHTTP.listen(self.config.port, () => onConnectionStatus(cResolver, true))
         return true
     }    
 }
