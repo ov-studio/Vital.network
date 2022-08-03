@@ -38,7 +38,7 @@ CServer.rest = CRest.public
 if (!CUtility.isServer) {
     // @Desc: Requests a fetch on specified REST API 
     CRest.public.addMethod("fetch", function(type, ...cArgs) {
-        if (!CServer.isConnected(true) || !CUtility.isObject(CRest.public.buffer[type])) return false
+        if (!CUtility.isObject(CRest.public.buffer[type])) return false
         return CServer.instance.CExpress[type](...cArgs)
     })
 }
@@ -50,7 +50,7 @@ else {
     
     // @Desc: Creates a fresh REST API
     CRest.public.addMethod("create", function(type, route, exec) {
-        if (!CServer.isConnected(true) || !CRest.public.isVoid(type, route) || !CUtility.isFunction(exec)) return false
+        if (!CRest.public.isVoid(type, route) || !CUtility.isFunction(exec)) return false
         CRest.public.buffer[type][route] = CRest.public.buffer[type][route] || {}
         CRest.public.buffer[type][route].manager = CRest.public.buffer[type][route].manager || function(...cArgs) {
             CUtility.exec(CRest.public.buffer[type][route].handler, ...cArgs)
