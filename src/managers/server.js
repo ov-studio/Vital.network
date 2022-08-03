@@ -26,7 +26,7 @@ const CNetwork = require("../utilities/network")
 const CServer = CUtility.createClass({
     buffer: {}
 })
-CNetwork.create("vNetworkify:Server:onCreate")
+CNetwork.create("vNetworkify:Server:onConnect")
 
 
 /////////////////////
@@ -45,6 +45,7 @@ CServer.private.onConnectionStatus = function(self, state) {
     private.isConnected = state
     CUtility.exec(private.resolver, private.isConnected)
     CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || ""}`)
+    if (private.isConnected) CNetwork.emit("vNetworkify:Server:onConnect", self, private)
     return true
 }
 
@@ -67,7 +68,6 @@ CServer.public.addMethod("constructor", function(self, options) {
         private.config.isCaseSensitive = (options.isCaseSensitive && true) || false
         private.config.cors = (CUtility.isObject(options.cors) && options.cors) || false
     }
-    CNetwork.emit("vNetworkify:Server:onCreate", self, private)
 })
 
 // @Desc: Destroys the instance
