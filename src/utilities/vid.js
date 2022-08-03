@@ -43,12 +43,12 @@ CUtility.vid.blacklist = function(vid) {
 }
 
 // @Desc: Assigns/Fetches VID (Virtual ID) on/from valid instance
-CUtility.vid.fetch = function(buffer, vid, isReadOnly) {
+CUtility.vid.fetch = function(buffer, assignVID, isReadOnly) {
     if (CUtility.isNull(buffer) || CUtility.isBool(buffer) || CUtility.isString(buffer) || CUtility.isNumber(buffer)) return false
     buffer.prototype = buffer.prototype || {}
     if (!isReadOnly && !buffer.prototype.vid) {
         Object.defineProperty(buffer.prototype, "vid", {
-            value: vid || `${CUtility.identifier}:${CUtility.vid.create()}`,
+            value: assignVID || `${CUtility.identifier}:${CUtility.vid.create()}`,
             enumerable: true, configurable: false, writable: false
         })
     }
