@@ -20,7 +20,7 @@ const CNetwork = require("../utilities/network")
 // Class: Rest //
 //////////////////
 
-CNetwork.fetch("vNetworkify:Server:onConnect").on(function(serverPublic, serverPrivate) {
+CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     const CRest = CUtility.createClass({})
     CRest.private = {
         post: {},
@@ -28,7 +28,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(serverPublic, serverP
         put: {},
         delete: {}
     }
-    serverPublic.rest = CRest.public
+    server.public.rest = CRest.public
 
 
     /////////////////////
@@ -39,7 +39,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(serverPublic, serverP
         // @Desc: Requests a fetch on specified REST API 
         CRest.public.addMethod("fetch", function(type, ...cArgs) {
             if (!CUtility.isObject(CRest.private[type])) return false
-            return serverPrivate.instance.CExpress[type](...cArgs)
+            return server.private.instance.CExpress[type](...cArgs)
         })
     }
     else {
@@ -57,7 +57,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(serverPublic, serverP
                 return true
             }
             CRest.private[type][route].handler = exec
-            serverPrivate.instance.CExpress[type](`/${route}`, CRest.private[type][route].manager)
+            server.private.instance.CExpress[type](`/${route}`, CRest.private[type][route].manager)
             return true
         })
         

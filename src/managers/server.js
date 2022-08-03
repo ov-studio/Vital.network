@@ -45,7 +45,7 @@ CServer.private.onConnectionStatus = function(self, state) {
     private.isConnected = state
     CUtility.exec(private.resolver, private.isConnected)
     CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || ""}`)
-    if (private.isConnected) CNetwork.emit("vNetworkify:Server:onConnect", self, private)
+    if (private.isConnected) CNetwork.emit("vNetworkify:Server:onConnect", {public: self, private: private})
     return true
 }
 
@@ -167,7 +167,19 @@ setTimeout(() => {
         isCaseSensitive: true
     })
     test.connect()
-    
+
+    console.log(test.rest)
+    setTimeout(function() {
+        console.log(test.rest)
+        test.rest.create("get", "", function(request, response) {
+            response.status(200).send("API Status Message")
+        })
+        test.rest.destroy("get", "")
+        test.rest.create("get", "", function(request, response) {
+            response.status(200).send({test: "Updated Status Message"})
+        })
+    }, 2000)
+
     const test2 = CServer.public.create({
         port: 33021,
         isCaseSensitive: true
