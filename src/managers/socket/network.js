@@ -46,7 +46,7 @@ CServer.socket.addMethod("resolveCallback", function(self, client, payload) {
 
 // @Desc: Verifies network's validity
 CServer.socket.addInstanceMethod("isNetwork", function(self, name) {
-    return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && self.network[name].isInstance() && true) || false
+    return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && true) || false
 })
 
 // @Desc: Fetches an array of existing networks

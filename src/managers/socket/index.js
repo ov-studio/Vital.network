@@ -76,11 +76,6 @@ CServer.socket.addMethod("destroy", function(route) {
 // Instance Members //
 ///////////////////////
 
-// @Desc: Verifies instance's validity
-CServer.socket.addInstanceMethod("isInstance", function(self) {
-    return (!self.isUnloaded && !CServer.socket.isVoid(self.route) && true) || false
-})
-
 // @Desc: Destroys the instance
 CServer.socket.addInstanceMethod("destroy", function(self, isFlush) {
     if (isFlush) {
@@ -254,7 +249,7 @@ else {
             return true
         }
         CServer.instance.CHTTP.on("upgrade", upgrade)
-    }, "isInstance")
+    })
 
     // @Desc: Verifies client's validity
     CServer.socket.addInstanceMethod("isClient", function(self, client) {

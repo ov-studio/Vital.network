@@ -23,7 +23,6 @@ const CServer = require("../server")
 // @Desc: Verifies room's validity
 CServer.socket.addInstanceMethod("isRoom", function(self, name) {
     var cInstance = (CUtility.isString(name) && CUtility.isObject(self.room[name]) && self.room[name]) || false
-    if (CUtility.isServer && cInstance && !cInstance.isInstance()) cInstance = false
     return (cInstance && true) || false
 })
 
