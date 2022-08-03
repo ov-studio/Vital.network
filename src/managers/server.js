@@ -92,7 +92,6 @@ const onConnectionStatus = function(self, resolver, state) {
     return true
 }
 
-
 if (!CUtility.isServer) {
     // @Desc: Handles Connection Status
     CServer.addInstanceMethod("connect", function(self) {
