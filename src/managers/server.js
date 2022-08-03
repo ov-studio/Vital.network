@@ -44,7 +44,7 @@ CServer.public.addMethod("create", function(...cArgs) {
 // @Desc: Instance constructor
 CServer.public.addMethod("constructor", function(self, options) {
     const private = CServer.instance.get(self)
-    private.options = (CUtility.isObject(options) && options) || {}
+    options = (CUtility.isObject(options) && options) || {}
     private.config = {}, private.instance = {}
     private.config.port = (CUtility.isNumber(options.port) && options.port) || false
     if (!CUtility.isServer) {
@@ -148,6 +148,7 @@ const test = CServer.public.create({
     port: 33021,
     isCaseSensitive: true
 })
+console.log(test)
 test.public.connect()
 
 const test2 = CServer.public.create({
