@@ -69,7 +69,7 @@ CUtility.cloneObject = function(parent, isRecursive) {
 
 // @Desc: Creates a new dynamic class
 CUtility.createClass = function(parent) {
-    const __Instances = new WeakMap()
+    const __Instance = new WeakMap()
     class __C {
         static isClass = true
         constructor(...cArgs) {
@@ -97,7 +97,7 @@ CUtility.createClass = function(parent) {
         __C.prototype[index] = function(...cArgs) {
             const self = this
             const isInstanceware = __C.isInstanceware
-            if (!__Instances.has(self) || (CUtility.isString(isInstanceware) && (index != isInstanceware) && CUtility.isFunction(self[isInstanceware]) && !self[isInstanceware]())) return false
+            if (!__Instance.has(self) || (CUtility.isString(isInstanceware) && (index != isInstanceware) && CUtility.isFunction(self[isInstanceware]) && !self[isInstanceware]())) return false
             return exec(self, ...cArgs)
         }
         return true
@@ -110,11 +110,11 @@ CUtility.createClass = function(parent) {
     __C.createInstance = function(...cArgs) {
         const public = new __C(...cArgs)
         const private = {}
-        __Instances.set(public, private)
+        __Instance.set(public, private)
         return {public: public, private: private}
     }
     __C.addInstanceMethod("destroyInstance", function(self) {
-        __Instances.delete(self)
+        __Instance.delete(self)
     })
-    return {public: __C, private: {}}
+    return {public: __C, private: {}, instance: __Instance}
 }
