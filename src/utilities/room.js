@@ -19,9 +19,8 @@ const CUtility = require("./")
 // Class: Room //
 //////////////////
 
-const CRoom = CUtility.createClass({
-    buffer: {}
-})
+const CRoom = CUtility.createClass({})
+CRoom.private.buffer = {}
 
 
 /////////////////////
@@ -30,25 +29,25 @@ const CRoom = CUtility.createClass({
 
 // @Desc: Verifies whether the room is void
 CRoom.public.addMethod("isVoid", function(name) {
-    return (CUtility.isString(name) && !CUtility.isObject(CRoom.public.buffer[name]) && true) || false
+    return (CUtility.isString(name) && !CUtility.isObject(CRoom.private.buffer[name]) && true) || false
 })
 
 // @Desc: Fetches room instance by name
 CRoom.public.addMethod("fetch", function(name) {
-    return (!CRoom.public.isVoid(name) && CRoom.public.buffer[name]) || false
+    return (!CRoom.public.isVoid(name) && CRoom.private.buffer[name]) || false
 })
 
 // @Desc: Creates a fresh room w/ specified name
 CRoom.public.addMethod("create", function(name, ...cArgs) {
     if (!CRoom.public.isVoid(name)) return false
-    CRoom.public.buffer[name] = CRoom.public.createInstance(name, ...cArgs)
-    return CRoom.public.buffer[name]
+    CRoom.private.buffer[name] = CRoom.public.createInstance(name, ...cArgs)
+    return CRoom.private.buffer[name]
 })
 
 // @Desc: Destroys an existing room by specified name
 CRoom.public.addMethod("destroy", function(name) {
     if (CRoom.public.isVoid(name)) return false
-    return CRoom.public.buffer[name].destroy()
+    return CRoom.private.buffer[name].destroy()
 })
 
 
@@ -65,7 +64,7 @@ CRoom.public.addMethod("constructor", function(self, name) {
 // @Desc: Destroys the instance
 CRoom.public.addInstanceMethod("destroy", function(self) {
     const private = CRoom.instance.get(self)
-    delete CRoom.public.buffer[(private.name)]
+    delete CRoom.private.buffer[(private.name)]
     self.destroyInstance()
     return true
 })

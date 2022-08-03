@@ -19,9 +19,8 @@ const CUtility = require("./")
 // Class: Network //
 /////////////////////
 
-const CNetwork = CUtility.createClass({
-    buffer: {}
-})
+const CNetwork = CUtility.createClass({})
+CNetwork.private.buffer = {}
 
 
 /////////////////////
@@ -30,25 +29,25 @@ const CNetwork = CUtility.createClass({
 
 // @Desc: Verifies whether the network is void
 CNetwork.public.addMethod("isVoid", function(name) {
-    return (CUtility.isString(name) && !CUtility.isObject(CNetwork.public.buffer[name]) && true) || false
+    return (CUtility.isString(name) && !CUtility.isObject(CNetwork.private.buffer[name]) && true) || false
 })
 
 // @Desc: Fetches network instance by name
 CNetwork.public.addMethod("fetch", function(name) {
-    return (!CNetwork.public.isVoid(name) && CNetwork.public.buffer[name]) || false
+    return (!CNetwork.public.isVoid(name) && CNetwork.private.buffer[name]) || false
 })
 
 // @Desc: Creates a fresh network w/ specified name
 CNetwork.public.addMethod("create", function(name, ...cArgs) {
     if (!CNetwork.public.isVoid(name)) return false
-    CNetwork.public.buffer[name] = CNetwork.public.createInstance(name, ...cArgs)
-    return CNetwork.public.buffer[name]
+    CNetwork.private.buffer[name] = CNetwork.public.createInstance(name, ...cArgs)
+    return CNetwork.private.buffer[name]
 })
 
 // @Desc: Destroys an existing network by specified name
 CNetwork.public.addMethod("destroy", function(name) {
     if (CNetwork.public.isVoid(name)) return false
-    return CNetwork.public.buffer[name].destroy()
+    return CNetwork.private.buffer[name].destroy()
 })
 
 // @Desc: Attaches a handler on specified network
@@ -88,7 +87,7 @@ CNetwork.public.addMethod("constructor", function(self, name, isCallback) {
 // @Desc: Destroys the instance
 CNetwork.public.addInstanceMethod("destroy", function(self) {
     const private = CNetwork.instance.get(self)
-    delete CNetwork.public.buffer[(private.name)]
+    delete CNetwork.private.buffer[(private.name)]
     self.destroyInstance()
     return true
 })
