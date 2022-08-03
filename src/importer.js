@@ -12,10 +12,9 @@
 // Imports //
 //////////////
 
-const CNetworkify = require("./managers/server")
 const CUtility = require("./utilities")
 require("./utilities/type")
-require("./utilities/network")
+const CServer = require("./managers/server")
 /*
 require("./managers/room")
 require("./managers/rest")
@@ -30,7 +29,7 @@ require("./managers/socket/room")
 // Exports //
 //////////////
 
-const vNetworkify = CUtility.createAPIs(CNetworkify, {
+const vNetworkify = CUtility.createAPIs(CServer, {
     room: true,
     socket: {
         client: true,
