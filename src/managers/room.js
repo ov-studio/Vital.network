@@ -43,7 +43,7 @@ CRoom.addMethod("fetch", function(name) {
 // @Desc: Creates a fresh room w/ specified name
 CRoom.addMethod("create", function(name, ...cArgs) {
     if (!CServer.isConnected(true) || !CRoom.isVoid(name)) return false
-    CRoom.buffer[name] = new CRoom(name, ...cArgs)
+    CRoom.buffer[name] = CRoom.public.createInstance(name, ...cArgs)
     return CRoom.buffer[name]
 })
 
