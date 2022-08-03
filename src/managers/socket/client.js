@@ -64,13 +64,13 @@ CServer.socket.client.addMethod("constructor", function(self, socket) {
 
 // @Desc: Verifies instance's validity
 CServer.socket.client.addInstanceMethod("isInstance", function(self) {
-    return (!self.isUnloaded && CServer.socket.client.fetch(null, self.socket) && true) || false
+    return (CServer.socket.client.fetch(null, self.socket) && true) || false
 })
 
 // @Desc: Destroys the instance
 CServer.socket.client.addInstanceMethod("destroy", function(self) {
-    self.isUnloaded = true
     const vid = CUtility.vid.fetch(self, null, true)
     delete CServer.socket.client.buffer[vid]
+    self.destroyInstance()
     return true
 })
