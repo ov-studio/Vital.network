@@ -22,10 +22,43 @@ const CUtility = require("../utilities")
 // Class: Server //
 ///////////////////
 
-const CServer = {
-    config: {},
-    instance: {}
-}
+const CServer = CUtility.createClass({
+    buffer: {}
+})
+
+
+/////////////////////
+// Static Members //
+/////////////////////
+
+// @Desc: Creates a fresh server
+CServer.addMethod("create", function(...cArgs) {
+    return new CServer(...cArgs)
+})
+
+
+///////////////////////
+// Instance Members //
+///////////////////////
+
+// @Desc: Instance constructor
+CServer.addMethod("constructor", function(self) {
+    self.config = {}, self.options = {}
+}, "isInstance")
+
+// @Desc: Verifies instance's validity
+CServer.addInstanceMethod("isInstance", function(self) {
+    return (!self.isUnloaded && true) || false
+})
+
+// @Desc: Destroys the instance
+CServer.addInstanceMethod("destroy", function(self) {
+    self.isUnloaded = true
+    return true
+})
+
+
+/*
 
 // @Desc: Handles Connection Status
 const onConnectionStatus = function(resolver, state) {
@@ -117,6 +150,7 @@ else {
         return true
     }    
 }
+*/
 
 
 //////////////
