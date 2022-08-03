@@ -69,3 +69,10 @@ CRoom.public.addInstanceMethod("destroy", function(self) {
     self.destroyInstance()
     return true
 })
+
+
+//////////////
+// Exports //
+//////////////
+
+module.exports = CRoom.public

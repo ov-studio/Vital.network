@@ -146,3 +146,10 @@ CNetwork.public.addInstanceMethod("emitCallback", async function(self, ...cArgs)
     if (!private.isCallback || !private.handler) return false
     return await private.handler.exec(...cArgs)
 })
+
+
+//////////////
+// Exports //
+//////////////
+
+module.exports = CNetwork.public
