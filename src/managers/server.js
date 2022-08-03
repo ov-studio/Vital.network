@@ -143,7 +143,7 @@ CServer.public.addInstanceMethod("connect", function(self) {
         // TODO: ADD THIS MIDDLEWARE
         //private.instance.CExpress.all("*", CServer.rest.onMiddleware)
         private.instance.CHTTP.listen(private.config.port, () => CServer.private.onConnectionStatus(self, true))
-        .on("error", (error) => CServer.private.onConnectionStatus(self, false))
+        .on("error", () => CServer.private.onConnectionStatus(self, false))
         return true
     }
     return true
