@@ -41,7 +41,7 @@ CNetwork.public.addMethod("fetch", function(name) {
 // @Desc: Creates a fresh network w/ specified name
 CNetwork.public.addMethod("create", function(name, ...cArgs) {
     if (!CNetwork.public.isVoid(name)) return false
-    CNetwork.public.buffer[name] = new CNetwork(name, ...cArgs)
+    CNetwork.public.buffer[name] = CNetwork.public.createInstance(name, ...cArgs)
     return CNetwork.public.buffer[name]
 })
 

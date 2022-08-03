@@ -64,12 +64,11 @@ CServer.room.addMethod("constructor", function(self, name) {
 
 // @Desc: Verifies instance's validity
 CServer.room.addInstanceMethod("isInstance", function(self) {
-    return (!self.isUnloaded && !CServer.room.isVoid(self.name) && true) || false
+    return (!CServer.room.isVoid(self.name) && true) || false
 })
 
 // @Desc: Destroys the instance
 CServer.room.addInstanceMethod("destroy", function(self) {
-    self.isUnloaded = true
     delete CServer.room.buffer[(self.name)]
     return true
 })
