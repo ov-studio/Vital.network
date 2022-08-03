@@ -161,28 +161,22 @@ module.exports = CServer.public
 
 // TODO: TESTING
 
-setTimeout(() => {
+
+async function exec() {
     const test = CServer.public.create({
         port: 33021,
         isCaseSensitive: true
     })
-    test.connect()
+    const isConnected = await test.connect()
+    if (!isConnected) return false
 
     console.log(test.rest)
-    setTimeout(function() {
-        console.log(test.rest)
-        test.rest.create("get", "", function(request, response) {
-            response.status(200).send("API Status Message")
-        })
-        test.rest.destroy("get", "")
-        test.rest.create("get", "", function(request, response) {
-            response.status(200).send({test: "Updated Status Message"})
-        })
-    }, 2000)
-
-    const test2 = CServer.public.create({
-        port: 33021,
-        isCaseSensitive: true
+    test.rest.create("get", "", function(request, response) {
+        response.status(200).send("API Status Message")
     })
-    test2.connect()
-}, 2000)
+    test.rest.destroy("get", "")
+    test.rest.create("get", "", function(request, response) {
+        response.status(200).send({test: "Updated Status Message"})
+    })
+}
+setTimeout(() => exec(), 2000)
