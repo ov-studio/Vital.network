@@ -108,9 +108,10 @@ CUtility.createClass = function(parent) {
         return true
     }
     __C.createInstance = function(...cArgs) {
-        const cInstance = new __C(...cArgs)
-        __Instances.set(cInstance, true)
-        return {public: cInstance, private: {}}
+        const public = new __C(...cArgs)
+        const private = {}
+        __Instances.set(public, private)
+        return {public: public, private: private}
     }
     __C.addInstanceMethod("destroyInstance", function(self) {
         __Instances.delete(self)
