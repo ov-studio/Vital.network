@@ -13,8 +13,8 @@
 ///////////////
 
 async function debug() {
-    const isConnected = await vNetworkify.connect(33021, {
-        isCaseSensitive: true
+    const isConnected = await vNetworkify.connect({
+        port: 33021
     })
     if (!isConnected) return false
     

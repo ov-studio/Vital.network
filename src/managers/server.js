@@ -54,11 +54,11 @@ CServer.isConnected = function(isSync) {
 
 if (!CUtility.isServer) {
     // @Desc: Intializes & sets up server connections
-    CServer.connect = function(port, options) {
-        port = (CUtility.isNumber(port) && port) || false
+    CServer.connect = function(options) {
         options = (CUtility.isObject(options) && options) || {}
-        if (!port || CServer.isConnected()) return false
-        CServer.config.port = port
+        options.port = (CUtility.isNumber(options.port) && options.port) || false
+        if (!options.port || CServer.isConnected()) return false
+        CServer.config.port = options.port 
         CServer.config.protocol = (CUtility.isString(options.protocol) && options.protocol) || window.location.protocol
         CServer.config.hostname = (CUtility.isString(options.hostname) && options.hostname) || window.location.hostname
         CServer.instance.CExpress = {
@@ -97,10 +97,10 @@ if (!CUtility.isServer) {
 }
 else {
     // @Desc: Intializes & sets up server connections
-    CServer.connect = function(port, options) {
-        port = (CUtility.isNumber(port) && port) || false
+    CServer.connect = function(options) {
         options = (CUtility.isObject(options) && options) || {}
-        if (!port || CServer.isConnected()) return false
+        options.port = (CUtility.isNumber(options.port) && options.port) || false
+        if (!options.port || CServer.isConnected()) return false
         var cResolver = false
         CServer.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
         CServer.config.port = port

@@ -20,7 +20,8 @@ require("../src/importer")
 ///////////////
 
 async function debug() {
-    const isConnected = await vNetworkify.connect(33021, {
+    const isConnected = await vNetworkify.connect({
+        port: 33021,
         isCaseSensitive: true
     })
     if (!isConnected) return false
