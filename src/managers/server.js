@@ -154,7 +154,9 @@ CServer.public.addInstanceMethod("connect", function(self) {
 // Exports //
 //////////////
 
-module.exports = CServer.public
+module.exports = function(isInternal) {
+    return (isInternal && CServer) || CServer.public
+}
 
 
 // TODO: TESTING
