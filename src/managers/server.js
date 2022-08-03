@@ -70,7 +70,7 @@ CServer.public.addInstanceMethod("fetchConfig", function(self) {
 
 // @Desc: Retrieves instance's server
 CServer.public.addInstanceMethod("fetchServer", function(self, index) {
-    return (index && self.instance[index]) || false
+    return (index && private.instance[index]) || false
 })
 
 // @Desc: Retrieves connection's status
@@ -93,8 +93,9 @@ const onConnectionStatus = function(self, resolver, state) {
 // @Desc: Handles Connection Status
 CServer.public.addInstanceMethod("connect", function(self) {
     if (self.isConnected()) return false
+    const private = CServer.instance.get(self)
     if (!CUtility.isServer) {
-        self.instance.CExpress = {
+        private.instance.CExpress = {
             post: function(route, data) {
                 if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
                 return fetch(route, {
@@ -129,15 +130,15 @@ CServer.public.addInstanceMethod("connect", function(self) {
     else {
         var cResolver = false
         private.isAwaiting = new Promise((resolver) => cResolver = resolver)
-        self.instance.CExpress = CExpress()
-        self.instance.CHTTP = CHTTP.Server(self.instance.CExpress)
-        self.instance.CExpress.use(CCors(private.config.cors))
-        self.instance.CExpress.use(CExpress.json())
-        self.instance.CExpress.use(CExpress.urlencoded({extended: true}))
-        self.instance.CExpress.set("case sensitive routing", private.config.isCaseSensitive)
+        private.instance.CExpress = CExpress()
+        private.instance.CHTTP = CHTTP.Server(private.instance.CExpress)
+        private.instance.CExpress.use(CCors(private.config.cors))
+        private.instance.CExpress.use(CExpress.json())
+        private.instance.CExpress.use(CExpress.urlencoded({extended: true}))
+        private.instance.CExpress.set("case sensitive routing", private.config.isCaseSensitive)
         // TODO: ADD THIS MIDDLEWARE
-        //self.instance.CExpress.all("*", CServer.rest.onMiddleware)
-        self.instance.CHTTP.listen(private.config.port, () => onConnectionStatus(self, cResolver, true))
+        //private.instance.CExpress.all("*", CServer.rest.onMiddleware)
+        private.instance.CHTTP.listen(private.config.port, () => onConnectionStatus(self, cResolver, true))
         return true
     }
     return true
