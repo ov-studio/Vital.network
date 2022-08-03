@@ -20,7 +20,7 @@ const CNetwork = require("../utilities/network")
 // Class: Rest //
 //////////////////
 
-CNetwork.fetch("vNetworkify:Server:onCreate").on(function(self, private) {
+CNetwork.fetch("vNetworkify:Server:onConnect").on(function(self, private) {
     //////////////////
     // Class: Rest //
     //////////////////
