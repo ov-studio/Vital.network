@@ -97,7 +97,7 @@ CUtility.createClass = function(parent) {
         __C.prototype[index] = function(...cArgs) {
             const self = this
             const isInstanceware = __C.isInstanceware
-            if (!__Instances.has(__Instances) || (CUtility.isString(isInstanceware) && (index != isInstanceware) && CUtility.isFunction(self[isInstanceware]) && !self[isInstanceware]())) return false
+            if (!__Instances.has(self) || (CUtility.isString(isInstanceware) && (index != isInstanceware) && CUtility.isFunction(self[isInstanceware]) && !self[isInstanceware]())) return false
             return exec(self, ...cArgs)
         }
         return true

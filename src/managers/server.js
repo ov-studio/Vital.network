@@ -33,7 +33,7 @@ const CServer = CUtility.createClass({
 
 // @Desc: Creates a fresh server
 CServer.public.addMethod("create", function(...cArgs) {
-    return new CServer(...cArgs)
+    return CServer.public.createInstance(...cArgs)
 })
 
 
