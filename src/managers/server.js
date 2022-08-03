@@ -170,7 +170,6 @@ async function exec() {
     const isConnected = await test.connect()
     if (!isConnected) return false
 
-    console.log(test.rest)
     test.rest.create("get", "", function(request, response) {
         response.status(200).send("API Status Message")
     })
