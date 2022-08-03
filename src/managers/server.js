@@ -160,14 +160,17 @@ CServer.public.addInstanceMethod("connect", function(self) {
 module.exports = CServer.public
 
 // TODO: TESTING
-const test = CServer.public.create({
-    port: 33021,
-    isCaseSensitive: true
-})
-test.connect()
 
-const test2 = CServer.public.create({
-    port: 33021,
-    isCaseSensitive: true
-})
-test2.connect()
+setTimeout(() => {
+    const test = CServer.public.create({
+        port: 33021,
+        isCaseSensitive: true
+    })
+    test.connect()
+    
+    const test2 = CServer.public.create({
+        port: 33021,
+        isCaseSensitive: true
+    })
+    test2.connect()
+}, 2000)
