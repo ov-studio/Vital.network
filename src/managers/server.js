@@ -27,6 +27,7 @@ const CServer = CUtility.createClass({
     buffer: {}
 })
 CNetwork.create("vNetworkify:Server:onConnect")
+CNetwork.create("vNetworkify:Server:onDisconnect")
 
 
 /////////////////////
@@ -73,9 +74,8 @@ CServer.public.addMethod("constructor", function(self, options) {
 // @Desc: Destroys the instance
 CServer.public.addInstanceMethod("destroy", function(self) {
     const private = CServer.instance.get(self)
-    if (CUtility.isServer) {
-        private.instance.CHTTP.close()
-    }
+    if (self.isConnected(true)) CNetwork.emit("vNetworkify:Server:onDisconnect", {public: self, private: private})
+    if (CUtility.isServer) private.instance.CHTTP.close()
     self.destroyInstance()
     return true
 })

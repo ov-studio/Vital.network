@@ -35,11 +35,10 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     // Static Members //
     /////////////////////
 
-    // TODO: PROTECT THESE FUNCTIONS MAKE IT EXECUTABLE ONLY WHEN CONNECTED
     if (!CUtility.isServer) {
         // @Desc: Requests a fetch on specified REST API 
         CRest.public.addMethod("fetch", function(type, ...cArgs) {
-            if (!CServer.isConnected(true) || !CUtility.isObject(CRest.private[type])) return false
+            if (!CUtility.isObject(CRest.private[type])) return false
             return server.private.instance.CExpress[type](...cArgs)
         })
     }
@@ -51,7 +50,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         
         // @Desc: Creates a fresh REST API
         CRest.public.addMethod("create", function(type, route, exec) {
-            if (!CServer.isConnected(true) || !CRest.public.isVoid(type, route) || !CUtility.isFunction(exec)) return false
+            if (!CRest.public.isVoid(type, route) || !CUtility.isFunction(exec)) return false
             CRest.private[type][route] = CRest.private[type][route] || {}
             CRest.private[type][route].manager = CRest.private[type][route].manager || function(...cArgs) {
                 CUtility.exec(CRest.private[type][route].handler, ...cArgs)
@@ -81,4 +80,8 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             return true
         })
     }
+})
+
+CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(server) {
+    delete server.public.rest
 })
