@@ -39,7 +39,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(serverPublic, serverP
         // @Desc: Requests a fetch on specified REST API 
         CRest.public.addMethod("fetch", function(type, ...cArgs) {
             if (!CUtility.isObject(CRest.private[type])) return false
-            return private.instance.CExpress[type](...cArgs)
+            return serverPrivate.instance.CExpress[type](...cArgs)
         })
     }
     else {
@@ -57,7 +57,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(serverPublic, serverP
                 return true
             }
             CRest.private[type][route].handler = exec
-            private.instance.CExpress[type](`/${route}`, CRest.private[type][route].manager)
+            serverPrivate.instance.CExpress[type](`/${route}`, CRest.private[type][route].manager)
             return true
         })
         
