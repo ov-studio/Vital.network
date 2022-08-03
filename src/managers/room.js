@@ -31,26 +31,26 @@ CServer.room = CRoom.public
 /////////////////////
 
 // @Desc: Verifies whether the room is void
-CRoom.addMethod("isVoid", function(name) {
-    return (CUtility.isString(name) && !CUtility.isObject(CRoom.buffer[name]) && true) || false
+CRoom.public.addMethod("isVoid", function(name) {
+    return (CUtility.isString(name) && !CUtility.isObject(CRoom.public.buffer[name]) && true) || false
 })
 
 // @Desc: Fetches room instance by name
-CRoom.addMethod("fetch", function(name) {
-    return (!CRoom.isVoid(name) && CRoom.buffer[name]) || false
+CRoom.public.addMethod("fetch", function(name) {
+    return (!CRoom.public.isVoid(name) && CRoom.public.buffer[name]) || false
 })
 
 // @Desc: Creates a fresh room w/ specified name
-CRoom.addMethod("create", function(name, ...cArgs) {
-    if (!CServer.isConnected(true) || !CRoom.isVoid(name)) return false
-    CRoom.buffer[name] = CRoom.public.createInstance(name, ...cArgs)
-    return CRoom.buffer[name]
+CRoom.public.addMethod("create", function(name, ...cArgs) {
+    if (!CServer.isConnected(true) || !CRoom.public.isVoid(name)) return false
+    CRoom.public.buffer[name] = CRoom.public.createInstance(name, ...cArgs)
+    return CRoom.public.buffer[name]
 })
 
 // @Desc: Destroys an existing room by specified name
-CRoom.addMethod("destroy", function(name) {
-    if (CRoom.isVoid(name)) return false
-    return CRoom.buffer[name].destroy()
+CRoom.public.addMethod("destroy", function(name) {
+    if (CRoom.public.isVoid(name)) return false
+    return CRoom.public.buffer[name].destroy()
 })
 
 
@@ -59,13 +59,13 @@ CRoom.addMethod("destroy", function(name) {
 ///////////////////////
 
 // @Desc: Instance constructor
-CRoom.addMethod("constructor", function(self, name) {
+CRoom.public.addMethod("constructor", function(self, name) {
     self.name = name
 })
 
 // @Desc: Destroys the instance
-CRoom.addInstanceMethod("destroy", function(self) {
-    delete CRoom.buffer[(self.name)]
+CRoom.public.addInstanceMethod("destroy", function(self) {
+    delete CRoom.public.buffer[(self.name)]
     self.destroyInstance()
     return true
 })
