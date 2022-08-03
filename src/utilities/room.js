@@ -1,10 +1,10 @@
 /*----------------------------------------------------------------
      Resource: vNetworkify
-     Script: managers: room.js
+     Script: utilities: room.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
      DOC: 22/07/2022
-     Desc: Room Manager
+     Desc: Room Utilities
 ----------------------------------------------------------------*/
 
 
@@ -12,18 +12,16 @@
 // Imports //
 //////////////
 
-const CUtility = require("../utilities")
-const CServer = require("./server")
+const CUtility = require("./")
 
 
 //////////////////
 // Class: Room //
 //////////////////
 
-CRoom = CUtility.createClass({
+const CRoom = CUtility.createClass({
     buffer: {}
 })
-CServer.room = CRoom.public
 
 
 /////////////////////
@@ -42,7 +40,7 @@ CRoom.public.addMethod("fetch", function(name) {
 
 // @Desc: Creates a fresh room w/ specified name
 CRoom.public.addMethod("create", function(name, ...cArgs) {
-    if (!CServer.isConnected(true) || !CRoom.public.isVoid(name)) return false
+    if (!CRoom.public.isVoid(name)) return false
     CRoom.public.buffer[name] = CRoom.public.createInstance(name, ...cArgs)
     return CRoom.public.buffer[name]
 })
@@ -60,12 +58,14 @@ CRoom.public.addMethod("destroy", function(name) {
 
 // @Desc: Instance constructor
 CRoom.public.addMethod("constructor", function(self, name) {
-    self.name = name
+    const private = CRoom.instance.get(self)
+    private.name = name
 })
 
 // @Desc: Destroys the instance
 CRoom.public.addInstanceMethod("destroy", function(self) {
-    delete CRoom.public.buffer[(self.name)]
+    const private = CRoom.instance.get(self)
+    delete CRoom.public.buffer[(private.name)]
     self.destroyInstance()
     return true
 })
