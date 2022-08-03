@@ -32,7 +32,7 @@ CServer.socket.addMethod("resolveCallback", function(self, client, payload) {
     if (CUtility.isServer && !self.isClient(client)) return false
     const cReceiver = (CUtility.isServer && CServer.socket.client.fetch(client)) || self
     const cQueue = (cReceiver && cReceiver.queue) || false
-    const queueID = CUtility.fetchVID(payload.networkCB, null, true)
+    const queueID = CUtility.vid.fetch(payload.networkCB, null, true)
     if (!cQueue || !queueID || !CUtility.isObject(cQueue[queueID])) return false
     if (payload.networkCB.isErrored) cQueue[queueID].reject(...payload.networkArgs)
     else cQueue[queueID].resolve(...payload.networkArgs)
@@ -61,7 +61,7 @@ CServer.socket.addInstanceMethod("fetchNetworks", function(self) {
 // @Desc: Creates a fresh network w/ specified name
 CServer.socket.addInstanceMethod("createNetwork", function(self, name, ...cArgs) {
     if (self.isNetwork(name)) return false
-    self.network[name] = CNetwork.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
+    self.network[name] = CNetwork.create(`Socket:${CUtility.vid.fetch(self)}:${name}`, ...cArgs)
     return true
 })
 
@@ -111,7 +111,7 @@ CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, 
         const cQueue = (cReceiver && cReceiver.queue) || false
         if (!cQueue) return false
         const networkCB = {}
-        const networkVID = CUtility.fetchVID(networkCB)
+        const networkVID = CUtility.vid.fetch(networkCB)
         const cPromise = new Promise(function(resolve, reject) {
             cQueue[networkVID] = {
                 resolve: function(...cArgs) {

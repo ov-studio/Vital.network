@@ -151,7 +151,7 @@ if (!CUtility.isServer) {
                     self.destroy()
                     self.config.isConnected = false
                     cResolver(self.config.isConnected)
-                    CUtility.exec(self.onClientDisconnect, CUtility.fetchVID(self.server, null, true) || false, reason)
+                    CUtility.exec(self.onClientDisconnect, CUtility.vid.fetch(self.server, null, true) || false, reason)
                 }
                 return true
             }
@@ -160,7 +160,7 @@ if (!CUtility.isServer) {
                 return true
             }
             self.server.onmessage = function(payload) {
-                return onSocketMessage(self, CUtility.fetchVID(self.server, null, true), self.server, payload)
+                return onSocketMessage(self, CUtility.vid.fetch(self.server, null, true), self.server, payload)
             }
         }
         reconnect = function() {
@@ -173,7 +173,7 @@ if (!CUtility.isServer) {
             }
             self.reconnectTimer = setTimeout(function() {
                 delete self.reconnectTimer
-                CUtility.exec(self.onClientReconnect, CUtility.fetchVID(self.server, null, true) || false, reconCounter, self.config.options.reconnection.attempts)
+                CUtility.exec(self.onClientReconnect, CUtility.vid.fetch(self.server, null, true) || false, reconCounter, self.config.options.reconnection.attempts)
                 connect(true)
             }, self.config.options.reconnection.interval)
             return true
@@ -225,7 +225,7 @@ else {
                 instance = CServer.socket.fetch(instance.slice(1))
                 if (!instance) return false
                 const clientInstance = CServer.socket.client.create(socket)
-                const client = CUtility.fetchVID(clientInstance, null, true)
+                const client = CUtility.vid.fetch(clientInstance, null, true)
                 self.instance[client] = clientInstance
                 clientInstance.queue = {}, clientInstance.room = {}
                 query = CUtility.queryString.parse(query)

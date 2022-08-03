@@ -22,7 +22,7 @@ const CServer = require("../server")
 
 // @Desc: Handles socket initialization
 const onSocketInitialize = function(self, route, options) {
-    CUtility.fetchVID(self)
+    CUtility.vid.fetch(self)
     options = (CUtility.isObject(options) && options) || false
     self.config = {
         timestamp: new Date(),
@@ -78,7 +78,7 @@ const onSocketMessage = function(self, client, socket, payload) {
         else {
             if (!CUtility.isServer) {
                 if (payload.client) {
-                    CUtility.fetchVID(socket, payload.client)
+                    CUtility.vid.fetch(socket, payload.client)
                     CUtility.exec(self.onClientConnect, payload.client)
                 }
                 else if (payload["@disconnect-reason"]) {

@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------
      Resource: vNetworkify
-     Script: utilities: VID.js
+     Script: utilities: vid.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
      DOC: 22/07/2022
@@ -19,13 +19,15 @@ const CUtility = require("./")
 // Class: VID //
 /////////////////
 
+CUtility.vid = {}
+
 // @Desc: Creates a unique VID
-CUtility.createVID = function() {
+CUtility.vid.create = function() {
     var cvid = false
     while(!cvid) {
         const vvid = CUtility.toBase64(CUtility.crypto.randomUUID() + (Date.now() + CCache.vid.counter))
         if (!CCache.vid.blacklist[vvid]) {
-            CUtility.blacklistVID(vvid)
+            CUtility.vid.blacklist(vvid)
             cvid = vvid
         }
         CCache.vid.counter += 1
@@ -34,19 +36,19 @@ CUtility.createVID = function() {
 }
 
 // @Desc: Blacklists a VID
-CUtility.blacklistVID = function(vid) {
+CUtility.vid.blacklist = function(vid) {
     if (!CUtility.isString(vid) || CCache.vid.blacklist[vid]) return false
     CCache.vid.blacklist[vid] = true
     return true
 }
 
 // @Desc: Assigns/Fetches VID (Virtual ID) on/from valid instance
-CUtility.fetchVID = function(buffer, vid, isReadOnly) {
+CUtility.vid.fetch = function(buffer, vid, isReadOnly) {
     if (CUtility.isNull(buffer) || CUtility.isBool(buffer) || CUtility.isString(buffer) || CUtility.isNumber(buffer)) return false
     buffer.prototype = buffer.prototype || {}
     if (!isReadOnly && !buffer.prototype.vid) {
         Object.defineProperty(buffer.prototype, "vid", {
-            value: vid || `${CUtility.identifier}:${CUtility.createVID()}`,
+            value: vid || `${CUtility.identifier}:${CUtility.vid.create()}`,
             enumerable: true, configurable: false, writable: false
         })
     }
