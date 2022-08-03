@@ -93,6 +93,10 @@ const onConnectionStatus = function(self, resolver, state) {
 }
 
 if (!CUtility.isServer) {
+    ///////////////////////
+    // Instance Members //
+    ///////////////////////
+
     // @Desc: Handles Connection Status
     CServer.addInstanceMethod("connect", function(self) {
         if (self.isConnected()) return false
@@ -131,58 +135,13 @@ if (!CUtility.isServer) {
     })
 }
 else {
+    ///////////////////////
+    // Instance Members //
+    ///////////////////////
 
-}
-
-const test = CServer.create({
-    port: 33021,
-    isCaseSensitive: true
-})
-console.log(test)
-console.log(test.destroy)
-/*
-if (!CUtility.isServer) {
-    // @Desc: Intializes & sets up server connections
-    CServer.connect = function(options) {
-        if (CServer.isConnected()) return false
-        self.instance.CExpress = {
-            post: function(route, data) {
-                if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
-                return fetch(route, {
-                    method: "POST",
-                    headers: {["Content-Type"]: "application/json"},
-                    body: JSON.stringify(data)
-                })
-            },
-            get: function(route) {
-                if (!CUtility.isString(route)) return false
-                return fetch(route, {
-                    method: "GET"
-                })
-            },
-            put: function(route, data) {
-                if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
-                return fetch(route, {
-                    method: "PUT",
-                    headers: {["Content-Type"]: "application/json"},
-                    body: JSON.stringify(data)
-                })
-            },
-            delete: function(route) {
-                if (!CUtility.isString(route)) return false
-                return fetch(route, {
-                    method: "DELETE"
-                })
-            }
-        }
-        onConnectionStatus(null, true)
-        return true
-    } 
-}
-else {
-    // @Desc: Intializes & sets up server connections
-    CServer.connect = function(options) {
-        if (CServer.isConnected()) return false
+    // @Desc: Handles Connection Status
+    CServer.addInstanceMethod("connect", function(self) {
+        if (self.isConnected()) return false
         var cResolver = false
         self.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
         self.instance.CExpress = CExpress()
@@ -194,9 +153,15 @@ else {
         self.instance.CExpress.all("*", CServer.rest.onMiddleware)
         self.instance.CHTTP.listen(self.config.port, () => onConnectionStatus(cResolver, true))
         return true
-    }    
+    })
 }
-*/
+
+const test = CServer.create({
+    port: 33021,
+    isCaseSensitive: true
+})
+console.log(test)
+console.log(test.destroy)
 
 
 //////////////
