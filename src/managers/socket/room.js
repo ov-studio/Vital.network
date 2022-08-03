@@ -13,6 +13,7 @@
 //////////////
 
 const CUtility = require("../../utilities")
+const CRoom = require("../../utilities/room")
 const CServer = require("../server")
 
 
@@ -66,7 +67,7 @@ else {
     // @Desc: Creates a fresh room w/ specified name
     CServer.socket.addInstanceMethod("createRoom", function(self, name, ...cArgs) {
         if (self.isRoom(name)) return false
-        self.room[name] = CServer.room.create(`Socket:${CUtility.vid.fetch(self)}:${name}`, ...cArgs)
+        self.room[name] = CRoom.create(`Socket:${CUtility.vid.fetch(self)}:${name}`, ...cArgs)
         self.room[name].member = {}
         return true
     })

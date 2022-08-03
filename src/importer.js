@@ -17,7 +17,6 @@ require("./utilities/type")
 require("./utilities/vid")
 const CServer = require("./managers/server")
 /*
-require("./managers/room")
 require("./managers/rest")
 require("./managers/socket/")
 require("./managers/socket/client")
