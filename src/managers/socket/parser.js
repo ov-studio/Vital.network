@@ -23,12 +23,13 @@ const CServer = require("../server")
 // @Desc: Handles socket initialization
 const onSocketInitialize = function(self, route, options) {
     CUtility.fetchVID(self)
+    options = (CUtility.isObject(options) && options) || false
     self.config = {
         timestamp: new Date(),
         options: {}
     }
     self.config.options.heartbeat = CUtility.cloneObject(CServer.socket.heartbeat)
-    if (CUtility.isObject(options)) {
+    if (options) {
         if (CUtility.isObject(options.heartbeat) && CUtility.isNumber(options.heartbeat.interval) && CUtility.isNumber(options.heartbeat.timeout)) {
             self.config.options.heartbeat.interval = Math.max(1, options.heartbeat.interval)
             self.config.options.heartbeat.timeout = Math.max(self.config.options.heartbeat.interval + 1, options.heartbeat.timeout)
@@ -37,13 +38,14 @@ const onSocketInitialize = function(self, route, options) {
     self.route = route, self.network = {}, self.room = {}
     if (!CUtility.isServer) {
         self.config.options.reconnection = CUtility.cloneObject(CServer.socket.reconnection)
-        if (CUtility.isObject(options)) {
+        if (options) {
             if (CUtility.isObject(options.reconnection) && CUtility.isNumber(options.reconnection.attempts) && CUtility.isNumber(options.reconnection.interval)) {
                 self.config.options.reconnection.attempts = ((options.reconnection.attempts == -1) && options.reconnection.attempts) || Math.max(1, options.reconnection.attempts)
                 self.config.options.reconnection.interval = Math.max(1, options.reconnection.interval)
             }
         }
         self.queue = {}
+        console.log(self.config.options)
     }
     else {
         self.instance = {}
