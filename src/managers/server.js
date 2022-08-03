@@ -65,7 +65,8 @@ CServer.public.addInstanceMethod("destroy", function(self) {
 
 // @Desc: Retrieves instance's config
 CServer.public.addInstanceMethod("fetchConfig", function(self) {
-    return self.config
+    const private = CServer.instance.get(self)
+    return private.config
 })
 
 // @Desc: Retrieves instance's server
@@ -150,6 +151,7 @@ const test = CServer.public.create({
 })
 console.log(test)
 test.public.connect()
+console.log(test.public.fetchConfig())
 
 const test2 = CServer.public.create({
     port: 33022,
