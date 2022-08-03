@@ -20,9 +20,10 @@ const CServer = require("./server")
 // Class: Room //
 //////////////////
 
-CServer.room = CUtility.createClass({
+CRoom = CUtility.createClass({
     buffer: {}
 })
+CServer.room = CRoom.public
 
 
 /////////////////////
@@ -30,26 +31,26 @@ CServer.room = CUtility.createClass({
 /////////////////////
 
 // @Desc: Verifies whether the room is void
-CServer.room.addMethod("isVoid", function(name) {
-    return (CUtility.isString(name) && !CUtility.isObject(CServer.room.buffer[name]) && true) || false
+CRoom.addMethod("isVoid", function(name) {
+    return (CUtility.isString(name) && !CUtility.isObject(CRoom.buffer[name]) && true) || false
 })
 
 // @Desc: Fetches room instance by name
-CServer.room.addMethod("fetch", function(name) {
-    return (!CServer.room.isVoid(name) && CServer.room.buffer[name]) || false
+CRoom.addMethod("fetch", function(name) {
+    return (!CRoom.isVoid(name) && CRoom.buffer[name]) || false
 })
 
 // @Desc: Creates a fresh room w/ specified name
-CServer.room.addMethod("create", function(name, ...cArgs) {
-    if (!CServer.isConnected(true) || !CServer.room.isVoid(name)) return false
-    CServer.room.buffer[name] = new CServer.room(name, ...cArgs)
-    return CServer.room.buffer[name]
+CRoom.addMethod("create", function(name, ...cArgs) {
+    if (!CServer.isConnected(true) || !CRoom.isVoid(name)) return false
+    CRoom.buffer[name] = new CRoom(name, ...cArgs)
+    return CRoom.buffer[name]
 })
 
 // @Desc: Destroys an existing room by specified name
-CServer.room.addMethod("destroy", function(name) {
-    if (CServer.room.isVoid(name)) return false
-    return CServer.room.buffer[name].destroy()
+CRoom.addMethod("destroy", function(name) {
+    if (CRoom.isVoid(name)) return false
+    return CRoom.buffer[name].destroy()
 })
 
 
@@ -58,13 +59,13 @@ CServer.room.addMethod("destroy", function(name) {
 ///////////////////////
 
 // @Desc: Instance constructor
-CServer.room.addMethod("constructor", function(self, name) {
+CRoom.addMethod("constructor", function(self, name) {
     self.name = name
 })
 
 // @Desc: Destroys the instance
-CServer.room.addInstanceMethod("destroy", function(self) {
-    delete CServer.room.buffer[(self.name)]
+CRoom.addInstanceMethod("destroy", function(self) {
+    delete CRoom.buffer[(self.name)]
     self.destroyInstance()
     return true
 })
