@@ -83,12 +83,6 @@ CNetwork.public.addMethod("constructor", function(self, name, isCallback) {
     private.name = name
     private.isCallback = (CUtility.isBool(isCallback) && true) || false
     private.handler = (!private.isCallback && {}) || false
-}, "isInstance")
-
-// @Desc: Verifies instance's validity
-CNetwork.public.addInstanceMethod("isInstance", function(self) {
-    const private = CServer.instance.get(self)
-    return (!CNetwork.public.isVoid(private.name) && true) || false
 })
 
 // @Desc: Destroys the instance

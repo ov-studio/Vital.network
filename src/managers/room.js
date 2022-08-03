@@ -70,5 +70,6 @@ CServer.room.addInstanceMethod("isInstance", function(self) {
 // @Desc: Destroys the instance
 CServer.room.addInstanceMethod("destroy", function(self) {
     delete CServer.room.buffer[(self.name)]
+    self.destroyInstance()
     return true
 })
