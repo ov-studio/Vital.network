@@ -44,7 +44,7 @@ CServer.addMethod("create", function(...cArgs) {
 // @Desc: Instance constructor
 CServer.addMethod("constructor", function(self, options) {
     options = (CUtility.isObject(options) && options) || {}
-    self.config = {}
+    self.config = {}, self.instance = {}
     self.config.port = (CUtility.isNumber(options.port) && options.port) || false
     if (!CUtility.isServer) {
         self.config.protocol = (CUtility.isString(options.protocol) && options.protocol) || window.location.protocol
@@ -67,6 +67,16 @@ CServer.addInstanceMethod("destroy", function(self) {
     return true
 })
 
+// @Desc: Retrieves instance's config
+CServer.addInstanceMethod("fetchConfig", function(self) {
+    return self.config
+})
+
+// @Desc: Retrieves instance's server
+CServer.addInstanceMethod("fetchServer", function(self, index) {
+    return (index && self.instance[index]) || false
+})
+
 // @Desc: Handles Connection Status
 const onConnectionStatus = function(self, resolver, state) {
     delete self.config.isAwaiting
@@ -81,8 +91,12 @@ CServer.addInstanceMethod("connect", function(self) {
     return (!self.isUnloaded && true) || false
 })
 
-
-
+const test = CServer.create({
+    port: 33021,
+    isCaseSensitive: true
+})
+console.log(test)
+console.log(test.destroy)
 /*
 
 // @Desc: Retrieves connection's confign
