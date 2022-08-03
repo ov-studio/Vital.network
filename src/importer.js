@@ -15,19 +15,22 @@
 const CNetworkify = require("./managers/server")
 const CUtility = require("./utilities")
 require("./utilities/type")
-require("./managers/network")
+require("./utilities/network")
+/*
 require("./managers/room")
 require("./managers/rest")
 require("./managers/socket/")
 require("./managers/socket/client")
 require("./managers/socket/network")
 require("./managers/socket/room")
+*/
 
 
 //////////////
 // Exports //
 //////////////
 
+/*
 const vNetworkify = CUtility.createAPIs(CNetworkify, {
     network: true,
     room: true,
@@ -40,3 +43,4 @@ const vNetworkify = CUtility.createAPIs(CNetworkify, {
 vNetworkify.utility = CUtility
 CUtility.global.vNetworkify = vNetworkify
 module.exports = vNetworkify
+*/

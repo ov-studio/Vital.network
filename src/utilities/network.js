@@ -1,10 +1,10 @@
 /*----------------------------------------------------------------
      Resource: vNetworkify
-     Script: managers: network.js
+     Script: utilities: network.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
      DOC: 22/07/2022
-     Desc: Network Manager
+     Desc: Network Utilities
 ----------------------------------------------------------------*/
 
 
@@ -12,15 +12,14 @@
 // Imports //
 //////////////
 
-const CUtility = require("../utilities")
-const CServer = require("./server")
+const CUtility = require("./")
 
 
 /////////////////////
 // Class: Network //
 /////////////////////
 
-CServer.network = CUtility.createClass({
+CNetwork = CUtility.createClass({
     buffer: {}
 })
 
@@ -30,45 +29,45 @@ CServer.network = CUtility.createClass({
 /////////////////////
 
 // @Desc: Verifies whether the network is void
-CServer.network.addMethod("isVoid", function(name) {
-    return (CUtility.isString(name) && !CUtility.isObject(CServer.network.buffer[name]) && true) || false
+CNetwork.addMethod("isVoid", function(name) {
+    return (CUtility.isString(name) && !CUtility.isObject(CNetwork.buffer[name]) && true) || false
 })
 
 // @Desc: Fetches network instance by name
-CServer.network.addMethod("fetch", function(name) {
-    return (!CServer.network.isVoid(name) && CServer.network.buffer[name]) || false
+CNetwork.addMethod("fetch", function(name) {
+    return (!CNetwork.isVoid(name) && CNetwork.buffer[name]) || false
 })
 
 // @Desc: Creates a fresh network w/ specified name
-CServer.network.addMethod("create", function(name, ...cArgs) {
-    if (!CServer.isConnected(true) || !CServer.network.isVoid(name)) return false
-    CServer.network.buffer[name] = new CServer.network(name, ...cArgs)
-    return CServer.network.buffer[name]
+CNetwork.addMethod("create", function(name, ...cArgs) {
+    if (!CNetwork.isVoid(name)) return false
+    CNetwork.buffer[name] = new CNetwork(name, ...cArgs)
+    return CNetwork.buffer[name]
 })
 
 // @Desc: Destroys an existing network by specified name
-CServer.network.addMethod("destroy", function(name) {
-    if (CServer.network.isVoid(name)) return false
-    return CServer.network.buffer[name].destroy()
+CNetwork.addMethod("destroy", function(name) {
+    if (CNetwork.isVoid(name)) return false
+    return CNetwork.buffer[name].destroy()
 })
 
 // @Desc: Attaches a handler on specified network
-CServer.network.addMethod("on", function(name, ...cArgs) {
-    const cInstance = CServer.network.fetch(name)
+CNetwork.addMethod("on", function(name, ...cArgs) {
+    const cInstance = CNetwork.fetch(name)
     if (!cInstance) return false
     return cInstance.on(...cArgs)
 })
 
 // @Desc: Detaches a handler from specified network
-CServer.network.addMethod("off", function(name, ...cArgs) {
-    const cInstance = CServer.network.fetch(name)
+CNetwork.addMethod("off", function(name, ...cArgs) {
+    const cInstance = CNetwork.fetch(name)
     if (!cInstance) return false
     return cInstance.off(...cArgs)
 })
 
 // @Desc: Emits to all attached non-callback handlers of specified network
-CServer.network.addMethod("emit", function(name, ...cArgs) {
-    const cInstance = CServer.network.fetch(name)
+CNetwork.addMethod("emit", function(name, ...cArgs) {
+    const cInstance = CNetwork.fetch(name)
     if (!cInstance) return false
     return cInstance.emit(...cArgs)
 })
@@ -79,26 +78,26 @@ CServer.network.addMethod("emit", function(name, ...cArgs) {
 ///////////////////////
 
 // @Desc: Instance constructor
-CServer.network.addMethod("constructor", function(self, name, isCallback) {
+CNetwork.addMethod("constructor", function(self, name, isCallback) {
     self.name = name
     self.isCallback = (CUtility.isBool(isCallback) && true) || false
     self.handler = (!self.isCallback && {}) || false
 }, "isInstance")
 
 // @Desc: Verifies instance's validity
-CServer.network.addInstanceMethod("isInstance", function(self) {
-    return (!self.isUnloaded && !CServer.network.isVoid(self.name) && true) || false
+CNetwork.addInstanceMethod("isInstance", function(self) {
+    return (!self.isUnloaded && !CNetwork.isVoid(self.name) && true) || false
 })
 
 // @Desc: Destroys the instance
-CServer.network.addInstanceMethod("destroy", function(self) {
-    CServer.network.buffer[(self.name)].isUnloaded = true
-    delete CServer.network.buffer[(self.name)]
+CNetwork.addInstanceMethod("destroy", function(self) {
+    CNetwork.buffer[(self.name)].isUnloaded = true
+    delete CNetwork.buffer[(self.name)]
     return true
 })
 
 // @Desc: Attaches a handler on instance
-CServer.network.addInstanceMethod("on", function(self, exec) {
+CNetwork.addInstanceMethod("on", function(self, exec) {
     if (!CUtility.isFunction(exec)) return false
     if (!self.isCallback) {
         const execVID = CUtility.fetchVID(exec)
@@ -117,7 +116,7 @@ CServer.network.addInstanceMethod("on", function(self, exec) {
 })
 
 // @Desc: Detaches a handler from instance
-CServer.network.addInstanceMethod("off", function(self, exec) {
+CNetwork.addInstanceMethod("off", function(self, exec) {
     if (!CUtility.isFunction(exec)) return false
     if (!self.isCallback) {
         const execVID = CUtility.fetchVID(exec, null, true)
@@ -132,7 +131,7 @@ CServer.network.addInstanceMethod("off", function(self, exec) {
 })
 
 // @Desc: Emits to all attached non-callback handlers of instance
-CServer.network.addInstanceMethod("emit", function(self, ...cArgs) {
+CNetwork.addInstanceMethod("emit", function(self, ...cArgs) {
     if (self.isCallback) return false
     for (const i in self.handler) {
         const j = self.handler[i]
@@ -142,7 +141,7 @@ CServer.network.addInstanceMethod("emit", function(self, ...cArgs) {
 })
 
 // @Desc: Emits to attached callback handler of instance
-CServer.network.addInstanceMethod("emitCallback", async function(self, ...cArgs) {
+CNetwork.addInstanceMethod("emitCallback", async function(self, ...cArgs) {
     if (!self.isCallback || !self.handler) return false
     return await self.handler.exec(...cArgs)
 })
