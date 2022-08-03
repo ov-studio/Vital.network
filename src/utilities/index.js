@@ -66,3 +66,9 @@ CUtility.createAPIs = function(buffer, blacklist) {
 //////////////
 
 module.exports = CUtility
+const _ = [
+    "./type",
+    "./vid",
+    "./network",
+    "./room"
+].forEach((value) => require(value))
