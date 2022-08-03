@@ -60,11 +60,6 @@ CServer.room.addMethod("destroy", function(name) {
 // @Desc: Instance constructor
 CServer.room.addMethod("constructor", function(self, name) {
     self.name = name
-}, "isInstance")
-
-// @Desc: Verifies instance's validity
-CServer.room.addInstanceMethod("isInstance", function(self) {
-    return (!CServer.room.isVoid(self.name) && true) || false
 })
 
 // @Desc: Destroys the instance
