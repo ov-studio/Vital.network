@@ -67,16 +67,23 @@ CServer.addInstanceMethod("destroy", function(self) {
     return true
 })
 
-
-/*
 // @Desc: Handles Connection Status
-const onConnectionStatus = function(resolver, state) {
+const onConnectionStatus = function(self, resolver, state) {
     delete self.config.isAwaiting
     self.config.isConnected = state
     CUtility.exec(resolver, self.config.isConnected)
-    CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} [Port: ${self.config.port}]`)
+    CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(self.config.port && ("[Port: " + self.config.port + "]")) || ""}]`)
     return true
 }
+
+// @Desc: Handles Connection Status
+CServer.addInstanceMethod("connect", function(self) {
+    return (!self.isUnloaded && true) || false
+})
+
+
+
+/*
 
 // @Desc: Retrieves connection's confign
 CServer.fetchConfig = function() {
