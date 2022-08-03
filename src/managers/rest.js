@@ -20,7 +20,7 @@ const CNetwork = require("../utilities/network")
 // Class: Rest //
 //////////////////
 
-CNetwork.fetch("vNetworkify:Server:onConnect").on(function(self, private) {
+CNetwork.fetch("vNetworkify:Server:onConnect").on(function(serverPublic, serverPrivate) {
     //////////////////
     // Class: Rest //
     //////////////////
@@ -32,7 +32,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(self, private) {
         put: {},
         delete: {}
     }
-    self.rest = CRest.public
+    serverPublic.rest = CRest.public
 
 
     /////////////////////
