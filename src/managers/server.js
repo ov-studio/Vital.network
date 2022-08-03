@@ -77,6 +77,12 @@ CServer.addInstanceMethod("fetchServer", function(self, index) {
     return (index && self.instance[index]) || false
 })
 
+// @Desc: Retrieves connection's status
+CServer.addInstanceMethod("isConnected", function(self, isSync) {
+    if (isSync) return (CUtility.isBool(self.config.isConnected) && self.config.isConnected) || false
+    return self.config.isAwaiting || self.config.isConnected || false
+})
+
 // @Desc: Handles Connection Status
 const onConnectionStatus = function(self, resolver, state) {
     delete self.config.isAwaiting
@@ -98,23 +104,6 @@ const test = CServer.create({
 console.log(test)
 console.log(test.destroy)
 /*
-
-// @Desc: Retrieves connection's confign
-CServer.fetchConfig = function() {
-    return CServer.config
-}
-
-// @Desc: Retrieves specified server
-CServer.fetchServer = function(index) {
-    return (index && CServer.instance[index]) || false
-}
-
-// @Desc: Retrieves connection's status
-CServer.isConnected = function(isSync) {
-    if (isSync) return (CUtility.isBool(self.config.isConnected) && self.config.isConnected) || false
-    return self.config.isAwaiting || self.config.isConnected || false
-}
-
 if (!CUtility.isServer) {
     // @Desc: Intializes & sets up server connections
     CServer.connect = function(options) {
