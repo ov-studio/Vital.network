@@ -68,7 +68,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             return true
         })
         
-        // @Desc: Routing Middleware
+        // @Desc: Routing middleware
         CRest.public.addMethod("onMiddleware", function(request, response, next) {
             const type = request.method.toLowerCase()
             const route = request.url.slice(1)
