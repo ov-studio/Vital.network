@@ -82,11 +82,11 @@ CServer.public.addInstanceMethod("isConnected", function(self, isSync) {
 })
 
 // @Desc: Handles Connection Status
-const onConnectionStatus = function(self, resolver, state) {
+const onConnectionStatus = function(self, state) {
     const private = CServer.instance.get(self)
     delete private.isAwaiting
     private.isConnected = state
-    CUtility.exec(resolver, private.isConnected)
+    CUtility.exec(private.resolver, private.isConnected)
     CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || ""}`)
     return true
 }
@@ -126,11 +126,10 @@ CServer.public.addInstanceMethod("connect", function(self) {
                 })
             }
         }
-        onConnectionStatus(self, null, true)
+        onConnectionStatus(self, true)
     }
     else {
-        var cResolver = false
-        private.isAwaiting = new Promise((resolver) => cResolver = resolver)
+        private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
         private.instance.CExpress = CExpress()
         private.instance.CHTTP = CHTTP.Server(private.instance.CExpress)
         private.instance.CExpress.use(CCors(private.config.cors))
@@ -139,7 +138,7 @@ CServer.public.addInstanceMethod("connect", function(self) {
         private.instance.CExpress.set("case sensitive routing", private.config.isCaseSensitive)
         // TODO: ADD THIS MIDDLEWARE
         //private.instance.CExpress.all("*", CServer.rest.onMiddleware)
-        private.instance.CHTTP.listen(private.config.port, () => onConnectionStatus(self, cResolver, true))
+        private.instance.CHTTP.listen(private.config.port, () => onConnectionStatus(self, true))
         return true
     }
     return true
@@ -151,7 +150,6 @@ const test = CServer.public.create({
 })
 console.log(test)
 test.public.connect()
-console.log(test.public.fetchConfig())
 
 const test2 = CServer.public.create({
     port: 33022,
