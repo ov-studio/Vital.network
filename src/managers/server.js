@@ -37,7 +37,7 @@ CServer.public.addMethod("create", function(...cArgs) {
 })
 
 // @Desc: Handles Connection Status
-CServer.privateonConnectionStatus = function(self, state) {
+CServer.private.onConnectionStatus = function(self, state) {
     const private = CServer.instance.get(self)
     delete private.isAwaiting
     private.isConnected = state
@@ -130,7 +130,7 @@ CServer.public.addInstanceMethod("connect", function(self) {
                 })
             }
         }
-        CServer.privateonConnectionStatus(self, true)
+        CServer.private.onConnectionStatus(self, true)
     }
     else {
         private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
@@ -142,7 +142,8 @@ CServer.public.addInstanceMethod("connect", function(self) {
         private.instance.CExpress.set("case sensitive routing", private.config.isCaseSensitive)
         // TODO: ADD THIS MIDDLEWARE
         //private.instance.CExpress.all("*", CServer.rest.onMiddleware)
-        private.instance.CHTTP.listen(private.config.port, () => CServer.privateonConnectionStatus(self, true))
+        private.instance.CHTTP.listen(private.config.port, () => CServer.private.onConnectionStatus(self, true))
+        .on("error", (error) => CServer.private.onConnectionStatus(self, false))
         return true
     }
     return true
@@ -164,7 +165,7 @@ const test = CServer.public.create({
 test.connect()
 
 const test2 = CServer.public.create({
-    port: 33022,
+    port: 33021,
     isCaseSensitive: true
 })
 test2.connect()
