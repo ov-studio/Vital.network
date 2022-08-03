@@ -13,7 +13,7 @@
 //////////////
 
 const CUtility = require("../utilities")
-const CServer = require("./server")
+const CServer = require("./server")(true)
 
 
 //////////////////

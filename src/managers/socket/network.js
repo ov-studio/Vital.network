@@ -14,7 +14,7 @@
 
 const CUtility = require("../../utilities")
 const CNetwork = require("../../utilities/network")
-const CServer = require("../server")
+const CServer = require("../server")()
 
 
 /////////////////////

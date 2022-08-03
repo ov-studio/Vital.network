@@ -15,7 +15,7 @@
 const CUtility = require("./utilities")
 require("./utilities/type")
 require("./utilities/vid")
-const CServer = require("./managers/server")
+const CServer = require("./managers/server")()
 /*
 require("./managers/rest")
 require("./managers/socket/")
