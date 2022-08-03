@@ -32,7 +32,7 @@ const CServer = CUtility.createClass({
 /////////////////////
 
 // @Desc: Creates a fresh server
-CServer.addMethod("create", function(...cArgs) {
+CServer.public.addMethod("create", function(...cArgs) {
     return new CServer(...cArgs)
 })
 
@@ -42,7 +42,7 @@ CServer.addMethod("create", function(...cArgs) {
 ///////////////////////
 
 // @Desc: Instance constructor
-CServer.addMethod("constructor", function(self, options) {
+CServer.public.addMethod("constructor", function(self, options) {
     options = (CUtility.isObject(options) && options) || {}
     self.config = {}, self.instance = {}
     self.config.port = (CUtility.isNumber(options.port) && options.port) || false
@@ -54,31 +54,26 @@ CServer.addMethod("constructor", function(self, options) {
         self.config.isCaseSensitive = (options.isCaseSensitive && true) || false
         self.config.cors = (CUtility.isObject(options.cors) && options.cors) || false
     }
-}, "isInstance")
-
-// @Desc: Verifies instance's validity
-CServer.addInstanceMethod("isInstance", function(self) {
-    return (!self.isUnloaded && true) || false
 })
 
 // @Desc: Destroys the instance
-CServer.addInstanceMethod("destroy", function(self) {
-    self.isUnloaded = true
+CServer.public.addInstanceMethod("destroy", function(self) {
+    self.destroyInstance()
     return true
 })
 
 // @Desc: Retrieves instance's config
-CServer.addInstanceMethod("fetchConfig", function(self) {
+CServer.public.addInstanceMethod("fetchConfig", function(self) {
     return self.config
 })
 
 // @Desc: Retrieves instance's server
-CServer.addInstanceMethod("fetchServer", function(self, index) {
+CServer.public.addInstanceMethod("fetchServer", function(self, index) {
     return (index && self.instance[index]) || false
 })
 
 // @Desc: Retrieves connection's status
-CServer.addInstanceMethod("isConnected", function(self, isSync) {
+CServer.public.addInstanceMethod("isConnected", function(self, isSync) {
     if (isSync) return (CUtility.isBool(self.config.isConnected) && self.config.isConnected) || false
     return self.isAwaiting || self.config.isConnected || false
 })
@@ -93,7 +88,7 @@ const onConnectionStatus = function(self, resolver, state) {
 }
 
 // @Desc: Handles Connection Status
-CServer.addInstanceMethod("connect", function(self) {
+CServer.public.addInstanceMethod("connect", function(self) {
     if (self.isConnected()) return false
     if (!CUtility.isServer) {
         self.instance.CExpress = {
@@ -145,21 +140,21 @@ CServer.addInstanceMethod("connect", function(self) {
     return true
 })
 
-const test = CServer.create({
+const test = CServer.public.create({
     port: 33021,
     isCaseSensitive: true
 })
-test.connect()
+test.public.connect()
 
-const test2 = CServer.create({
+const test2 = CServer.public.create({
     port: 33022,
     isCaseSensitive: true
 })
-test2.connect()
+test2.public.connect()
 
 
 //////////////
 // Exports //
 //////////////
 
-module.exports = CServer
+module.exports = CServer.public
