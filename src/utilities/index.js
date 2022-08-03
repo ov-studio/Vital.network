@@ -23,7 +23,10 @@ const CCache = {
         counter: 0
     }
 }
-CUtility.isServer = ((typeof(process) != "undefined") && !process.browser && true) || false
+Object.defineProperty(CUtility, "isServer", {
+    value: ((typeof(process) != "undefined") && !process.browser && true) || false,
+    enumerable: true, configurable: false, writable: false
+})
 CUtility.crypto = (CUtility.isServer && require("crypto")) || crypto
 CUtility.global = (CUtility.isServer && global) || window
 CUtility.toBase64 = (!CUtility.isServer && btoa.bind(window)) || function(data) { return Buffer.from(data).toString("base64") }
@@ -64,9 +67,7 @@ CUtility.fetchVID = function(buffer, vid, isReadOnly) {
     if (!isReadOnly && !buffer.prototype.vid) {
         Object.defineProperty(buffer.prototype, "vid", {
             value: vid || `${CUtility.identifier}:${CUtility.createVID()}`,
-            enumerable: true,
-            configurable: false,
-            writable: false
+            enumerable: true, configurable: false, writable: false
         })
     }
     return buffer.prototype.vid

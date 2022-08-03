@@ -80,26 +80,22 @@ CServer.addInstanceMethod("fetchServer", function(self, index) {
 // @Desc: Retrieves connection's status
 CServer.addInstanceMethod("isConnected", function(self, isSync) {
     if (isSync) return (CUtility.isBool(self.config.isConnected) && self.config.isConnected) || false
-    return self.config.isAwaiting || self.config.isConnected || false
+    return self.isAwaiting || self.config.isConnected || false
 })
 
 // @Desc: Handles Connection Status
 const onConnectionStatus = function(self, resolver, state) {
-    delete self.config.isAwaiting
+    delete self.isAwaiting
     self.config.isConnected = state
     CUtility.exec(resolver, self.config.isConnected)
-    CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(self.config.port && ("[Port: " + self.config.port + "]")) || ""}]`)
+    CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(self.config.port && ("[Port: " + self.config.port + "]")) || ""}`)
     return true
 }
 
-if (!CUtility.isServer) {
-    ///////////////////////
-    // Instance Members //
-    ///////////////////////
-
-    // @Desc: Handles Connection Status
-    CServer.addInstanceMethod("connect", function(self) {
-        if (self.isConnected()) return false
+// @Desc: Handles Connection Status
+CServer.addInstanceMethod("connect", function(self) {
+    if (self.isConnected()) return false
+    if (!CUtility.isServer) {
         self.instance.CExpress = {
             post: function(route, data) {
                 if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
@@ -131,37 +127,35 @@ if (!CUtility.isServer) {
             }
         }
         onConnectionStatus(self, null, true)
-        return true
-    })
-}
-else {
-    ///////////////////////
-    // Instance Members //
-    ///////////////////////
-
-    // @Desc: Handles Connection Status
-    CServer.addInstanceMethod("connect", function(self) {
-        if (self.isConnected()) return false
+    }
+    else {
         var cResolver = false
-        self.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
+        self.isAwaiting = new Promise((resolver) => cResolver = resolver)
         self.instance.CExpress = CExpress()
         self.instance.CHTTP = CHTTP.Server(self.instance.CExpress)
         self.instance.CExpress.use(CCors(self.config.cors))
         self.instance.CExpress.use(CExpress.json())
         self.instance.CExpress.use(CExpress.urlencoded({extended: true}))
         self.instance.CExpress.set("case sensitive routing", self.config.isCaseSensitive)
-        self.instance.CExpress.all("*", CServer.rest.onMiddleware)
-        self.instance.CHTTP.listen(self.config.port, () => onConnectionStatus(cResolver, true))
+        // TODO: ADD THIS MIDDLEWARE
+        //self.instance.CExpress.all("*", CServer.rest.onMiddleware)
+        self.instance.CHTTP.listen(self.config.port, () => onConnectionStatus(self, cResolver, true))
         return true
-    })
-}
+    }
+    return true
+})
 
 const test = CServer.create({
     port: 33021,
     isCaseSensitive: true
 })
-console.log(test)
-console.log(test.destroy)
+test.connect()
+
+const test2 = CServer.create({
+    port: 33022,
+    isCaseSensitive: true
+})
+test2.connect()
 
 
 //////////////
