@@ -20,7 +20,7 @@ const CServer = require("./server")
 // Class: Rest //
 //////////////////
 
-CServer.rest = CUtility.createClass({
+const CRest = CUtility.createClass({
     buffer: {
         post: {},
         get: {},
@@ -28,6 +28,7 @@ CServer.rest = CUtility.createClass({
         delete: {}
     }
 })
+CServer.rest = CRest.public
 
 
 /////////////////////
@@ -36,42 +37,42 @@ CServer.rest = CUtility.createClass({
 
 if (!CUtility.isServer) {
     // @Desc: Requests a fetch on specified REST API 
-    CServer.rest.addMethod("fetch", function(type, ...cArgs) {
-        if (!CServer.isConnected(true) || !CUtility.isObject(CServer.rest.buffer[type])) return false
+    CRest.public.addMethod("fetch", function(type, ...cArgs) {
+        if (!CServer.isConnected(true) || !CUtility.isObject(CRest.public.buffer[type])) return false
         return CServer.instance.CExpress[type](...cArgs)
     })
 }
 else {
     // @Desc: Verifies whether the REST API is void
-    CServer.rest.addMethod("isVoid", function(type, route) {
-        return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CServer.rest.buffer[type]) && (!CUtility.isObject(CServer.rest.buffer[type][route]) || !CServer.rest.buffer[type][route].handler) && true) || false
+    CRest.public.addMethod("isVoid", function(type, route) {
+        return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CRest.public.buffer[type]) && (!CUtility.isObject(CRest.public.buffer[type][route]) || !CRest.public.buffer[type][route].handler) && true) || false
     })
     
     // @Desc: Creates a fresh REST API
-    CServer.rest.addMethod("create", function(type, route, exec) {
-        if (!CServer.isConnected(true) || !CServer.rest.isVoid(type, route) || !CUtility.isFunction(exec)) return false
-        CServer.rest.buffer[type][route] = CServer.rest.buffer[type][route] || {}
-        CServer.rest.buffer[type][route].manager = CServer.rest.buffer[type][route].manager || function(...cArgs) {
-            CUtility.exec(CServer.rest.buffer[type][route].handler, ...cArgs)
+    CRest.public.addMethod("create", function(type, route, exec) {
+        if (!CServer.isConnected(true) || !CRest.public.isVoid(type, route) || !CUtility.isFunction(exec)) return false
+        CRest.public.buffer[type][route] = CRest.public.buffer[type][route] || {}
+        CRest.public.buffer[type][route].manager = CRest.public.buffer[type][route].manager || function(...cArgs) {
+            CUtility.exec(CRest.public.buffer[type][route].handler, ...cArgs)
             return true
         }
-        CServer.rest.buffer[type][route].handler = exec
-        CServer.instance.CExpress[type](`/${route}`, CServer.rest.buffer[type][route].manager)
+        CRest.public.buffer[type][route].handler = exec
+        CServer.instance.CExpress[type](`/${route}`, CRest.public.buffer[type][route].manager)
         return true
     })
     
     // @Desc: Destroys an existing REST API
-    CServer.rest.addMethod("destroy", function(type, route) {
-        if (CServer.rest.isVoid(type, route)) return false
-        delete CServer.rest.buffer[type][route].handler
+    CRest.public.addMethod("destroy", function(type, route) {
+        if (CRest.public.isVoid(type, route)) return false
+        delete CRest.public.buffer[type][route].handler
         return true
     })
     
     // @Desc: Routing Middleware
-    CServer.rest.addMethod("onMiddleware", function(request, response, next) {
+    CRest.public.addMethod("onMiddleware", function(request, response, next) {
         const type = request.method.toLowerCase()
         const route = request.url.slice(1)
-        if (CServer.rest.isVoid(type, route)) {
+        if (CRest.public.isVoid(type, route)) {
             response.status(404).send({isAuthorized: false, type: type, route: route})
             return false
         }
