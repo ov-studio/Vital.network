@@ -17,12 +17,6 @@ const CUtility = {
     loadString: eval,
     queryString: require("querystring")
 }
-const CCache = {
-    vid: {
-        blacklist: {},
-        counter: 0
-    }
-}
 Object.defineProperty(CUtility, "isServer", {
     value: ((typeof(process) != "undefined") && !process.browser && true) || false,
     enumerable: true, configurable: false, writable: false

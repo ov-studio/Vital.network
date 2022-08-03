@@ -20,25 +20,31 @@ const CUtility = require("./")
 /////////////////
 
 CUtility.vid = {}
+const cache = {
+    vid: {
+        blacklist: {},
+        counter: 0
+    }
+}
 
 // @Desc: Creates a unique VID
 CUtility.vid.create = function() {
     var cvid = false
     while(!cvid) {
-        const vvid = CUtility.toBase64(CUtility.crypto.randomUUID() + (Date.now() + CCache.vid.counter))
-        if (!CCache.vid.blacklist[vvid]) {
+        const vvid = CUtility.toBase64(CUtility.crypto.randomUUID() + (Date.now() + cache.vid.counter))
+        if (!cache.vid.blacklist[vvid]) {
             CUtility.vid.blacklist(vvid)
             cvid = vvid
         }
-        CCache.vid.counter += 1
+        cache.vid.counter += 1
     }
     return cvid
 }
 
 // @Desc: Blacklists a VID
 CUtility.vid.blacklist = function(vid) {
-    if (!CUtility.isString(vid) || CCache.vid.blacklist[vid]) return false
-    CCache.vid.blacklist[vid] = true
+    if (!CUtility.isString(vid) || cache.vid.blacklist[vid]) return false
+    cache.vid.blacklist[vid] = true
     return true
 }
 
