@@ -36,6 +36,16 @@ CServer.public.addMethod("create", function(...cArgs) {
     return CServer.public.createInstance(...cArgs)
 })
 
+// @Desc: Handles Connection Status
+CServer.privateonConnectionStatus = function(self, state) {
+    const private = CServer.instance.get(self)
+    delete private.isAwaiting
+    private.isConnected = state
+    CUtility.exec(private.resolver, private.isConnected)
+    CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || ""}`)
+    return true
+}
+
 
 ///////////////////////
 // Instance Members //
@@ -82,16 +92,6 @@ CServer.public.addInstanceMethod("isConnected", function(self, isSync) {
 })
 
 // @Desc: Handles Connection Status
-const onConnectionStatus = function(self, state) {
-    const private = CServer.instance.get(self)
-    delete private.isAwaiting
-    private.isConnected = state
-    CUtility.exec(private.resolver, private.isConnected)
-    CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || ""}`)
-    return true
-}
-
-// @Desc: Handles Connection Status
 CServer.public.addInstanceMethod("connect", function(self) {
     if (self.isConnected()) return false
     const private = CServer.instance.get(self)
@@ -126,7 +126,7 @@ CServer.public.addInstanceMethod("connect", function(self) {
                 })
             }
         }
-        onConnectionStatus(self, true)
+        CServer.privateonConnectionStatus(self, true)
     }
     else {
         private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
@@ -138,7 +138,7 @@ CServer.public.addInstanceMethod("connect", function(self) {
         private.instance.CExpress.set("case sensitive routing", private.config.isCaseSensitive)
         // TODO: ADD THIS MIDDLEWARE
         //private.instance.CExpress.all("*", CServer.rest.onMiddleware)
-        private.instance.CHTTP.listen(private.config.port, () => onConnectionStatus(self, true))
+        private.instance.CHTTP.listen(private.config.port, () => CServer.privateonConnectionStatus(self, true))
         return true
     }
     return true
