@@ -57,7 +57,7 @@ if (!CUtility.isServer) {
     CServer.connect = function(options) {
         options = (CUtility.isObject(options) && options) || {}
         options.port = (CUtility.isNumber(options.port) && options.port) || false
-        if (!options.port || CServer.isConnected()) return false
+        if (CServer.isConnected()) return false
         CServer.config.port = options.port 
         CServer.config.protocol = (CUtility.isString(options.protocol) && options.protocol) || window.location.protocol
         CServer.config.hostname = (CUtility.isString(options.hostname) && options.hostname) || window.location.hostname

@@ -136,7 +136,7 @@ if (!CUtility.isServer) {
         connect = function(isReconnection) {
             if (!isReconnection && self.isConnected()) return false
             self.config.isAwaiting = self.config.isAwaiting || new Promise((resolver) => cResolver = resolver)
-            self.server = new WebSocket(`${((CServer.config.protocol == "https") && "wss") || "ws"}://${CServer.config.hostname}:${CServer.config.port}/${self.route}`)
+            self.server = new WebSocket(`${((CServer.config.protocol == "https") && "wss") || "ws"}://${CServer.config.hostname}${(CServer.config.port && (":" + CServer.config.port)) || ""}/${self.route}`)
             self.server.onopen = function() {
                 reconCounter = 0
                 delete self.config.isAwaiting
