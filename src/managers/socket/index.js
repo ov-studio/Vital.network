@@ -222,14 +222,11 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     clientInstance.queue = {}, clientInstance.room = {}
                     query = CUtility.queryString.parse(query)
                     if (!query.version || (query.version != CUtility.version)) {
-                        console.log("TODO: CLOSE CONNECTION DUE TO VERSION MISMATCH")
-                        console.log(query)
-                    }
-                    else {
                         private.client[client]["@disconnect"] = private.client[client]["@disconnect"] || {}
                         private.client[client]["@disconnect"].reason = "version-mismatch"
                         clientInstance.socket.send(CUtility.toBase64(JSON.stringify({disconnect: private.client[client]["@disconnect"].reason})))
                         clientInstance.socket.close()
+                        return false
                     }
                     clientInstance.socket.send(CUtility.toBase64(JSON.stringify({client: client})))
                     private.onHeartbeat(clientInstance)
