@@ -50,7 +50,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     CClient.addMethod("create", function(socket) {
         if (CClient.private.isUnloaded) return false
         if (!CUtility.isObject(socket) || CClient.fetch(null, socket)) return false
-        const cInstance = new CClient(socket)
+        const cInstance = CClient.public.createInstance(socket)
         const vid = CUtility.vid.fetch(cInstance, null, true)
         CClient.private.buffer[vid] = cInstance
         return cInstance
