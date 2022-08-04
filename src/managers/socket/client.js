@@ -13,64 +13,77 @@
 //////////////
 
 const CUtility = require("../../utilities")
-const CServer = require("../server")
+const CNetwork = require("../../utilities/network")
 
 
 ////////////////////
 // Class: Client //
 ////////////////////
 
-CServer.socket.client = CUtility.createClass({
-    buffer: {}
-})
+CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
+    if (!CUtility.isServer) return false
+    const CClient = CUtility.createClass()
+    socket.public.client = CClient.public
+    CClient.private.buffer = {}
+
+    CNetwork.fetch("vNetworkify:Socket:onDestroy").on(function(__socket) {
+        if ((socket.public != __socket.public) || (socket.private != __socket.private)) return false
+        for (const i in CClient.private.buffer) {
+            CClient.private.buffer[i].destroy()
+        }
+        CClient.private.isUnloaded = true
+        delete socket.public.client
+    })
 
 
-/////////////////////
-// Static Members //
-/////////////////////
+    /////////////////////
+    // Static Members //
+    /////////////////////
 
-// @Desc: Fetches client instance by VID or socket
-CServer.socket.client.addMethod("fetch", function(vid, socket, fetchSocket) {
-    vid = vid || CUtility.fetchVID(socket, null, true)
-    return (vid && CUtility.isObject(CServer.socket.client.buffer[vid]) && CServer.socket.client.buffer[vid] && ((fetchSocket && CServer.socket.client.buffer[vid].socket) || CServer.socket.client.buffer[vid])) || false
-})
+    // @Desc: Fetches client instance by VID or socket
+    CClient.public.addMethod("fetch", function(vid, socket, isFetchSocket) {
+        if (CClient.private.isUnloaded) return false
+        vid = vid || CUtility.vid.fetch(socket, null, true)
+        return (vid && CClient.private.buffer[vid] && ((isFetchSocket && CClient.private.buffer[vid].socket) || CClient.private.buffer[vid])) || false
+    })
 
-// @Desc: Creates a fresh client w/ specified socket
-CServer.socket.client.addMethod("create", function(socket) {
-    if (!CUtility.isObject(socket) || CServer.socket.client.fetch(null, socket)) return false
-    const cInstance = new CServer.socket.client(socket)
-    const vid = CUtility.fetchVID(cInstance, null, true)
-    CServer.socket.client.buffer[vid] = cInstance
-    return cInstance
-})
+    // @Desc: Creates a fresh client w/ specified socket
+    CClient.public.addMethod("create", function(socket) {
+        if (CClient.private.isUnloaded) return false
+        if (!CUtility.isObject(socket) || CClient.public.fetch(null, socket)) return false
+        const cInstance = CClient.public.createInstance(socket)
+        const vid = CUtility.vid.fetch(cInstance, null, true)
+        CClient.private.buffer[vid] = cInstance
+        return cInstance
+    })
 
-// @Desc: Destroys an existing client by specified VID or socket
-CServer.socket.client.addMethod("destroy", function(vid, socket) {
-    vid = vid || CUtility.fetchVID(socket, null, true)
-    if (!CServer.socket.client.fetch(vid)) return false
-    return CServer.socket.client.buffer[vid].destroy()
-})
+    // @Desc: Destroys an existing client by specified VID or socket
+    CClient.public.addMethod("destroy", function(vid, socket) {
+        if (CClient.private.isUnloaded) return false
+        vid = vid || CUtility.vid.fetch(socket, null, true)
+        if (!CClient.public.fetch(vid)) return false
+        return CClient.private.buffer[vid].destroy()
+    })
 
 
-///////////////////////
-// Instance Members //
-///////////////////////
+    ///////////////////////
+    // Instance Members //
+    ///////////////////////
 
-// @Desc: Instance constructor
-CServer.socket.client.addMethod("constructor", function(self, socket) {
-    CUtility.fetchVID(self, CUtility.fetchVID(socket))
-    self.socket = socket
-}, "isInstance")
+    // @Desc: Instance constructor
+    CClient.public.addMethod("constructor", function(self, socket) {
+        if (CClient.private.isUnloaded) return false
+        const private = CClient.instance.get(self)
+        CUtility.vid.fetch(self, CUtility.vid.fetch(socket))
+        self.socket = socket
+    })
 
-// @Desc: Verifies instance's validity
-CServer.socket.client.addInstanceMethod("isInstance", function(self) {
-    return (!self.isUnloaded && CServer.socket.client.fetch(null, self.socket) && true) || false
-})
-
-// @Desc: Destroys the instance
-CServer.socket.client.addInstanceMethod("destroy", function(self) {
-    self.isUnloaded = true
-    const vid = CUtility.fetchVID(self, null, true)
-    delete CServer.socket.client.buffer[vid]
-    return true
+    // @Desc: Destroys the instance
+    CClient.public.addInstanceMethod("destroy", function(self) {
+        if (CClient.private.isUnloaded) return false
+        const vid = CUtility.vid.fetch(self, null, true)
+        delete CClient.private.buffer[vid]
+        self.destroyInstance()
+        return true
+    })
 })

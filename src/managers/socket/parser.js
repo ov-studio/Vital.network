@@ -13,88 +13,83 @@
 //////////////
 
 const CUtility = require("../../utilities")
-const CServer = require("../server")
 
 
 /////////////////////
 // Static Members //
 /////////////////////
 
-// @Desc: Handles socket initialization
-const onSocketInitialize = function(self, route, options) {
-    CUtility.fetchVID(self)
+// @Desc: Handles socket's initialization
+const onSocketInitialize = function(socket, route, options) {
+    CUtility.vid.fetch(socket.public)
     options = (CUtility.isObject(options) && options) || false
-    self.config = {
-        timestamp: new Date(),
-        options: {}
-    }
-    self.config.options.heartbeat = CUtility.cloneObject(CServer.socket.heartbeat)
+    socket.private.timestamp = new Date()
+    socket.private.heartbeat = {interval: 10000, timeout: 60000}
+    socket.private.timer = {}
+    if (!CUtility.isServer) socket.private.reconnection = {attempts: -1, interval: 2500}
+    socket.private.route = route, socket.private.network = {}, socket.private.room = {}
     if (options) {
-        if (CUtility.isObject(options.heartbeat) && CUtility.isNumber(options.heartbeat.interval) && CUtility.isNumber(options.heartbeat.timeout)) {
-            self.config.options.heartbeat.interval = Math.max(1, options.heartbeat.interval)
-            self.config.options.heartbeat.timeout = Math.max(self.config.options.heartbeat.interval + 1, options.heartbeat.timeout)
-        }
-    }
-    self.route = route, self.network = {}, self.room = {}
-    if (!CUtility.isServer) {
-        self.config.options.reconnection = CUtility.cloneObject(CServer.socket.reconnection)
-        if (options) {
-            if (CUtility.isObject(options.reconnection) && CUtility.isNumber(options.reconnection.attempts) && CUtility.isNumber(options.reconnection.interval)) {
-                self.config.options.reconnection.attempts = ((options.reconnection.attempts == -1) && options.reconnection.attempts) || Math.max(1, options.reconnection.attempts)
-                self.config.options.reconnection.interval = Math.max(1, options.reconnection.interval)
+        if (!CUtility.isServer) {
+            if (CUtility.isObject(options.reconnection)) {
+                socket.private.reconnection.attempts = (CUtility.isNumber(options.reconnection.attempts) && ((options.reconnection.attempts == -1) && options.reconnection.attempts) || Math.max(1, options.reconnection.attempts)) || socket.private.reconnection.attempts
+                socket.private.reconnection.interval = (CUtility.isNumber(options.reconnection.interval) && Math.max(1, options.reconnection.interval)) || socket.private.reconnection.interval
             }
         }
-        self.queue = {}
-        console.log(self.config.options)
+        if (CUtility.isObject(options.heartbeat)) {
+            socket.private.heartbeat.interval = (CUtility.isNumber(options.heartbeat.interval) && Math.max(1, options.heartbeat.interval)) || socket.private.heartbeat.interval
+            socket.private.heartbeat.timeout = (CUtility.isNumber(options.heartbeat.timeout) && Math.max(socket.private.heartbeat.interval + 1, options.heartbeat.timeout)) || socket.private.heartbeat.timeout
+        }
     }
-    else {
-        self.instance = {}
-    }
+    if (!CUtility.isServer) socket.public.queue = {}
+    else socket.private.client = {}
     return true
 }
 
-
-// @Desc: Handles socket message
-const onSocketMessage = function(self, client, socket, payload) {
+// @Desc: Handles socket's message
+const onSocketMessage = async function(socket, client, receiver, payload) {
     payload = JSON.parse(CUtility.fromBase64(payload.data))
-    if (!socket || !CUtility.isObject(payload)) return false
+    if (!CUtility.isObject(payload)) return false
     if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
         if (payload.heartbeat) {
-            const prevTick = self.heatbeatTick
-            self.heatbeatTick = Date.now()
-            const deltaTick = self.heatbeatTick - (prevTick || self.heatbeatTick)
-            if (!CUtility.isServer) CUtility.exec(self.onHeartbeat, deltaTick)
-            else CUtility.exec(self.onHeartbeat, client, deltaTick)
-            clearTimeout(self.heartbeatTerminator)
-            self.heartbeatTimer = setTimeout(function() {
-                socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
-            }, self.config.options.heartbeat.interval)
-            self.heartbeatTerminator = setTimeout(function() {
-                if (!CUtility.isServer) self["@disconnect-reason"] = "heartbeat-timeout"
-                else if (self.isClient(client)) self.instance[client]["@disconnect-reason"] = "heartbeat-timeout"
+            const prevTick = socket.public.heatbeatTick
+            socket.public.heatbeatTick = Date.now()
+            const deltaTick = socket.public.heatbeatTick - (prevTick || socket.public.heatbeatTick)
+            if (!CUtility.isServer) CUtility.exec(socket.public.onHeartbeat, deltaTick)
+            else CUtility.exec(socket.public.onHeartbeat, client, deltaTick)
+            clearTimeout(socket.public.heartbeatTerminator)
+            socket.public.heartbeatTimer = setTimeout(function() {
+                receiver.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
+            }, socket.private.heartbeat.interval)
+            socket.public.heartbeatTerminator = setTimeout(function() {
+                const cDisconnection = (!CUtility.isServer && socket.private) || (socket.public.isClient(client) && socket.private.client[client]) || false
+                if (cDisconnection) {
+                    cDisconnection["@disconnect"] = cDisconnection["@disconnect"] || {}
+                    cDisconnection.reason = "heartbeat-timeout"
+                }
                 socket.close()
-            }, self.config.options.heartbeat.timeout)
+            }, socket.private.heartbeat.timeout)
         }
         else {
             if (!CUtility.isServer) {
                 if (payload.client) {
-                    CUtility.fetchVID(socket, payload.client)
-                    CUtility.exec(self.onClientConnect, payload.client)
+                    CUtility.vid.fetch(socket.public, payload.client)
+                    CUtility.exec(socket.public.onClientConnect, payload.client)
                 }
-                else if (payload["@disconnect-reason"]) {
-                    self["@disconnect-forced"] = true
-                    self["@disconnect-reason"] = payload["@disconnect-reason"]
+                else if (payload.disconnect) {
+                    socket.private["@disconnect"] = socket.private["@disconnect"] || {}
+                    socket.private["@disconnect"].isForced = true
+                    socket.private["@disconnect"].reason = payload.disconnect
                 }
                 else if (payload.room) {
-                    if (payload.action == "join") {
-                        self.room[(payload.room)] = self.room[(payload.room)] || {}
-                        self.room[(payload.room)].member = self.room[(payload.room)].member || {}
-                        self.room[(payload.room)].member[client] = true
-                        CUtility.exec(self.onClientJoinRoom, payload.room, client)
+                    if (!payload.isLeave) {
+                        socket.private.room[(payload.room)] = socket.private.room[(payload.room)] || {}
+                        socket.private.room[(payload.room)].member = socket.private.room[(payload.room)].member || {}
+                        socket.private.room[(payload.room)].member[client] = true
+                        CUtility.exec(socket.public.onClientJoinRoom, payload.room, client)
                     }
-                    else if (payload.action == "leave") {
-                        delete self.room[(payload.room)]
-                        CUtility.exec(self.onClientLeaveRoom, payload.room, client)
+                    else {
+                        delete socket.private.room[(payload.room)]
+                        CUtility.exec(socket.public.onClientLeaveRoom, payload.room, client)
                     }
                 }
             }
@@ -104,15 +99,15 @@ const onSocketMessage = function(self, client, socket, payload) {
     if (CUtility.isObject(payload.networkCB)) {
         if (!payload.networkCB.isProcessed) {
             payload.networkCB.isProcessed = true
-            const cNetwork = CServer.socket.fetchNetwork(self, payload.networkName)
+            const cNetwork = socket.private.onFetchNetwork(payload.networkName)
             if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
-            else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
-            socket.send(CUtility.toBase64(JSON.stringify(payload)))
+            else payload.networkArgs = [await cNetwork.emitCallback(...payload.networkArgs)]
+            receiver.send(CUtility.toBase64(JSON.stringify(payload)))
         }
-        else CServer.socket.resolveCallback(self, client, payload)
+        else socket.private.onResolveNetwork(client, payload)
         return true
     }
-    self.emit(payload.networkName, null, ...payload.networkArgs)
+    socket.public.emit(payload.networkName, null, ...payload.networkArgs)
     return true
 }
 

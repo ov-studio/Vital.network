@@ -17,59 +17,18 @@ const CUtility = {
     loadString: eval,
     queryString: require("querystring")
 }
-const CCache = {
-    vid: {
-        blacklist: {},
-        counter: 0
-    }
-}
-CUtility.isServer = ((typeof(process) != "undefined") && !process.browser && true) || false
+Object.defineProperty(CUtility, "isServer", {value: ((typeof(process) != "undefined") && !process.browser && true) || false, enumerable: true, configurable: false, writable: false})
 CUtility.crypto = (CUtility.isServer && require("crypto")) || crypto
 CUtility.global = (CUtility.isServer && global) || window
 CUtility.toBase64 = (!CUtility.isServer && btoa.bind(window)) || function(data) { return Buffer.from(data).toString("base64") }
 CUtility.fromBase64 = (!CUtility.isServer && atob.bind(window)) || function(data) { return Buffer.from(data, "base64").toString("binary") }
 CUtility.identifier = CUtility.toBase64(`vNetworkify-${(CUtility.isServer && "Server") || "Client"}`)
+CUtility.version = Object.defineProperty(CUtility, "version", {value: CUtility.toBase64("3.0.0"), enumerable: true, configurable: false, writable: false})
 
 // @Desc: Executes the specified handler
 CUtility.exec = function(exec, ...cArgs) {
     if (!CUtility.isFunction(exec)) return false
     return exec(...cArgs)
-}
-
-// @Desc: Creates a unique VID
-CUtility.createVID = function() {
-    var cvid = false
-    while(!cvid) {
-        const vvid = CUtility.toBase64(CUtility.crypto.randomUUID() + (Date.now() + CCache.vid.counter))
-        if (!CCache.vid.blacklist[vvid]) {
-            CUtility.blacklistVID(vvid)
-            cvid = vvid
-        }
-        CCache.vid.counter += 1
-    }
-    return cvid
-}
-
-// @Desc: Blacklists a VID
-CUtility.blacklistVID = function(vid) {
-    if (!CUtility.isString(vid) || CCache.vid.blacklist[vid]) return false
-    CCache.vid.blacklist[vid] = true
-    return true
-}
-
-// @Desc: Assigns/Fetches VID (Virtual ID) on/from valid instance
-CUtility.fetchVID = function(buffer, vid, isReadOnly) {
-    if (CUtility.isNull(buffer) || CUtility.isBool(buffer) || CUtility.isString(buffer) || CUtility.isNumber(buffer)) return false
-    buffer.prototype = buffer.prototype || {}
-    if (!isReadOnly && !buffer.prototype.vid) {
-        Object.defineProperty(buffer.prototype, "vid", {
-            value: vid || `${CUtility.identifier}:${CUtility.createVID()}`,
-            enumerable: true,
-            configurable: false,
-            writable: false
-        })
-    }
-    return buffer.prototype.vid
 }
 
 // @Desc: Creates dynamic whitelisted module APIs
@@ -105,3 +64,7 @@ CUtility.createAPIs = function(buffer, blacklist) {
 //////////////
 
 module.exports = CUtility
+require("./type")
+require("./vid")
+require("./network")
+require("./room")

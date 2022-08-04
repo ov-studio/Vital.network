@@ -16,52 +16,92 @@ const CCors = require("cors")
 const CHTTP = require("http")
 const CExpress = require("express")
 const CUtility = require("../utilities")
+const CNetwork = require("../utilities/network")
 
 
 ////////////////////
 // Class: Server //
 ///////////////////
 
-const CServer = {
-    config: {},
-    instance: {}
-}
+const CServer = CUtility.createClass()
+CNetwork.create("vNetworkify:Server:onConnect")
+CNetwork.create("vNetworkify:Server:onDisconnect")
 
-// @Desc: Handles Connection Status
-const onConnectionStatus = function(resolver, state) {
-    delete CServer.config.isAwaiting
-    CServer.config.isConnected = state
-    CUtility.exec(resolver, CServer.config.isConnected)
-    CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} [Port: ${CServer.config.port}]`)
+
+/////////////////////
+// Static Members //
+/////////////////////
+
+// @Desc: Creates a fresh server
+CServer.public.addMethod("create", function(...cArgs) {
+    return CServer.public.createInstance(...cArgs)
+})
+
+// @Desc: Handles connection status
+CServer.private.onConnectionStatus = function(self, state) {
+    const private = CServer.instance.get(self)
+    delete private.isAwaiting
+    private.isConnected = state
+    CUtility.exec(private.resolver, private.isConnected)
+    CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || "" } [Version: ${CUtility.fromBase64(CUtility.version)}]`)
+    if (private.isConnected) CNetwork.emit("vNetworkify:Server:onConnect", {public: self, private: private})
     return true
 }
 
-// @Desc: Retrieves connection's confign
-CServer.fetchConfig = function() {
-    return CServer.config
-}
 
-// @Desc: Retrieves specified server
-CServer.fetchServer = function(index) {
-    return (index && CServer.instance[index]) || false
-}
+///////////////////////
+// Instance Members //
+///////////////////////
+
+// @Desc: Instance constructor
+CServer.public.addMethod("constructor", function(self, options) {
+    const private = CServer.instance.get(self)
+    options = (CUtility.isObject(options) && options) || {}
+    private.config = {}, private.instance = {}
+    private.config.port = (CUtility.isNumber(options.port) && options.port) || false
+    if (!CUtility.isServer) {
+        private.config.protocol = (options.isSSL && "https") || "http"
+        private.config.hostname = (CUtility.isString(options.hostname) && options.hostname) || window.location.hostname
+    }
+    else {
+        private.config.isCaseSensitive = (options.isCaseSensitive && true) || false
+        private.config.cors = (CUtility.isObject(options.cors) && options.cors) || false
+    }
+})
+
+// @Desc: Destroys the instance
+CServer.public.addInstanceMethod("destroy", function(self) {
+    const private = CServer.instance.get(self)
+    if (self.isConnected(true)) CNetwork.emit("vNetworkify:Server:onDisconnect", {public: self, private: private})
+    if (CUtility.isServer) private.instance.CHTTP.close()
+    self.destroyInstance()
+    return true
+})
+
+// @Desc: Retrieves instance's config
+CServer.public.addInstanceMethod("fetchConfig", function(self) {
+    const private = CServer.instance.get(self)
+    return private.config
+})
+
+// @Desc: Retrieves instance's server
+CServer.public.addInstanceMethod("fetchServer", function(self, index) {
+    return (index && private.instance[index]) || false
+})
 
 // @Desc: Retrieves connection's status
-CServer.isConnected = function(isSync) {
-    if (isSync) return (CUtility.isBool(CServer.config.isConnected) && CServer.config.isConnected) || false
-    return CServer.config.isAwaiting || CServer.config.isConnected || false
-}
+CServer.public.addInstanceMethod("isConnected", function(self, isSync) {
+    const private = CServer.instance.get(self)
+    if (isSync) return (CUtility.isBool(private.isConnected) && private.isConnected) || false
+    return private.isAwaiting || private.isConnected || false
+})
 
-if (!CUtility.isServer) {
-    // @Desc: Intializes & sets up server connections
-    CServer.connect = function(options) {
-        options = (CUtility.isObject(options) && options) || {}
-        options.port = (CUtility.isNumber(options.port) && options.port) || false
-        if (CServer.isConnected()) return false
-        CServer.config.port = options.port 
-        CServer.config.protocol = (CUtility.isString(options.protocol) && options.protocol) || window.location.protocol
-        CServer.config.hostname = (CUtility.isString(options.hostname) && options.hostname) || window.location.hostname
-        CServer.instance.CExpress = {
+// @Desc: Connects the server
+CServer.public.addInstanceMethod("connect", function(self) {
+    if (self.isConnected()) return false
+    const private = CServer.instance.get(self)
+    if (!CUtility.isServer) {
+        private.instance.CExpress = {
             post: function(route, data) {
                 if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
                 return fetch(route, {
@@ -91,36 +131,28 @@ if (!CUtility.isServer) {
                 })
             }
         }
-        onConnectionStatus(null, true)
+        CServer.private.onConnectionStatus(self, true)
+    }
+    else {
+        private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
+        private.instance.CExpress = CExpress()
+        private.instance.CHTTP = CHTTP.Server(private.instance.CExpress)
+        private.instance.CExpress.use(CCors(private.config.cors))
+        private.instance.CExpress.use(CExpress.json())
+        private.instance.CExpress.use(CExpress.urlencoded({extended: true}))
+        private.instance.CExpress.set("case sensitive routing", private.config.isCaseSensitive)
+        private.instance.CHTTP.listen(private.config.port, () => CServer.private.onConnectionStatus(self, true))
+        .on("error", () => CServer.private.onConnectionStatus(self, false))
         return true
-    } 
-}
-else {
-    // @Desc: Intializes & sets up server connections
-    CServer.connect = function(options) {
-        options = (CUtility.isObject(options) && options) || {}
-        options.port = (CUtility.isNumber(options.port) && options.port) || false
-        if (!options.port || CServer.isConnected()) return false
-        var cResolver = false
-        CServer.config.isAwaiting = new Promise((resolver) => cResolver = resolver)
-        CServer.config.port = options.port
-        CServer.config.isCaseSensitive = (options.isCaseSensitive && true) || false
-        CServer.config.cors = (CUtility.isObject(options.cors) && options.cors) || false
-        CServer.instance.CExpress = CExpress()
-        CServer.instance.CHTTP = CHTTP.Server(CServer.instance.CExpress)
-        CServer.instance.CExpress.use(CCors(CServer.config.cors))
-        CServer.instance.CExpress.use(CExpress.json())
-        CServer.instance.CExpress.use(CExpress.urlencoded({extended: true}))
-        CServer.instance.CExpress.set("case sensitive routing", CServer.config.isCaseSensitive)
-        CServer.instance.CExpress.all("*", CServer.rest.onMiddleware)
-        CServer.instance.CHTTP.listen(CServer.config.port, () => onConnectionStatus(cResolver, true))
-        return true
-    }    
-}
+    }
+    return true
+})
 
 
 //////////////
 // Exports //
 //////////////
 
-module.exports = CServer
+module.exports = CServer.public
+require("./rest")
+require("./socket/")

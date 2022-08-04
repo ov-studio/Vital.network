@@ -36,7 +36,6 @@ CType.forEach(function(j) {
     }
 })
 
-
 // @Desc: Verifies whether specified data is null
 CUtility.isNull = function(data) {
     return data == null
@@ -70,9 +69,11 @@ CUtility.cloneObject = function(parent, isRecursive) {
 
 // @Desc: Creates a new dynamic class
 CUtility.createClass = function(parent) {
-    class __C{
+    const __I = new WeakMap()
+    class __C {
         static isClass = true
         constructor(...cArgs) {
+            __I.set(this, {})
             CUtility.exec(__C.constructor, this, ...cArgs)
         }
     }
@@ -97,7 +98,7 @@ CUtility.createClass = function(parent) {
         __C.prototype[index] = function(...cArgs) {
             const self = this
             const isInstanceware = __C.isInstanceware
-            if (CUtility.isString(isInstanceware) && (index != isInstanceware) && CUtility.isFunction(self[isInstanceware]) && !self[isInstanceware]()) return false
+            if (!__I.has(self) || (CUtility.isString(isInstanceware) && (index != isInstanceware) && CUtility.isFunction(self[isInstanceware]) && !self[isInstanceware]())) return false
             return exec(self, ...cArgs)
         }
         return true
@@ -107,5 +108,14 @@ CUtility.createClass = function(parent) {
         delete __C.prototype[index]
         return true
     }
-    return __C
+    __C.createInstance = function(...cArgs) {
+        return new __C(...cArgs)
+    }
+    __C.addInstanceMethod("isInstance", function(self) {
+        return __I.has(self)
+    })
+    __C.addInstanceMethod("destroyInstance", function(self) {
+        __I.delete(self)
+    })
+    return {public: __C, private: {}, instance: __I}
 }

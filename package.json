@@ -1,6 +1,6 @@
 {
     "name": "@vstudio/vnetworkify",
-    "version": "2.4.5",
+    "version": "3.0.0",
     "author": "ᴏᴠ <crazynuggets@outlook.com> (https://github.com/ov-studio)",
     "private": false,
     "license": "GPL-3.0",
@@ -29,7 +29,7 @@
     ],
     "main": "./src/importer",
     "scripts": {
-        "debug": "node ./debug/server",
+        "debug": "node ./webpack.config && node ./debug/server",
         "build": "webpack"
     },
     "dependencies": {
@@ -38,7 +38,7 @@
         "ws": "^8.8.1"
     },
     "devDependencies": {
-        "webpack": "^5.73.0",
+        "webpack": "^5.74.0",
         "webpack-cli": "^4.10.0",
         "webpack-node-externals": "^3.0.0"
     }

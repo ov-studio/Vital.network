@@ -13,124 +13,130 @@
 //////////////
 
 const CUtility = require("../../utilities")
-const CServer = require("../server")
+const CNetwork = require("../../utilities/network")
 
+CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
+    ///////////////////////
+    // Instance Members //
+    ///////////////////////
 
-/////////////////////
-// Static Members //
-/////////////////////
-
-// @Desc: Fetches network instance by name
-CServer.socket.addMethod("fetchNetwork", function(self, name) {
-    return (self.isNetwork(name) && self.network[name]) || false
-})
-
-// @Desc: Resolves an awaiting callback network's handler
-CServer.socket.addMethod("resolveCallback", function(self, client, payload) {
-    if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
-    if (CUtility.isServer && !self.isClient(client)) return false
-    const cReceiver = (CUtility.isServer && CServer.socket.client.fetch(client)) || self
-    const cQueue = (cReceiver && cReceiver.queue) || false
-    const queueID = CUtility.fetchVID(payload.networkCB, null, true)
-    if (!cQueue || !queueID || !CUtility.isObject(cQueue[queueID])) return false
-    if (payload.networkCB.isErrored) cQueue[queueID].reject(...payload.networkArgs)
-    else cQueue[queueID].resolve(...payload.networkArgs)
-    return true
-})
-
-
-///////////////////////
-// Instance Members //
-///////////////////////
-
-// @Desc: Verifies network's validity
-CServer.socket.addInstanceMethod("isNetwork", function(self, name) {
-    return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && self.network[name].isInstance() && true) || false
-})
-
-// @Desc: Fetches an array of existing networks
-CServer.socket.addInstanceMethod("fetchNetworks", function(self) {
-    const result = []
-    for (const i in self.network) {
-        if (self.isNetwork(i)) result.push(i)
+    // @Desc: Fetches network instance by name
+    socket.private.onFetchNetwork = function(name) {
+        if (!socket.public.isInstance()) return false
+        return (socket.public.isNetwork(name) && socket.private.network[name]) || false
     }
-    return result
-})
 
-// @Desc: Creates a fresh network w/ specified name
-CServer.socket.addInstanceMethod("createNetwork", function(self, name, ...cArgs) {
-    if (self.isNetwork(name)) return false
-    self.network[name] = CServer.network.create(`Socket:${CUtility.fetchVID(self)}:${name}`, ...cArgs)
-    return true
-})
-
-// @Desc: Destroys an existing network by specified name
-CServer.socket.addInstanceMethod("destroyNetwork", function(self, name) {
-    if (!self.isNetwork(name)) return false
-    self.network[name].destroy()
-    delete self.network[name]
-    return true
-})
-
-// @Desc: Attaches a handler on specified network
-CServer.socket.addInstanceMethod("on", function(self, name, ...cArgs) {
-    const cNetwork = CServer.socket.fetchNetwork(self, name)
-    if (!cNetwork) return false
-    return cNetwork.on(...cArgs)
-})
-
-// @Desc: Detaches a handler from specified network
-CServer.socket.addInstanceMethod("off", function(self, name, ...cArgs) {
-    const cNetwork = CServer.socket.fetchNetwork(self, name)
-    if (!cNetwork) return false
-    return cNetwork.off(...cArgs)
-})
-
-// @Desc: Emits to all attached non-callback handlers of specified network
-CServer.socket.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs) {
-    if (isRemote) {
-        if (CUtility.isServer && !self.isClient(isRemote)) return false
-        const cReceiver = (CUtility.isServer && CServer.socket.client.fetch(isRemote)) || self.server
-        cReceiver.socket.send(CUtility.toBase64(JSON.stringify({
-            networkName: name,
-            networkArgs: cArgs
-        })))
+    // @Desc: Resolves an awaiting callback network's handler
+    socket.private.onResolveNetwork = function(client, payload) {
+        if (!socket.public.isInstance()) return false
+        if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
+        if (CUtility.isServer && !socket.public.isClient(client)) return false
+        const cReceiver = (CUtility.isServer && socket.public.client.fetch(client)) || socket.public
+        const cQueue = (cReceiver && cReceiver.queue) || false
+        const queueID = CUtility.vid.fetch(payload.networkCB, null, true)
+        if (!cQueue || !queueID || !cQueue[queueID]) return false
+        if (payload.networkCB.isErrored) cQueue[queueID].reject(...payload.networkArgs)
+        else cQueue[queueID].resolve(...payload.networkArgs)
         return true
     }
-    const cNetwork = CServer.socket.fetchNetwork(self, name)
-    if (!cNetwork) return false
-    return cNetwork.emit(...cArgs)
-})
 
-// @Desc: Emits to attached callback handler of specified network
-CServer.socket.addInstanceMethod("emitCallback", function(self, name, isRemote, ...cArgs) {
-    if (isRemote) {
-        if (CUtility.isServer && !self.isClient(isRemote)) return false
-        const cReceiver = (CUtility.isServer && CServer.socket.client.fetch(isRemote)) || self.server
-        const cQueue = (cReceiver && cReceiver.queue) || false
-        if (!cQueue) return false
-        const networkCB = {}
-        const networkVID = CUtility.fetchVID(networkCB)
-        const cPromise = new Promise(function(resolve, reject) {
-            cQueue[networkVID] = {
-                resolve: function(...cArgs) {
-                    delete cQueue[networkVID]
-                    return resolve(...cArgs)
-                },
-                reject: function(...cArgs) {
-                    delete cQueue[networkVID]
-                    return reject(...cArgs)
-                }
-            }
-        })
-        cReceiver.socket.send(CUtility.toBase64(JSON.stringify({
-            networkName: name,
-            networkArgs: cArgs,
-            networkCB: networkCB
-        })))
-        return cPromise
+    // @Desc: Verifies network's validity
+    socket.public.isNetwork = function(name) {
+        if (!socket.public.isInstance()) return false
+        return (CUtility.isString(name) && socket.private.network[name] && true) || false
     }
-    const cNetwork = CServer.socket.fetchNetwork(self, name)
-    if (!cNetwork) return false
-    return cNetwork.emitCallback(...cArgs)
+
+    // @Desc: Fetches an array of existing networks
+    socket.public.fetchNetworks = function() {
+        if (!socket.public.isInstance()) return false
+        const result = []
+        for (const i in socket.private.network) {
+            if (socket.public.isNetwork(i)) result.push(i)
+        }
+        return result
+    }
+
+    // @Desc: Creates a fresh network w/ specified name
+    socket.public.createNetwork = function(name, ...cArgs) {
+        if (!socket.public.isInstance()) return false
+        if (socket.public.isNetwork(name)) return false
+        socket.private.network[name] = CNetwork.create(`Socket:${CUtility.vid.fetch(socket.public)}:${name}`, ...cArgs)
+        return true
+    }
+
+    // @Desc: Destroys an existing network by specified name
+    socket.public.destroyNetwork = function(name) {
+        if (!socket.public.isInstance()) return false
+        if (!socket.public.isNetwork(name)) return false
+        socket.private.network[name].destroy()
+        delete socket.private.network[name]
+        return true
+    }
+
+    // @Desc: Attaches a handler on specified network
+    socket.public.on = function(name, ...cArgs) {
+        if (!socket.public.isInstance()) return false
+        const cNetwork = socket.private.onFetchNetwork(name)
+        if (!cNetwork) return false
+        return cNetwork.on(...cArgs)
+    }
+
+    // @Desc: Detaches a handler from specified network
+    socket.public.off = function(name, ...cArgs) {
+        if (!socket.public.isInstance()) return false
+        const cNetwork = socket.private.onFetchNetwork(name)
+        if (!cNetwork) return false
+        return cNetwork.off(...cArgs)
+    }
+
+    // @Desc: Emits to all attached non-callback handlers of specified network
+    socket.public.emit = function(name, isRemote, ...cArgs) {
+        if (!socket.public.isInstance()) return false
+        if (isRemote) {
+            if (CUtility.isServer && !socket.public.isClient(isRemote)) return false
+            const cReceiver = (CUtility.isServer && socket.public.client.fetch(isRemote)) || socket.public.server
+            cReceiver.socket.send(CUtility.toBase64(JSON.stringify({
+                networkName: name,
+                networkArgs: cArgs
+            })))
+            return true
+        }
+        const cNetwork = socket.private.onFetchNetwork(name)
+        if (!cNetwork) return false
+        return cNetwork.emit(...cArgs)
+    }
+
+    // @Desc: Emits to attached callback handler of specified network
+    socket.public.emitCallback = function(name, isRemote, ...cArgs) {
+        if (!socket.public.isInstance()) return false
+        if (isRemote) {
+            if (CUtility.isServer && !socket.public.isClient(isRemote)) return false
+            const cReceiver = (CUtility.isServer && socket.public.client.fetch(isRemote)) || socket.public.server
+            const cQueue = (cReceiver && cReceiver.queue) || false
+            if (!cQueue) return false
+            const networkCB = {}
+            const networkVID = CUtility.vid.fetch(networkCB)
+            const cPromise = new Promise(function(resolve, reject) {
+                cQueue[networkVID] = {
+                    resolve: function(...cArgs) {
+                        delete cQueue[networkVID]
+                        return resolve(...cArgs)
+                    },
+                    reject: function(...cArgs) {
+                        delete cQueue[networkVID]
+                        return reject(...cArgs)
+                    }
+                }
+            })
+            cReceiver.socket.send(CUtility.toBase64(JSON.stringify({
+                networkName: name,
+                networkArgs: cArgs,
+                networkCB: networkCB
+            })))
+            return cPromise
+        }
+        const cNetwork = socket.private.onFetchNetwork(name)
+        if (!cNetwork) return false
+        return cNetwork.emitCallback(...cArgs)
+    }
 })

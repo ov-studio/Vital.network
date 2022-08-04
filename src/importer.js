@@ -12,31 +12,14 @@
 // Imports //
 //////////////
 
-const CNetworkify = require("./managers/server")
 const CUtility = require("./utilities")
-require("./utilities/type")
-require("./managers/network")
-require("./managers/room")
-require("./managers/rest")
-require("./managers/socket/")
-require("./managers/socket/client")
-require("./managers/socket/network")
-require("./managers/socket/room")
 
 
 //////////////
 // Exports //
 //////////////
 
-const vNetworkify = CUtility.createAPIs(CNetworkify, {
-    network: true,
-    room: true,
-    socket: {
-        client: true,
-        fetchNetwork: true,
-        resolveCallback: true
-    }
-})
-vNetworkify.utility = CUtility
+const vNetworkify = CUtility.createAPIs(require("./managers/server"))
+vNetworkify.util = CUtility
 CUtility.global.vNetworkify = vNetworkify
 module.exports = vNetworkify
