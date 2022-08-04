@@ -27,7 +27,7 @@ const onSocketInitialize = function(socket, route, options) {
     socket.private.timestamp = new Date()
     socket.private.heartbeat = {interval: 10000, timeout: 60000}
     if (!CUtility.isServer) socket.private.reconnection = {attempts: -1, interval: 2500}
-    socket.private.route = route, socket.private.network = {}, socket.public.room = {}
+    socket.private.route = route, socket.private.network = {}, socket.private.room = {}
     if (options) {
         if (!CUtility.isServer) {
             if (CUtility.isObject(options.reconnection)) {
@@ -41,7 +41,7 @@ const onSocketInitialize = function(socket, route, options) {
         }
     }
     if (!CUtility.isServer) socket.public.queue = {}
-    else socket.public.instance = {}
+    else socket.private.instance = {}
     return true
 }
 
@@ -63,7 +63,7 @@ const onSocketMessage = function(socket, client, socket, payload) {
             }, socket.private.heartbeat.interval)
             socket.public.heartbeatTerminator = setTimeout(function() {
                 if (!CUtility.isServer) private["@disconnect-reason"] = "heartbeat-timeout"
-                else if (socket.public.isClient(client)) socket.public.instance[client]["@disconnect-reason"] = "heartbeat-timeout"
+                else if (socket.public.isClient(client)) socket.private.instance[client]["@disconnect-reason"] = "heartbeat-timeout"
                 socket.close()
             }, socket.private.heartbeat.timeout)
         }
@@ -79,13 +79,13 @@ const onSocketMessage = function(socket, client, socket, payload) {
                 }
                 else if (payload.room) {
                     if (payload.action == "join") {
-                        socket.public.room[(payload.room)] = socket.public.room[(payload.room)] || {}
-                        socket.public.room[(payload.room)].member = socket.public.room[(payload.room)].member || {}
-                        socket.public.room[(payload.room)].member[client] = true
+                        socket.private.room[(payload.room)] = socket.private.room[(payload.room)] || {}
+                        socket.private.room[(payload.room)].member = socket.private.room[(payload.room)].member || {}
+                        socket.private.room[(payload.room)].member[client] = true
                         CUtility.exec(socket.public.onClientJoinRoom, payload.room, client)
                     }
                     else if (payload.action == "leave") {
-                        delete socket.public.room[(payload.room)]
+                        delete socket.private.room[(payload.room)]
                         CUtility.exec(socket.public.onClientLeaveRoom, payload.room, client)
                     }
                 }
