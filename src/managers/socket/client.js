@@ -41,10 +41,10 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     /////////////////////
 
     // @Desc: Fetches client instance by VID or socket
-    CClient.public.addMethod("fetch", function(vid, socket, fetchSocket) {
+    CClient.public.addMethod("fetch", function(vid, socket, isFetchSocket) {
         if (CClient.private.isUnloaded) return false
         vid = vid || CUtility.vid.fetch(socket, null, true)
-        return (vid && CClient.private.buffer[vid] && ((fetchSocket && CClient.private.buffer[vid].socket) || CClient.private.buffer[vid])) || false
+        return (vid && CClient.private.buffer[vid] && ((isFetchSocket && CClient.private.buffer[vid].socket) || CClient.private.buffer[vid])) || false
     })
 
     // @Desc: Creates a fresh client w/ specified socket
