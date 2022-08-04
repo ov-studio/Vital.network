@@ -74,12 +74,6 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         if (CClient.private.isUnloaded) return false
         CUtility.vid.fetch(self, CUtility.vid.fetch(socket))
         self.socket = socket
-    }, "isInstance")
-
-    // @Desc: Verifies instance's validity
-    CClient.addInstanceMethod("isInstance", function(self) {
-        if (CClient.private.isUnloaded) return false
-        return (CClient.fetch(null, self.socket) && true) || false
     })
 
     // @Desc: Destroys the instance
