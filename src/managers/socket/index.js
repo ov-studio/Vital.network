@@ -134,8 +134,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         onSocketInitialize({public: self, private: private}, route, options)
         if (!CUtility.isServer) {
             var cResolver = false, reconCounter = 0
-            var connect = false, reconnect = false
-            connect = function(isReconnection) {
+            private.onConnect = function(isReconnection) {
                 if (!isReconnection && self.isConnected()) return false
                 private.isAwaiting = private.isAwaiting || new Promise((resolver) => cResolver = resolver)
                 private.server = new WebSocket(`${((server.private.config.protocol == "https") && "wss") || "ws"}://${server.private.config.hostname}${(server.private.config.port && (":" + server.private.config.port)) || ""}/${self.route}`)
@@ -152,7 +151,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 }
                 private.server.onclose = function() {
                     self.destroy(true)
-                    const isReconnection = (!private["@disconnect"] || !private["@disconnect"].isForced && reconnect()) || false
+                    const isReconnection = (!private["@disconnect"] || !private["@disconnect"].isForced && private.onReconnect()) || false
                     if (!isReconnection) {
                         const reason = (private["@disconnect"] && private["@disconnect"].reason) || (private.isConnected && "client-disconnected") || "server-nonexistent"
                         self.destroy()
@@ -170,7 +169,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     return onSocketMessage(self, CUtility.vid.fetch(private.server, null, true), private.server, payload)
                 }
             }
-            reconnect = function() {
+            private.onReconnect = function() {
                 reconCounter += 1
                 if (private.options.reconnection.attempts != -1) {
                     if (reconCounter > private.options.reconnection.attempts) {
@@ -181,11 +180,11 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 private.timer.reconnectTimer = setTimeout(function() {
                     delete private.timer.reconnectTimer
                     CUtility.exec(self.onClientReconnect, CUtility.vid.fetch(private.server, null, true) || false, reconCounter, private.options.reconnection.attempts)
-                    connect(true)
+                    private.onConnect(true)
                 }, private.options.reconnection.interval)
                 return true
             }
-            connect()
+            private.onConnect()
         }
         else {
             private.server = new CWS.Server({
