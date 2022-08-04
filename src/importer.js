@@ -50,6 +50,14 @@ async function exec() {
     const isConnected = await test.connect()
     if (!isConnected) return false
 
+    const cSocket = test.socket.create("Server:MyRoute", {
+        heartbeat: {
+            interval: 10000, // Interval at which heartbeat should be executed
+            timeout: 60000 // Duration b/w each heartbeat
+        }
+    })
+    console.log(cSocket)
+
     test.rest.create("get", "", function(request, response) {
         response.status(200).send("API Status Message")
     })

@@ -115,7 +115,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     for (const k in j.queue) {
                         j.queue[k].reject()
                     }
-                    j.socket.send(CUtility.toBase64(JSON.stringify({.reason: private.reason})))
+                    j.socket.send(CUtility.toBase64(JSON.stringify({["@disconnect"]: private["@disconnect"].reason})))
                     j.socket.close()
                 }
             }
