@@ -37,7 +37,7 @@ CServer.public.addMethod("create", function(...cArgs) {
     return CServer.public.createInstance(...cArgs)
 })
 
-// @Desc: Handles connection status
+// @Desc: Handles connection's status
 CServer.private.onConnectionStatus = function(self, state) {
     const private = CServer.instance.get(self)
     delete private.isAwaiting
