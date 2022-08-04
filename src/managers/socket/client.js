@@ -20,18 +20,19 @@ const CNetwork = require("../../utilities/network")
 // Class: Client //
 ////////////////////
 
-CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
+CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
+    if (!CUtility.isServer) return false
     const CClient = CUtility.createClass()
-    server.public.socket.client = CClient.public
+    socket.public.client = CClient.public
     CClient.private.buffer = {}
 
-    CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {
-        if ((server.public != __server.public) || (server.private != __server.private)) return false
+    CNetwork.fetch("vNetworkify:Socket:onDestroy").on(function(__server) {
+        if ((socket.public != __server.public) || (socket.private != __server.private)) return false
         for (const i in CClient.private.buffer) {
             CClient.private.buffer[i].destroy()
         }
         CClient.private.isUnloaded = true
-        delete server.public.socket.client
+        delete socket.public.client
     })
 
 
