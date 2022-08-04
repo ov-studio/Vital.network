@@ -47,7 +47,6 @@ async function debug() {
     cSocket.onServerDisconnect = function(timestamp_start, timestamp_end, deltaTick) {
         vNetworkify.util.print(`* Server successfully disconnected! | Life-Span: [${deltaTick}ms]`)
     }
-    console.log(cSocket)
 
 
     // @Non-Callback Network Examples
