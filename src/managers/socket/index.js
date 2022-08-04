@@ -23,17 +23,10 @@ const {onSocketInitialize, onSocketMessage} = require("./parser")
 ////////////////////
 
 CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
-    server.public = CUtility.createClass({})
-    server.private
+    server.public = CUtility.createClass()
     server.private.buffer = {}
-    server.private.heartbeat = {
-        interval: 10000,
-        timeout: 60000
-    }
-    server.private.reconnection = {
-        attempts: -1,
-        interval: 2500
-    }
+    server.private.heartbeat = {interval: 10000, timeout: 60000}
+    server.private.reconnection = {attempts: -1, interval: 2500}
 
 
     /////////////////////

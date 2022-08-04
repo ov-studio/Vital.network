@@ -19,7 +19,7 @@ const CUtility = require("./")
 // Class: Network //
 /////////////////////
 
-const CNetwork = CUtility.createClass({})
+const CNetwork = CUtility.createClass()
 CNetwork.private.buffer = {}
 
 

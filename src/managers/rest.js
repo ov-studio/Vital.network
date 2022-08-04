@@ -21,7 +21,7 @@ const CNetwork = require("../utilities/network")
 //////////////////
 
 CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
-    const CRest = CUtility.createClass({})
+    const CRest = CUtility.createClass()
     CRest.private.post = {}, CRest.private.get = {}, CRest.private.put = {}, CRest.private.delete = {}
     server.public.rest = CRest.public
 

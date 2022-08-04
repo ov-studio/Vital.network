@@ -23,9 +23,7 @@ const CNetwork = require("../utilities/network")
 // Class: Server //
 ///////////////////
 
-const CServer = CUtility.createClass({
-    buffer: {}
-})
+const CServer = CUtility.createClass()
 CNetwork.create("vNetworkify:Server:onConnect")
 CNetwork.create("vNetworkify:Server:onDisconnect")
 
