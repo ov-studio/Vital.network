@@ -17,16 +17,13 @@ const CUtility = {
     loadString: eval,
     queryString: require("querystring")
 }
-Object.defineProperty(CUtility, "isServer", {
-    value: ((typeof(process) != "undefined") && !process.browser && true) || false,
-    enumerable: true, configurable: false, writable: false
-})
+Object.defineProperty(CUtility, "isServer", {value: ((typeof(process) != "undefined") && !process.browser && true) || false, enumerable: true, configurable: false, writable: false})
 CUtility.crypto = (CUtility.isServer && require("crypto")) || crypto
 CUtility.global = (CUtility.isServer && global) || window
 CUtility.toBase64 = (!CUtility.isServer && btoa.bind(window)) || function(data) { return Buffer.from(data).toString("base64") }
 CUtility.fromBase64 = (!CUtility.isServer && atob.bind(window)) || function(data) { return Buffer.from(data, "base64").toString("binary") }
 CUtility.identifier = CUtility.toBase64(`vNetworkify-${(CUtility.isServer && "Server") || "Client"}`)
-CUtility.version = (CUtility.isServer && process.env.npm_package_version) || false
+CUtility.version = Object.defineProperty(CUtility, "version", {value: CUtility.toBase64("3.0.0"), enumerable: true, configurable: false, writable: false})
 
 // @Desc: Executes the specified handler
 CUtility.exec = function(exec, ...cArgs) {

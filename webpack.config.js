@@ -12,9 +12,14 @@
 // Imports //
 //////////////
 
+const CFS = require("fs")
 const CPath = require("path")
 const CPackage = require("./package.json")
 const CNodeExternals = require("webpack-node-externals")
+const CUtilPath = "./src/utilities/index.js"
+var CUtil = (CFS.readFileSync(CUtilPath)).toString()
+CUtil = CUtil.replace(/(CUtility.version)(.*)/, `$1 = Object.defineProperty(CUtility, "version", {value: CUtility.toBase64("${CPackage.version}"), enumerable: true, configurable: false, writable: false})`)
+CFS.writeFileSync(CUtilPath, CUtil)
 
 
 //////////////

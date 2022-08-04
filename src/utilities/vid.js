@@ -53,10 +53,7 @@ CUtility.vid.fetch = function(parent, assignVID, isReadOnly) {
     if (CUtility.isNull(parent) || CUtility.isBool(parent) || CUtility.isString(parent) || CUtility.isNumber(parent)) return false
     parent.prototype = parent.prototype || {}
     if (!isReadOnly && !parent.prototype.vid) {
-        Object.defineProperty(parent.prototype, "vid", {
-            value: assignVID || `${CUtility.identifier}:${CUtility.vid.create()}`,
-            enumerable: true, configurable: false, writable: false
-        })
+        Object.defineProperty(parent.prototype, "vid", {value: assignVID || `${CUtility.identifier}:${CUtility.vid.create()}`, enumerable: true, configurable: false, writable: false})
     }
     return parent.prototype.vid
 }
