@@ -26,7 +26,7 @@ CUtility.global = (CUtility.isServer && global) || window
 CUtility.toBase64 = (!CUtility.isServer && btoa.bind(window)) || function(data) { return Buffer.from(data).toString("base64") }
 CUtility.fromBase64 = (!CUtility.isServer && atob.bind(window)) || function(data) { return Buffer.from(data, "base64").toString("binary") }
 CUtility.identifier = CUtility.toBase64(`vNetworkify-${(CUtility.isServer && "Server") || "Client"}`)
-CUtility.version = process.env.npm_package_version
+CUtility.version = (CUtility.isServer && process.env.npm_package_version) || false
 
 // @Desc: Executes the specified handler
 CUtility.exec = function(exec, ...cArgs) {
