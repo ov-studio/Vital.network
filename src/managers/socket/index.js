@@ -55,7 +55,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
 
     // @Desc: Creates a fresh socket w/ specified route
     CSocket.public.addMethod("create", function(route, ...cArgs) {
-        if (!CServer.isConnected(true) || !CSocket.public.isVoid(route)) return false
+        if (!CSocket.public.isVoid(route)) return false
         CSocket.private.buffer[route] = CSocket.public.createInstance(route, ...cArgs)
         return CSocket.private.buffer[route]
     })
@@ -73,7 +73,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
 
     // @Desc: Destroys the instance
     CSocket.public.addInstanceMethod("destroy", function(self, isFlush) {
-        const private = CServer.instance.get(self)
+        const private = CSocket.instance.get(self)
         if (isFlush) {
             if (!CUtility.isServer) {
                 for (const i in private.room) {
@@ -121,32 +121,33 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
 
         // @Desc: Instance constructor
         CSocket.public.addMethod("constructor", function(self, route, options) {
+            const private = CSocket.instance.get(self)
             onSocketInitialize(self, route, options)
             var cResolver = false, reconCounter = 0
             var connect = false, reconnect = false
             connect = function(isReconnection) {
                 if (!isReconnection && self.isConnected()) return false
-                self.config.isAwaiting = self.config.isAwaiting || new Promise((resolver) => cResolver = resolver)
-                self.server = new WebSocket(`${((CServer.config.protocol == "https") && "wss") || "ws"}://${CServer.config.hostname}${(CServer.config.port && (":" + CServer.config.port)) || ""}/${self.route}`)
+                private.isAwaiting = private.isAwaiting || new Promise((resolver) => cResolver = resolver)
+                self.server = new WebSocket(`${((server.private.config.protocol == "https") && "wss") || "ws"}://${server.private.config.hostname}${(server.private.config.port && (":" + server.private.config.port)) || ""}/${self.route}`)
                 self.server.onopen = function() {
                     reconCounter = 0
-                    delete self.config.isAwaiting
-                    self.config.isConnected = true
+                    delete private.isAwaiting
+                    private.isConnected = true
                     if (self.reconnectTimer) {
                         clearTimeout(self.reconnectTimer)
                         delete self.reconnectTimer
                     }
-                    cResolver(self.config.isConnected)
+                    cResolver(private.isConnected)
                     return true
                 }
                 self.server.onclose = function() {
                     self.destroy(true)
                     const isReconnection = (!self["@disconnect-forced"] && reconnect()) || false
                     if (!isReconnection) {
-                        const reason = self["@disconnect-reason"] || (self.config.isConnected && "client-disconnected") || "server-nonexistent"
+                        const reason = self["@disconnect-reason"] || (private.isConnected && "client-disconnected") || "server-nonexistent"
                         self.destroy()
-                        self.config.isConnected = false
-                        cResolver(self.config.isConnected)
+                        private.isConnected = false
+                        cResolver(private.isConnected)
                         CUtility.exec(self.onClientDisconnect, CUtility.vid.fetch(self.server, null, true) || false, reason)
                     }
                     return true
@@ -161,17 +162,17 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             }
             reconnect = function() {
                 reconCounter += 1
-                if (self.config.options.reconnection.attempts != -1) {
-                    if (reconCounter > self.config.options.reconnection.attempts) {
+                if (private.options.reconnection.attempts != -1) {
+                    if (reconCounter > private.options.reconnection.attempts) {
                         self["@disconnect-reason"] = "client-reconnection-expired"
                         return false
                     }
                 }
                 self.reconnectTimer = setTimeout(function() {
                     delete self.reconnectTimer
-                    CUtility.exec(self.onClientReconnect, CUtility.vid.fetch(self.server, null, true) || false, reconCounter, self.config.options.reconnection.attempts)
+                    CUtility.exec(self.onClientReconnect, CUtility.vid.fetch(self.server, null, true) || false, reconCounter, private.options.reconnection.attempts)
                     connect(true)
-                }, self.config.options.reconnection.interval)
+                }, private.options.reconnection.interval)
                 return true
             }
             connect()
@@ -179,8 +180,8 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
 
         // @Desc: Retrieves connection's status of instance
         CSocket.public.addInstanceMethod("isConnected", function(self, isSync) {
-            if (isSync) return (CUtility.isBool(self.config.isConnected) && self.config.isConnected) || false
-            return self.config.isAwaiting || self.config.isConnected || false
+            if (isSync) return (CUtility.isBool(private.isConnected) && private.isConnected) || false
+            return private.isAwaiting || private.isConnected || false
         })
     }
     else {
@@ -198,10 +199,10 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             })
             setTimeout(function() {CUtility.exec(self.onServerConnect)}, 1)
             self.server.onclose = function() {
-                const timestamp_start = self.config.timestamp, timestamp_end = new Date()
+                const timestamp_start = private.timestamp, timestamp_end = new Date()
                 const deltaTick = timestamp_end.getTime() - timestamp_start.getTime()
                 self.destroy()
-                CServer.instance.CHTTP.off("upgrade", upgrade)
+                server.private.CHTTP.off("upgrade", upgrade)
                 setTimeout(function() {CUtility.exec(self.onServerDisconnect, timestamp_start, timestamp_end, deltaTick)}, 1)
                 return true
             }
@@ -248,7 +249,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 })
                 return true
             }
-            CServer.instance.CHTTP.on("upgrade", upgrade)
+            server.private.instance.CHTTP.on("upgrade", upgrade)
         })
 
         // @Desc: Verifies client's validity
