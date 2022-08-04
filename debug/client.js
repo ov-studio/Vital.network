@@ -13,14 +13,14 @@
 ///////////////
 
 async function debug() {
-    const isConnected = await vNetworkify.connect({
+    const cServer = vNetworkify.create({
         port: 33021
     })
     if (!isConnected) return false
     
 
     // @Socket API Examples
-    const cSocket = vNetworkify.socket.create("Server:MyRoute", {
+    const cSocket = cServer.socket.create("Server:MyRoute", {
         heartbeat: {
             interval: 10000, // Interval at which heartbeat should be executed
             timeout: 60000 // Duration b/w each heartbeat
@@ -31,7 +31,7 @@ async function debug() {
         }
     })
     vNetworkify.util.print("* Socket-list:")
-    vNetworkify.util.print(Object.keys(vNetworkify.socket.fetchSockets()))
+    vNetworkify.util.print(Object.keys(cServer.socket.fetchSockets()))
 
     cSocket.onHeartbeat = function(deltaTick) {
         vNetworkify.util.print(`* Server's heartbeat [${deltaTick}ms] received!`)
