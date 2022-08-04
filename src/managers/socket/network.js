@@ -20,6 +20,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         if ((socket.public != __socket.public) || (socket.private != __socket.private)) return false
         for (const i in socket.private.network) {
             socket.private.network[i].destroy()
+            delete socket.private.network[i]
         }
     })
 

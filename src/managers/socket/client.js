@@ -30,6 +30,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         if ((socket.public != __socket.public) || (socket.private != __socket.private)) return false
         for (const i in CClient.private.buffer) {
             CClient.private.buffer[i].destroy()
+            delete CClient.private.buffer[i]
         }
         CClient.private.isUnloaded = true
         delete socket.public.client

@@ -22,6 +22,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         if (CUtility.isServer) {
             for (const i in socket.private.room) {
                 socket.private.room[i].destroy()
+                delete socket.private.room[i]
             }
         }
     })
