@@ -104,8 +104,8 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             for (const i in private.network) {
                 private.network[i].destroy()
             }
-            for (const i in private.timers) {
-                clearTimeout(private.timers[i])
+            for (const i in private.timer) {
+                clearTimeout(private.timer[i])
             }
             if (CUtility.isServer) {
                 for (const i in private.room) {
