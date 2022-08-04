@@ -26,7 +26,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     socket.private.fetchNetwork = function(self, name) {
         if (isUnloaded) return false
         return (self.isNetwork(name) && self.network[name]) || false
-    })
+    }
 
     // @Desc: Resolves an awaiting callback network's handler
     socket.private.resolveCallback = function(self, client, payload) {
@@ -40,7 +40,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         if (payload.networkCB.isErrored) cQueue[queueID].reject(...payload.networkArgs)
         else cQueue[queueID].resolve(...payload.networkArgs)
         return true
-    })
+    }
 
 
     ///////////////////////
