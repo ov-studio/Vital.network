@@ -81,6 +81,7 @@ CNetwork.public.addMethod("constructor", function(self, name, isCallback) {
     const private = CNetwork.instance.get(self)
     private.name = name
     private.isCallback = (CUtility.isBool(isCallback) && true) || false
+    self.isCallback = private.isCallback
     private.handler = (!private.isCallback && {}) || false
 })
 
