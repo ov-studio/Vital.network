@@ -227,7 +227,6 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                             self.leaveRoom(i, client)
                         }
                         clientInstance.destroy()
-                        delete private.client[client]
                         CUtility.exec(self.onClientDisconnect, client, reason)
                         return true
                     }

@@ -31,7 +31,6 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         CNetwork.fetch("vNetworkify:Socket:onDestroy").off(this)
         for (const i in CClient.private.buffer) {
             CClient.private.buffer[i].destroy()
-            delete CClient.private.buffer[i]
         }
         CClient.private.isUnloaded = true
         delete socket.public.client
@@ -91,6 +90,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         CClient.private.buffer[vid].socket.send(CUtility.toBase64(JSON.stringify({disconnect: (socket.private["@disconnect"] && socket.private["@disconnect"].reason) || (self["@disconnect"] && self["@disconnect"].reason)})))
         CClient.private.buffer[vid].socket.close()
         delete CClient.private.buffer[vid]
+        delete socket.private.client[vid]
         self.destroyInstance()
         return true
     })
