@@ -98,12 +98,12 @@ const onSocketMessage = function(socket, client, socket, payload) {
     if (CUtility.isObject(payload.networkCB)) {
         if (!payload.networkCB.isProcessed) {
             payload.networkCB.isProcessed = true
-            const cNetwork = socket.private.fetchNetwork(socket.public, payload.networkName)
+            const cNetwork = socket.private.onFetchNetwork(socket.public, payload.networkName)
             if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
             else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
             socket.send(CUtility.toBase64(JSON.stringify(payload)))
         }
-        else socket.private.resolveCallback(socket.public, client, payload)
+        else socket.private.onResolveNetwork(socket.public, client, payload)
         return true
     }
     socket.public.emit(payload.networkName, null, ...payload.networkArgs)
