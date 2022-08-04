@@ -40,14 +40,14 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     /////////////////////
 
     // @Desc: Fetches client instance by VID or socket
-    CClient.addMethod("fetch", function(vid, socket, fetchSocket) {
+    CClient.public.addMethod("fetch", function(vid, socket, fetchSocket) {
         if (CClient.private.isUnloaded) return false
         vid = vid || CUtility.vid.fetch(socket, null, true)
         return (vid && CClient.private.buffer[vid] && ((fetchSocket && CClient.private.buffer[vid].socket) || CClient.private.buffer[vid])) || false
     })
 
     // @Desc: Creates a fresh client w/ specified socket
-    CClient.addMethod("create", function(socket) {
+    CClient.public.addMethod("create", function(socket) {
         if (CClient.private.isUnloaded) return false
         if (!CUtility.isObject(socket) || CClient.fetch(null, socket)) return false
         const cInstance = CClient.public.createInstance(socket)
@@ -57,7 +57,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     })
 
     // @Desc: Destroys an existing client by specified VID or socket
-    CClient.addMethod("destroy", function(vid, socket) {
+    CClient.public.addMethod("destroy", function(vid, socket) {
         if (CClient.private.isUnloaded) return false
         vid = vid || CUtility.vid.fetch(socket, null, true)
         if (!CClient.fetch(vid)) return false
@@ -70,7 +70,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     ///////////////////////
 
     // @Desc: Instance constructor
-    CClient.addMethod("constructor", function(self, socket) {
+    CClient.public.addMethod("constructor", function(self, socket) {
         if (CClient.private.isUnloaded) return false
         const private = CSocket.instance.get(self)
         CUtility.vid.fetch(self, CUtility.vid.fetch(socket))
@@ -78,7 +78,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     })
 
     // @Desc: Destroys the instance
-    CClient.addInstanceMethod("destroy", function(self) {
+    CClient.public.addInstanceMethod("destroy", function(self) {
         if (CClient.private.isUnloaded) return false
         const vid = CUtility.vid.fetch(self, null, true)
         delete CClient.private.buffer[vid]

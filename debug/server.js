@@ -62,6 +62,8 @@ async function debug() {
     cSocket.off("Server:MyNetwork", secondaryExec)
     cSocket.emit("Server:MyNetwork", false, "Arg 1", "Arg 2")
 
+    console.log(cSocket)
+    /*
     // @Callback Network Examples
     cSocket.createNetwork("Server:MyCBNetwork", true)
     cSocket.on("Server:MyCBNetwork", function(argA, argB) {
@@ -102,6 +104,7 @@ async function debug() {
     cSocket.onClientLeaveRoom = function(room, client) {
         vNetworkify.util.print(`* Client [${client}] left Room [${room}]`)
     }
+    */
 
 
     // @Rest API Examples
