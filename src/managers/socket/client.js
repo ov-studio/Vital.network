@@ -50,7 +50,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     // @Desc: Creates a fresh client w/ specified socket
     CClient.public.addMethod("create", function(socket) {
         if (CClient.private.isUnloaded) return false
-        if (!CUtility.isObject(socket) || CClient.fetch(null, socket)) return false
+        if (!CUtility.isObject(socket) || CClient.public.fetch(null, socket)) return false
         const cInstance = CClient.public.createInstance(socket)
         const vid = CUtility.vid.fetch(cInstance, null, true)
         CClient.private.buffer[vid] = cInstance
@@ -61,7 +61,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     CClient.public.addMethod("destroy", function(vid, socket) {
         if (CClient.private.isUnloaded) return false
         vid = vid || CUtility.vid.fetch(socket, null, true)
-        if (!CClient.fetch(vid)) return false
+        if (!CClient.public.fetch(vid)) return false
         return CClient.private.buffer[vid].destroy()
     })
 
