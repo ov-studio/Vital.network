@@ -27,6 +27,8 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     server.public.socket = CSocket.public
     CSocket.private.buffer = {}
 
+    CNetwork.create("vNetworkify:Socket:onCreate")
+    CNetwork.create("vNetworkify:Socket:onDestroy")
     CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {
         if ((server.public != __server.public) || (server.private != __server.private)) return false
         for (const i in CSocket.private.buffer) {
@@ -67,7 +69,9 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     CSocket.public.addMethod("create", function(route, ...cArgs) {
         if (CSocket.private.isUnloaded) return false
         if (!CSocket.public.isVoid(route)) return false
-        CSocket.private.buffer[route] = CSocket.public.createInstance(route, ...cArgs)
+        const cInstance = CSocket.public.createInstance(route, ...cArgs)
+        CSocket.private.buffer[route] = cInstance.public
+        CNetwork.emit("vNetworkify:Socket:onCreate", {public: cInstance.public, private: cInstance.private})
         return CSocket.private.buffer[route]
     })
 
