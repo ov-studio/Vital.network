@@ -56,7 +56,6 @@ async function exec() {
             timeout: 60000 // Duration b/w each heartbeat
         }
     })
-    console.log(cSocket)
 
     cServer.rest.create("get", "", function(request, response) {
         response.status(200).send("API Status Message")
