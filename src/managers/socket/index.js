@@ -229,6 +229,10 @@ else {
                 self.instance[client] = clientInstance
                 clientInstance.queue = {}, clientInstance.room = {}
                 query = CUtility.queryString.parse(query)
+                if (!query.version || (query.version != CUtility.version)) {
+                    console.log("TODO: CLOSE CONNECTION DUE TO VERSION MISMATCH")
+                    console.log(query)
+                }
                 clientInstance.socket.send(CUtility.toBase64(JSON.stringify({client: client})))
                 heartbeat(clientInstance)
                 CUtility.exec(self.onClientConnect, client)
