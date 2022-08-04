@@ -139,7 +139,6 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 if (!isReconnection && self.isConnected()) return false
                 private.isAwaiting = private.isAwaiting || new Promise((resolver) => cResolver = resolver)
                 private.server = new WebSocket(`${((server.private.config.protocol == "https") && "wss") || "ws"}://${server.private.config.hostname}${(server.private.config.port && (":" + server.private.config.port)) || ""}/${private.route}`)
-                console.log(private.server)
                 private.server.onopen = function() {
                     reconCounter = 0
                     delete private.isAwaiting
@@ -168,7 +167,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     return true
                 }
                 private.server.onmessage = function(payload) {
-                    return onSocketMessage(cPointer, CUtility.vid.fetch(private.server, null, true), private.server, payload)
+                    return onSocketMessage(cPointer, CUtility.vid.fetch(self, null, true), private.server, payload)
                 }
             }
             private.onReconnect = function() {
