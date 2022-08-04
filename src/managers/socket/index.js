@@ -73,31 +73,32 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
 
     // @Desc: Destroys the instance
     CSocket.public.addInstanceMethod("destroy", function(self, isFlush) {
+        const private = CServer.instance.get(self)
         if (isFlush) {
             if (!CUtility.isServer) {
-                for (const i in self.room) {
-                    delete self.room[i]
+                for (const i in private.room) {
+                    delete private.room[i]
                 }
             }
         }
         else {
             self["@disconnect-forced"] = true
             self["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnected`
-            for (const i in self.network) {
-                const j = self.network[i]
+            for (const i in private.network) {
+                const j = private.network[i]
                 j.destroy()
             }
-            clearTimeout(self.heartbeatTimer)
-            clearTimeout(self.heartbeatTerminator)
+            clearTimeout(private.heartbeatTimer)
+            clearTimeout(private.heartbeatTerminator)
             if (!CUtility.isServer) {
-                clearTimeout(self.reconnectTimer)
+                clearTimeout(private.reconnectTimer)
             }
             else {
-                for (const i in self.room) {
+                for (const i in private.room) {
                     self.destroyRoom(i)
                 }
-                for (const i in self.instance) {
-                    const j = self.instance[i]
+                for (const i in private.instance) {
+                    const j = private.instance[i]
                     for (const k in j.queue) {
                         const v = j[k]
                         v.reject()
@@ -106,7 +107,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     j.socket.close()
                 }
             }
-            self.server.close()
+            private.server.close()
             delete CSocket.private.buffer[(this.route)]
             self.destroyInstance()
         }
