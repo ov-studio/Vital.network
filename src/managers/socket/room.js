@@ -23,7 +23,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
 
     // @Desc: Verifies room's validity
     socket.public.isRoom = function(name) {
-        var cInstance = (CUtility.isString(name) && CUtility.isObject(self.room[name]) && self.room[name]) || false
+        var cInstance = (CUtility.isString(name) && self.room[name]) || false
         return (cInstance && true) || false
     }
 
