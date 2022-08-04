@@ -129,4 +129,4 @@ function validURL(str) {
 }
 
 //console.log(validURL("localhost"))
-console.log(validURL("1.1.1.100"))
+//console.log(validURL("1.1.1.100"))
