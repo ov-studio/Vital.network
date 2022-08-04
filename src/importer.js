@@ -13,14 +13,13 @@
 //////////////
 
 const CUtility = require("./utilities")
-const CServer = require("./managers/server")
 
 
 //////////////
 // Exports //
 //////////////
 
-const vNetworkify = CUtility.createAPIs(CServer)
+const vNetworkify = CUtility.createAPIs(require("./managers/server"))
 vNetworkify.util = CUtility
 CUtility.global.vNetworkify = vNetworkify
 module.exports = vNetworkify
