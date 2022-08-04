@@ -171,20 +171,18 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 }
             }
             private.onReconnect = function() {
-                console.log("Started reconnect attempt")
                 reconCounter += 1
-                if (private.options.reconnection.attempts != -1) {
-                    if (reconCounter > private.options.reconnection.attempts) {
+                if (private.reconnection.attempts != -1) {
+                    if (reconCounter > private.reconnection.attempts) {
                         private.reason = "client-reconnection-expired"
                         return false
                     }
                 }
                 private.timer.reconnectTimer = setTimeout(function() {
-                    console.log("Trying to reconnect")
                     delete private.timer.reconnectTimer
-                    CUtility.exec(self.onClientReconnect, CUtility.vid.fetch(private.server, null, true) || false, reconCounter, private.options.reconnection.attempts)
+                    CUtility.exec(self.onClientReconnect, CUtility.vid.fetch(private.server, null, true) || false, reconCounter, private.reconnection.attempts)
                     private.onConnect(true)
-                }, private.options.reconnection.interval)
+                }, private.reconnection.interval)
                 return true
             }
             private.onConnect()
