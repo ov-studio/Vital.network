@@ -97,8 +97,9 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             }
         }
         else {
-            private["@disconnect-forced"] = true
-            private["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnected`
+            private["@disconnect"] = private["@disconnect"] || {}
+            private["@disconnect"]["@disconnect-forced"] = true
+            private["@disconnect"]["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnected`
             for (const i in private.network) {
                 private.network[i].destroy()
             }
@@ -155,9 +156,9 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 }
                 self.server.onclose = function() {
                     self.destroy(true)
-                    const isReconnection = (!private["@disconnect-forced"] && reconnect()) || false
+                    const isReconnection = (!private["@disconnect"] || !private["@disconnect"]["@disconnect-forced"] && reconnect()) || false
                     if (!isReconnection) {
-                        const reason = private["@disconnect-reason"] || (private.isConnected && "client-disconnected") || "server-nonexistent"
+                        const reason = (private["@disconnect"] && private["@disconnect"]["@disconnect-reason"]) || (private.isConnected && "client-disconnected") || "server-nonexistent"
                         self.destroy()
                         private.isConnected = false
                         cResolver(private.isConnected)
