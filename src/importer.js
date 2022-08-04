@@ -43,26 +43,26 @@ module.exports = vNetworkify
 
 
 async function exec() {
-    const test = CServer.create({
+    const cServer = vNetworkify.create({
         port: 33021,
         isCaseSensitive: true
     })
-    const isConnected = await test.connect()
+    const isConnected = await cServer.connect()
     if (!isConnected) return false
 
-    const cSocket = test.socket.create("Server:MyRoute", {
+    const cSocket = cServer.socket.create("Server:MyRoute", {
         heartbeat: {
             interval: 10000, // Interval at which heartbeat should be executed
             timeout: 60000 // Duration b/w each heartbeat
         }
     })
 
-    test.rest.create("get", "", function(request, response) {
+    cServer.rest.create("get", "", function(request, response) {
         response.status(200).send("API Status Message")
     })
-    test.rest.destroy("get", "")
-    test.rest.create("get", "", function(request, response) {
-        response.status(200).send({test: "Updated Status Message"})
+    cServer.rest.destroy("get", "")
+    cServer.rest.create("get", "", function(request, response) {
+        response.status(200).send({cServer: "Updated Status Message"})
     })
 }
 setTimeout(() => exec(), 2000)
