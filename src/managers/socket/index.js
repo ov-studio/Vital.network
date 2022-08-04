@@ -29,6 +29,12 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     CSocket.private.heartbeat = {interval: 10000, timeout: 60000}
     CSocket.private.reconnection = {attempts: -1, interval: 2500}
 
+    CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {
+        if (server != __server) return false
+        CSocket.private.isUnloaded = true
+        delete __server.public.socket
+    })
+
 
     /////////////////////
     // Static Members //

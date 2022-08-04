@@ -26,7 +26,8 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     CRest.private.post = {}, CRest.private.get = {}, CRest.private.put = {}, CRest.private.delete = {}
 
     CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {
-        if (server == __server) CRest.private.isUnloaded = true
+        if (server != __server) return false
+        CRest.private.isUnloaded = true
         delete __server.public.rest
     })
 
