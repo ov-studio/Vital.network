@@ -16,17 +16,15 @@ const CUtility = require("../../utilities")
 const CNetwork = require("../../utilities/network")
 
 CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
-    var isUnloaded = false
-
     // @Desc: Fetches network instance by name
     socket.private.onFetchNetwork = function(name) {
-        if (isUnloaded) return false
+        if (!socket.public.isInstance()) return false
         return (socket.public.isNetwork(name) && socket.private.network[name]) || false
     }
 
     // @Desc: Resolves an awaiting callback network's handler
     socket.private.onResolveNetwork = function(client, payload) {
-        if (isUnloaded) return false
+        if (!socket.public.isInstance()) return false
         if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
         if (CUtility.isServer && !socket.public.isClient(client)) return false
         const cReceiver = (CUtility.isServer && socket.private.client.fetch(client)) || socket.public
@@ -45,13 +43,13 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
 
     // @Desc: Verifies network's validity
     socket.public.isNetwork = function(name) {
-        if (isUnloaded) return false
+        if (!socket.public.isInstance()) return false
         return (CUtility.isString(name) && socket.private.network[name] && true) || false
     }
 
     // @Desc: Fetches an array of existing networks
     socket.public.fetchNetworks = function() {
-        if (isUnloaded) return false
+        if (!socket.public.isInstance()) return false
         const result = []
         for (const i in socket.private.network) {
             if (socket.public.isNetwork(i)) result.push(i)
@@ -61,7 +59,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
 
     // @Desc: Creates a fresh network w/ specified name
     socket.public.createNetwork = function(name, ...cArgs) {
-        if (isUnloaded) return false
+        if (!socket.public.isInstance()) return false
         if (socket.public.isNetwork(name)) return false
         socket.private.network[name] = CNetwork.create(`Socket:${CUtility.vid.fetch(socket.public)}:${name}`, ...cArgs)
         return true
@@ -69,7 +67,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
 
     // @Desc: Destroys an existing network by specified name
     socket.public.destroyNetwork = function(name) {
-        if (isUnloaded) return false
+        if (!socket.public.isInstance()) return false
         if (!socket.public.isNetwork(name)) return false
         socket.private.network[name].destroy()
         delete socket.private.network[name]
@@ -78,7 +76,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
 
     // @Desc: Attaches a handler on specified network
     socket.public.on = function(name, ...cArgs) {
-        if (isUnloaded) return false
+        if (!socket.public.isInstance()) return false
         const cNetwork = socket.private.onFetchNetwork(name)
         if (!cNetwork) return false
         return cNetwork.on(...cArgs)
@@ -86,7 +84,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
 
     // @Desc: Detaches a handler from specified network
     socket.public.off = function(name, ...cArgs) {
-        if (isUnloaded) return false
+        if (!socket.public.isInstance()) return false
         const cNetwork = socket.private.onFetchNetwork(name)
         if (!cNetwork) return false
         return cNetwork.off(...cArgs)
@@ -94,7 +92,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
 
     // @Desc: Emits to all attached non-callback handlers of specified network
     socket.public.emit = function(name, isRemote, ...cArgs) {
-        if (isUnloaded) return false
+        if (!socket.public.isInstance()) return false
         if (isRemote) {
             if (CUtility.isServer && !socket.public.isClient(isRemote)) return false
             const cReceiver = (CUtility.isServer && socket.private.client.fetch(isRemote)) || socket.public.server
@@ -111,7 +109,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
 
     // @Desc: Emits to attached callback handler of specified network
     socket.public.emitCallback = function(name, isRemote, ...cArgs) {
-        if (isUnloaded) return false
+        if (!socket.public.isInstance()) return false
         if (isRemote) {
             if (CUtility.isServer && !socket.public.isClient(isRemote)) return false
             const cReceiver = (CUtility.isServer && socket.private.client.fetch(isRemote)) || socket.public.server
