@@ -73,7 +73,6 @@ async function debug() {
     vNetworkify.util.print(cSocket.fetchNetworks())
 
 
-    /*
     // @Room Examples
     cSocket.createRoom("Server:MyRoom")
     cSocket.destroyRoom("Server:MyRoom")
@@ -103,7 +102,6 @@ async function debug() {
     cSocket.onClientLeaveRoom = function(room, client) {
         vNetworkify.util.print(`* Client [${client}] left Room [${room}]`)
     }
-    */
 
 
     // @Rest API Examples
