@@ -36,7 +36,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         const cReceiver = (CUtility.isServer && socket.public.client.fetch(client)) || self
         const cQueue = (cReceiver && cReceiver.queue) || false
         const queueID = CUtility.vid.fetch(payload.networkCB, null, true)
-        if (!cQueue || !queueID || !CUtility.isObject(cQueue[queueID])) return false
+        if (!cQueue || !queueID || !cQueue[queueID]) return false
         if (payload.networkCB.isErrored) cQueue[queueID].reject(...payload.networkArgs)
         else cQueue[queueID].resolve(...payload.networkArgs)
         return true
@@ -50,7 +50,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     // @Desc: Verifies network's validity
     socket.public.addInstanceMethod("isNetwork", function(self, name) {
         if (isUnloaded) return false
-        return (CUtility.isString(name) && CUtility.isObject(self.network[name]) && true) || false
+        return (CUtility.isString(name) && self.network[name] && true) || false
     })
 
     // @Desc: Fetches an array of existing networks
