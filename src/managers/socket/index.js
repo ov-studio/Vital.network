@@ -124,16 +124,12 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         return true
     })
 
-    if (!CUtility.isServer) {
-        ///////////////////////
-        // Instance Members //
-        ///////////////////////
-
-        // @Desc: Instance constructor
-        CSocket.public.addMethod("constructor", function(self, route, options) {
-            if (CSocket.private.isUnloaded) return false
-            const private = CSocket.instance.get(self)
-            onSocketInitialize({public: self, private: private}, route, options)
+    // @Desc: Instance constructor
+    CSocket.public.addMethod("constructor", function(self, route, options) {
+        if (CSocket.private.isUnloaded) return false
+        const private = CSocket.instance.get(self)
+        onSocketInitialize({public: self, private: private}, route, options)
+        if (!CUtility.isServer) {
             var cResolver = false, reconCounter = 0
             var connect = false, reconnect = false
             connect = function(isReconnection) {
@@ -187,24 +183,8 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 return true
             }
             connect()
-        })
-
-        // @Desc: Retrieves connection's status of instance
-        CSocket.public.addInstanceMethod("isConnected", function(self, isSync) {
-            if (isSync) return (CUtility.isBool(private.isConnected) && private.isConnected) || false
-            return private.isAwaiting || private.isConnected || false
-        })
-    }
-    else {
-        ///////////////////////
-        // Instance Members //
-        ///////////////////////
-
-        // @Desc: Instance constructor
-        CSocket.public.addMethod("constructor", function(self, route, options) {
-            if (CSocket.private.isUnloaded) return false
-            const private = CSocket.instance.get(self)
-            onSocketInitialize({public: self, private: private}, route, options)
+        }
+        else {
             var heartbeat = false, upgrade = false
             self.server = new CWS.Server({
                 noServer: true,
@@ -263,8 +243,19 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 return true
             }
             server.private.instance.CHTTP.on("upgrade", upgrade)
-        })
+        }
+    })
 
+    if (!CUtility.isServer) {
+        // @Desc: Retrieves connection's status of instance
+        CSocket.public.addInstanceMethod("isConnected", function(self, isSync) {
+            if (CSocket.private.isUnloaded) return false
+            const private = CSocket.instance.get(self)
+            if (isSync) return (CUtility.isBool(private.isConnected) && private.isConnected) || false
+            return private.isAwaiting || private.isConnected || false
+        })
+    }
+    else {
         // @Desc: Verifies client's validity
         CSocket.public.addInstanceMethod("isClient", function(self, client) {
             if (CSocket.private.isUnloaded) return false
