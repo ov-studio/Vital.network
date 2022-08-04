@@ -72,9 +72,10 @@ const onSocketMessage = function(socket, client, socket, payload) {
                     CUtility.vid.fetch(socket, payload.client)
                     CUtility.exec(socket.public.onClientConnect, payload.client)
                 }
-                else if (payload["@disconnect-reason"]) {
-                    private["@disconnect-forced"] = true
-                    private["@disconnect-reason"] = payload["@disconnect-reason"]
+                else if (payload.disconnect) {
+                    private["@disconnect"] = private["@disconnect"] || {}
+                    private["@disconnect"].isForced = true
+                    private["@disconnect"].reason = payload.disconnect
                 }
                 else if (payload.room) {
                     if (payload.action == "join") {
