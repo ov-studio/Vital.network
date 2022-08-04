@@ -83,13 +83,13 @@ const onSocketMessage = function(socket, client, socket, payload) {
                     private["@disconnect"].reason = payload.disconnect
                 }
                 else if (payload.room) {
-                    if (payload.action == "join") {
+                    if (!payload.isLeave) {
                         socket.private.room[(payload.room)] = socket.private.room[(payload.room)] || {}
                         socket.private.room[(payload.room)].member = socket.private.room[(payload.room)].member || {}
                         socket.private.room[(payload.room)].member[client] = true
                         CUtility.exec(socket.public.onClientJoinRoom, payload.room, client)
                     }
-                    else if (payload.action == "leave") {
+                    else {
                         delete socket.private.room[(payload.room)]
                         CUtility.exec(socket.public.onClientLeaveRoom, payload.room, client)
                     }

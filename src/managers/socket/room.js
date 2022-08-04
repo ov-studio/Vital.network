@@ -88,7 +88,7 @@ else {
         if (!self.isClient(client) || !self.isRoom(name) || self.isInRoom(name, client)) return false
         self.room[name].member[client] = true
         const clientInstance = CServer.socket.client.fetch(client)
-        clientInstance.socket.send(CUtility.toBase64(JSON.stringify({room: name, action: "join"})))
+        clientInstance.socket.send(CUtility.toBase64(JSON.stringify({room: name})))
         CUtility.exec(self.onClientJoinRoom, name, client)
         return true
     })
@@ -98,7 +98,7 @@ else {
         if (!self.isClient(client) || !self.isInRoom(name, client)) return false
         delete self.room[name].member[client]
         const clientInstance = CServer.socket.client.fetch(client)
-        clientInstance.socket.send(CUtility.toBase64(JSON.stringify({room: name, action: "leave"})))
+        clientInstance.socket.send(CUtility.toBase64(JSON.stringify({room: name, isLeave: true})))
         CUtility.exec(self.onClientLeaveRoom, name, client)
         return true
     })
