@@ -195,7 +195,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 const timestamp_start = private.timestamp, timestamp_end = new Date()
                 const deltaTick = timestamp_end.getTime() - timestamp_start.getTime()
                 self.destroy()
-                server.private.client.CHTTP.off("upgrade", upgrade)
+                server.private.instance.CHTTP.off("upgrade", upgrade)
                 setTimeout(function() {CUtility.exec(self.onServerDisconnect, timestamp_start, timestamp_end, deltaTick)}, 1)
                 return true
             }
@@ -242,7 +242,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 })
                 return true
             }
-            server.private.client.CHTTP.on("upgrade", upgrade)
+            server.private.instance.CHTTP.on("upgrade", upgrade)
         }
     })
 
