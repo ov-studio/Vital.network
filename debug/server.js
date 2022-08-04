@@ -20,42 +20,43 @@ require("../src/importer")
 ///////////////
 
 async function debug() {
-    const isConnected = await vNetworkify.connect({
+    const cServer = vNetworkify.create({
         port: 33021,
         isCaseSensitive: true
     })
+    const isConnected = await cServer.connect()
     if (!isConnected) return false
 
 
     // @Socket API Examples
-    const cSocket = vNetworkify.socket.create("Server:MyRoute", {
+    const cSocket = cServer.socket.create("Server:MyRoute", {
         heartbeat: {
             interval: 10000, // Interval at which heartbeat should be executed
             timeout: 60000 // Duration b/w each heartbeat
         }
     })
-    vNetworkify.utility.print("* Socket-list:")
-    vNetworkify.utility.print(Object.keys(vNetworkify.socket.fetchSockets()))
+    vNetworkify.util.print("* Socket-list:")
+    vNetworkify.util.print(Object.keys(cServer.socket.fetchSockets()))
 
     cSocket.onHeartbeat = function(client, deltaTick) {
-        vNetworkify.utility.print(`* Client's [${client}] heartbeat [${deltaTick}ms] received!`)
+        vNetworkify.util.print(`* Client's [${client}] heartbeat [${deltaTick}ms] received!`)
     }
     cSocket.onServerConnect = function() {
-        vNetworkify.utility.print("* Server successfully connected!")
+        vNetworkify.util.print("* Server successfully connected!")
     }
     cSocket.onServerDisconnect = function(timestamp_start, timestamp_end, deltaTick) {
-        vNetworkify.utility.print(`* Server successfully disconnected! | Life-Span: [${deltaTick}ms]`)
+        vNetworkify.util.print(`* Server successfully disconnected! | Life-Span: [${deltaTick}ms]`)
     }
 
 
     // @Non-Callback Network Examples
     cSocket.createNetwork("Server:MyNetwork")
     cSocket.on("Server:MyNetwork", function() {
-        vNetworkify.utility.print("Non-Callback network | Handler 1")
+        vNetworkify.util.print("Non-Callback network | Handler 1")
     })
     const secondaryExec = function(...cArgs) {
-        vNetworkify.utility.print("Non-Callback network | Handler 2")
-        vNetworkify.utility.print(...cArgs)
+        vNetworkify.util.print("Non-Callback network | Handler 2")
+        vNetworkify.util.print(...cArgs)
     }
     cSocket.on("Server:MyNetwork", secondaryExec)
     cSocket.off("Server:MyNetwork", secondaryExec)
@@ -67,39 +68,39 @@ async function debug() {
         return argA + argB
     })
     const networkCBResult = await cSocket.emitCallback("Server:MyCBNetwork", false, 1, 4)
-    vNetworkify.utility.print(`Callback network | Result: ${networkCBResult}`)
-    vNetworkify.utility.print("* Network-list:")
-    vNetworkify.utility.print(cSocket.fetchNetworks())
+    vNetworkify.util.print(`Callback network | Result: ${networkCBResult}`)
+    vNetworkify.util.print("* Network-list:")
+    vNetworkify.util.print(cSocket.fetchNetworks())
 
 
     // @Room Examples
     cSocket.createRoom("Server:MyRoom")
     cSocket.destroyRoom("Server:MyRoom")
     cSocket.createRoom("Server:MyRoom")
-    vNetworkify.utility.print("* Room-list:")
-    vNetworkify.utility.print(cSocket.fetchRooms())
+    vNetworkify.util.print("* Room-list:")
+    vNetworkify.util.print(cSocket.fetchRooms())
 
     cSocket.onClientConnect = async function(client) {
-        vNetworkify.utility.print(`* Client connected [${client}]`)
-        vNetworkify.utility.print("* Client-list:")
-        vNetworkify.utility.print(cSocket.fetchClients())
+        vNetworkify.util.print(`* Client connected [${client}]`)
+        vNetworkify.util.print("* Client-list:")
+        vNetworkify.util.print(cSocket.fetchClients())
 
         cSocket.joinRoom("Server:MyRoom", client)
         cSocket.emitRoom("Server:MyRoom", "Client:MyNetwork")
         const networkRemoteCBResult = await cSocket.emitCallback("Client:MyCBNetwork", client, 10, 20)
-        vNetworkify.utility.print(`Remote-Callback network | Result: ${networkRemoteCBResult}`)
+        vNetworkify.util.print(`Remote-Callback network | Result: ${networkRemoteCBResult}`)
     }
     cSocket.onClientDisconnect = function(client, reason) {
-        vNetworkify.utility.print(`* Client disconnected [${client}] | Reason: ${reason}`)
+        vNetworkify.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
     }
 
     cSocket.onClientJoinRoom = function(room, client) {
-        vNetworkify.utility.print(`* Client [${client}] joined Room [${room}]`)
-        vNetworkify.utility.print(`* Member-list:`)
-        vNetworkify.utility.print(cSocket.fetchRoomMembers(room))
+        vNetworkify.util.print(`* Client [${client}] joined Room [${room}]`)
+        vNetworkify.util.print(`* Member-list:`)
+        vNetworkify.util.print(cSocket.fetchRoomMembers(room))
     }
     cSocket.onClientLeaveRoom = function(room, client) {
-        vNetworkify.utility.print(`* Client [${client}] left Room [${room}]`)
+        vNetworkify.util.print(`* Client [${client}] left Room [${room}]`)
     }
 
 
@@ -113,3 +114,19 @@ async function debug() {
     })
 }
 debug()
+
+
+function validURL(str) {
+    /*
+    var pattern = new RegExp(
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    )
+    return !!pattern.test(str);
+    */
+    let ipv4_regex = /^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d){3}$/gm
+   return ipv4_regex.test(str)
+}
+
+//console.log(validURL("localhost"))
+console.log(validURL("1.1.1.100"))
