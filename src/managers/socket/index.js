@@ -97,28 +97,12 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             }
         }
         else {
-            CNetwork.emit("vNetworkify:Socket:onDestroy", {public: self, private: private})
             private["@disconnect"] = private["@disconnect"] || {}
             private["@disconnect"].isForced = true
             private["@disconnect"].reason = `${(CUtility.isServer && "server") || "client"}-disconnected`
-            for (const i in private.network) {
-                private.network[i].destroy()
-            }
+            CNetwork.emit("vNetworkify:Socket:onDestroy", {public: self, private: private})
             for (const i in private.timer) {
                 clearTimeout(private.timer[i])
-            }
-            if (CUtility.isServer) {
-                for (const i in private.room) {
-                    self.destroyRoom(i)
-                }
-                for (const i in private.client) {
-                    const j = private.client[i]
-                    for (const k in j.queue) {
-                        j.queue[k].reject()
-                    }
-                    j.socket.send(CUtility.toBase64(JSON.stringify({disconnect: private["@disconnect"].reason})))
-                    j.socket.close()
-                }
             }
             private.server.close()
             delete CSocket.private.buffer[(this.route)]
