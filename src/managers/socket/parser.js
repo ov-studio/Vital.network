@@ -25,6 +25,8 @@ const onSocketInitialize = function(socket, route, options) {
     CUtility.vid.fetch(socket.public)
     options = (CUtility.isObject(options) && options) || false
     socket.private.timestamp = new Date()
+    socket.private.heartbeat = {interval: 10000, timeout: 60000}
+    socket.private.reconnection = {attempts: -1, interval: 2500}
     if (options) {
         if (CUtility.isObject(options.heartbeat) && CUtility.isNumber(options.heartbeat.interval) && CUtility.isNumber(options.heartbeat.timeout)) {
             socket.private.heartbeat.interval = Math.max(1, options.heartbeat.interval)

@@ -26,8 +26,6 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     const CSocket = CUtility.createClass()
     server.public.socket = CSocket.public
     CSocket.private.buffer = {}
-    CSocket.private.heartbeat = {interval: 10000, timeout: 60000}
-    CSocket.private.reconnection = {attempts: -1, interval: 2500}
 
     CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {
         if ((server.public != __server.public) || (server.private != __server.private)) return false
