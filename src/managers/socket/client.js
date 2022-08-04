@@ -88,7 +88,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
                 CClient.private.buffer[vid].queue[i].reject()
             }
         }
-        CClient.private.buffer[vid].socket.send(CUtility.toBase64(JSON.stringify({disconnect: socket.private["@disconnect"].reason})))
+        CClient.private.buffer[vid].socket.send(CUtility.toBase64(JSON.stringify({disconnect: (socket.private["@disconnect"] && socket.private["@disconnect"].reason) || (private["@disconnect"] && private["@disconnect"].reason)})))
         CClient.private.buffer[vid].socket.close()
         CClient.private.buffer[i].destroy()
         delete CClient.private.buffer[vid]
