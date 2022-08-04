@@ -274,3 +274,14 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         })
     }
 })
+
+
+//////////////
+// Exports //
+//////////////
+
+const _ = [
+    "./client",
+    "./network",
+    "./room"
+].forEach((value) => require(value))

@@ -154,3 +154,7 @@ CServer.public.addInstanceMethod("connect", function(self) {
 //////////////
 
 module.exports = CServer.public
+const _ = [
+    "./rest",
+    "./socket/"
+].forEach((value) => require(value))

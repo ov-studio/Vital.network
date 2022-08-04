@@ -14,11 +14,6 @@
 
 const CUtility = require("./utilities")
 const CServer = require("./managers/server")
-require("./managers/rest")
-require("./managers/socket/")
-require("./managers/socket/client")
-require("./managers/socket/network")
-require("./managers/socket/room")
 
 
 //////////////
