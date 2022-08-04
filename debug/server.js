@@ -50,7 +50,6 @@ async function debug() {
     console.log(cSocket)
 
 
-    /*
     // @Non-Callback Network Examples
     cSocket.createNetwork("Server:MyNetwork")
     cSocket.on("Server:MyNetwork", function() {
@@ -75,6 +74,7 @@ async function debug() {
     vNetworkify.util.print(cSocket.fetchNetworks())
 
 
+    /*
     // @Room Examples
     cSocket.createRoom("Server:MyRoom")
     cSocket.destroyRoom("Server:MyRoom")
