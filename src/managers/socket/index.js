@@ -135,10 +135,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     reconCounter = 0
                     delete private.isAwaiting
                     private.isConnected = true
-                    if (private.timer.reconnectTimer) {
-                        clearTimeout(private.timer.reconnectTimer)
-                        delete private.timer.reconnectTimer
-                    }
+                    clearTimeout(private.timer.reconnectTimer)
                     cResolver(private.isConnected)
                     return true
                 }
