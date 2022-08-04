@@ -27,13 +27,7 @@ require("./managers/socket/room")
 // Exports //
 //////////////
 
-const vNetworkify = CUtility.createAPIs(CServer, {
-    socket: {
-        client: true,
-        fetchNetwork: true,
-        resolveCallback: true
-    }
-})
+const vNetworkify = CUtility.createAPIs(CServer)
 vNetworkify.util = CUtility
 CUtility.global.vNetworkify = vNetworkify
 module.exports = vNetworkify
