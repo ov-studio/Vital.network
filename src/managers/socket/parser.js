@@ -44,7 +44,6 @@ const onSocketInitialize = function(socket, route, options) {
     return true
 }
 
-
 // @Desc: Handles socket's message
 const onSocketMessage = function(socket, client, socket, payload) {
     payload = JSON.parse(CUtility.fromBase64(payload.data))
@@ -61,8 +60,14 @@ const onSocketMessage = function(socket, client, socket, payload) {
                 socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
             }, socket.private.heartbeat.interval)
             socket.public.heartbeatTerminator = setTimeout(function() {
-                if (!CUtility.isServer) private["@disconnect-reason"] = "heartbeat-timeout"
-                else if (socket.public.isClient(client)) socket.private.client[client]["@disconnect-reason"] = "heartbeat-timeout"
+                if (!CUtility.isServer) {
+                    private["@disconnect"] = private["@disconnect"] || {}
+                    private["@disconnect"].reason = "heartbeat-timeout"
+                }
+                else if (socket.public.isClient(client)) {
+                    // TODO: ...
+                    socket.private.client[client]["@disconnect-reason"] = "heartbeat-timeout"
+                }
                 socket.close()
             }, socket.private.heartbeat.timeout)
         }
