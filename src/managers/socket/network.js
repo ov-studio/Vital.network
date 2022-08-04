@@ -42,56 +42,56 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(socket) {
     ///////////////////////
 
     // @Desc: Verifies network's validity
-    socket.public.addInstanceMethod("isNetwork", function(self, name) {
+    socket.public.isNetwork = function(self, name) {
         if (isUnloaded) return false
         return (CUtility.isString(name) && self.network[name] && true) || false
-    })
+    }
 
     // @Desc: Fetches an array of existing networks
-    socket.public.addInstanceMethod("fetchNetworks", function(self) {
+    socket.public.fetchNetworks = function(self) {
         if (isUnloaded) return false
         const result = []
         for (const i in self.network) {
             if (self.isNetwork(i)) result.push(i)
         }
         return result
-    })
+    }
 
     // @Desc: Creates a fresh network w/ specified name
-    socket.public.addInstanceMethod("createNetwork", function(self, name, ...cArgs) {
+    socket.public.createNetwork = function(self, name, ...cArgs) {
         if (isUnloaded) return false
         if (self.isNetwork(name)) return false
         self.network[name] = CNetwork.create(`Socket:${CUtility.vid.fetch(self)}:${name}`, ...cArgs)
         return true
-    })
+    }
 
     // @Desc: Destroys an existing network by specified name
-    socket.public.addInstanceMethod("destroyNetwork", function(self, name) {
+    socket.public.destroyNetwork = function(self, name) {
         if (isUnloaded) return false
         if (!self.isNetwork(name)) return false
         self.network[name].destroy()
         delete self.network[name]
         return true
-    })
+    }
 
     // @Desc: Attaches a handler on specified network
-    socket.public.addInstanceMethod("on", function(self, name, ...cArgs) {
+    socket.public.on = function(self, name, ...cArgs) {
         if (isUnloaded) return false
         const cNetwork = socket.private.onFetchNetwork(self, name)
         if (!cNetwork) return false
         return cNetwork.on(...cArgs)
-    })
+    }
 
     // @Desc: Detaches a handler from specified network
-    socket.public.addInstanceMethod("off", function(self, name, ...cArgs) {
+    socket.public.off = function(self, name, ...cArgs) {
         if (isUnloaded) return false
         const cNetwork = socket.private.onFetchNetwork(self, name)
         if (!cNetwork) return false
         return cNetwork.off(...cArgs)
-    })
+    }
 
     // @Desc: Emits to all attached non-callback handlers of specified network
-    socket.public.addInstanceMethod("emit", function(self, name, isRemote, ...cArgs) {
+    socket.public.emit = function(self, name, isRemote, ...cArgs) {
         if (isUnloaded) return false
         if (isRemote) {
             if (CUtility.isServer && !self.isClient(isRemote)) return false
@@ -105,10 +105,10 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(socket) {
         const cNetwork = socket.private.onFetchNetwork(self, name)
         if (!cNetwork) return false
         return cNetwork.emit(...cArgs)
-    })
+    }
 
     // @Desc: Emits to attached callback handler of specified network
-    socket.public.addInstanceMethod("emitCallback", function(self, name, isRemote, ...cArgs) {
+    socket.public.emitCallback = function(self, name, isRemote, ...cArgs) {
         if (isUnloaded) return false
         if (isRemote) {
             if (CUtility.isServer && !self.isClient(isRemote)) return false
@@ -139,5 +139,5 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(socket) {
         const cNetwork = socket.private.onFetchNetwork(self, name)
         if (!cNetwork) return false
         return cNetwork.emitCallback(...cArgs)
-    })
+    }
 })
