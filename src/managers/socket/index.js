@@ -68,9 +68,8 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     CSocket.public.addMethod("create", function(route, ...cArgs) {
         if (CSocket.private.isUnloaded) return false
         if (!CSocket.public.isVoid(route)) return false
-        const cInstance = CSocket.public.createInstance(route, ...cArgs)
-        CSocket.private.buffer[route] = cInstance.public
-        CNetwork.emit("vNetworkify:Socket:onCreate", {public: cInstance.public, private: cInstance.private})
+        CSocket.private.buffer[route] = CSocket.public.createInstance(route, ...cArgs)
+        CNetwork.emit("vNetworkify:Socket:onCreate", {public: CSocket.private.buffer[route], private: CSocket.instance.get(CSocket.private.buffer[route])})
         return CSocket.private.buffer[route]
     })
 

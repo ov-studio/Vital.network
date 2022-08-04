@@ -23,6 +23,7 @@ const CNetwork = require("../../utilities/network")
 CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     if (!CUtility.isServer) return false
     const CClient = CUtility.createClass()
+    console.log(socket)
     socket.public.client = CClient.public
     CClient.private.buffer = {}
 
