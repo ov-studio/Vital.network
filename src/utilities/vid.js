@@ -19,42 +19,43 @@ const CUtility = require("./")
 // Class: VID //
 /////////////////
 
-// TODO: MAKE IT AS CLASS
-CUtility.vid = {}
-const cache = {
-    vid: {
-        blacklist: {},
-        counter: 0
-    }
-}
+const CVID = CUtility.createClass()
+CUtility.vid = CVID.public
+CVID.private.buffer = {}
+CVID.private.counter = 0
+
+
+/////////////////////
+// Static Members //
+/////////////////////
 
 // @Desc: Creates a unique VID
-CUtility.vid.create = function() {
+CVID.public.addMethod("create", function() {
     var cvid = false
     while(!cvid) {
-        const vvid = CUtility.toBase64(CUtility.crypto.randomUUID() + (Date.now() + cache.vid.counter))
-        if (!cache.vid.blacklist[vvid]) {
+        const vvid = CUtility.toBase64(CUtility.crypto.randomUUID() + (Date.now() + CVID.private.counter))
+        if (!CVID.private.buffer[vvid]) {
             CUtility.vid.blacklist(vvid)
             cvid = vvid
         }
-        cache.vid.counter += 1
+        CVID.private.counter += 1
     }
     return cvid
-}
+})
 
 // @Desc: Blacklists a VID
-CUtility.vid.blacklist = function(vid) {
-    if (!CUtility.isString(vid) || cache.vid.blacklist[vid]) return false
-    cache.vid.blacklist[vid] = true
+CVID.public.addMethod("blacklist", function(vid) {
+    if (!CUtility.isString(vid) || CVID.private.buffer[vid]) return false
+    CVID.private.buffer[vid] = true
     return true
-}
+})
 
 // @Desc: Assigns/Fetches VID (Virtual ID) on/from valid instance
-CUtility.vid.fetch = function(parent, assignVID, isReadOnly) {
+CVID.public.addMethod("fetch", function(parent, assignVID, isReadOnly) {
     if (CUtility.isNull(parent) || CUtility.isBool(parent) || CUtility.isString(parent) || CUtility.isNumber(parent)) return false
     parent.prototype = parent.prototype || {}
     if (!isReadOnly && !parent.prototype.vid) {
         Object.defineProperty(parent.prototype, "vid", {value: assignVID || `${CUtility.identifier}:${CUtility.vid.create()}`, enumerable: true, configurable: false, writable: false})
     }
     return parent.prototype.vid
-}
+})
