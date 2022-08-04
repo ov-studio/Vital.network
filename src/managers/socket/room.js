@@ -13,99 +13,100 @@
 //////////////
 
 const CUtility = require("../../utilities")
+const CNetwork = require("../../utilities/network")
 const CRoom = require("../../utilities/room")
-const CServer = require("../server")
 
-
-///////////////////////
-// Instance Members //
-///////////////////////
-
-// @Desc: Verifies room's validity
-CServer.socket.addInstanceMethod("isRoom", function(self, name) {
-    var cInstance = (CUtility.isString(name) && CUtility.isObject(self.room[name]) && self.room[name]) || false
-    return (cInstance && true) || false
-})
-
-// @Desc: Fetches an array of existing rooms
-CServer.socket.addInstanceMethod("fetchRooms", function(self) {
-    const result = []
-    for (const i in self.room) {
-        if (self.isRoom(i)) result.push(i)
-    }
-    return result
-})
-
-// @Desc: Fetches an array of existing room's members
-CServer.socket.addInstanceMethod("fetchRoomMembers", function(self, name) {
-    if (!self.isRoom(name)) return false
-    const result = []
-    for (const i in self.room[name].member) {
-        if (!CUtility.isServer || self.isClient(i)) result.push(i)
-    }
-    return result
-})
-
-// @Desc: Verifies whether the client belongs specified room
-CServer.socket.addInstanceMethod("isInRoom", function(self, name, client) {
-    if (!self.isRoom(name) || !CServer.socket.client.fetch(client)) return false
-    if (CUtility.isServer) {
-        if (!self.isClient(client)) return false
-        return (self.room[name].member[client] && true) || false   
-    }
-    return (self.room[name].member[client] && true) || false
-})
-
-if (CUtility.isServer) {
+CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     ///////////////////////
     // Instance Members //
     ///////////////////////
 
-    // @Desc: Creates a fresh room w/ specified name
-    CServer.socket.addInstanceMethod("createRoom", function(self, name, ...cArgs) {
-        if (self.isRoom(name)) return false
-        self.room[name] = CRoom.create(`Socket:${CUtility.vid.fetch(self)}:${name}`, ...cArgs)
-        self.room[name].member = {}
-        return true
-    })
+    // @Desc: Verifies room's validity
+    socket.public.isRoom = function(self, name) {
+        var cInstance = (CUtility.isString(name) && CUtility.isObject(self.room[name]) && self.room[name]) || false
+        return (cInstance && true) || false
+    }
 
-    // @Desc: Destroys an existing room by specified name
-    CServer.socket.addInstanceMethod("destroyRoom", function(self, name) {
-        if (!self.isRoom(name)) return false
-        for (const i in self.room[name].member) {
-            self.leaveRoom(name, i)
+    // @Desc: Fetches an array of existing rooms
+    socket.public.fetchRooms = function(self) {
+        const result = []
+        for (const i in self.room) {
+            if (self.isRoom(i)) result.push(i)
         }
-        self.room[name].destroy()
-        delete self.room[name]
-        return true
-    })
+        return result
+    }
 
-    // @Desc: Joins client to specified room
-    CServer.socket.addInstanceMethod("joinRoom", function(self, name, client) {
-        if (!self.isClient(client) || !self.isRoom(name) || self.isInRoom(name, client)) return false
-        self.room[name].member[client] = true
-        const clientInstance = CServer.socket.client.fetch(client)
-        clientInstance.socket.send(CUtility.toBase64(JSON.stringify({room: name})))
-        CUtility.exec(self.onClientJoinRoom, name, client)
-        return true
-    })
-
-    // @Desc: Kicks client from specified room
-    CServer.socket.addInstanceMethod("leaveRoom", function(self, name, client) {
-        if (!self.isClient(client) || !self.isInRoom(name, client)) return false
-        delete self.room[name].member[client]
-        const clientInstance = CServer.socket.client.fetch(client)
-        clientInstance.socket.send(CUtility.toBase64(JSON.stringify({room: name, isLeave: true})))
-        CUtility.exec(self.onClientLeaveRoom, name, client)
-        return true
-    })
-
-    // @Desc: Emits a non-callback network to all clients connected to specified room
-    CServer.socket.addInstanceMethod("emitRoom", function(self, name, network, ...cArgs) {
+    // @Desc: Fetches an array of existing room's members
+    socket.public.fetchRoomMembers = function(self, name) {
         if (!self.isRoom(name)) return false
+        const result = []
         for (const i in self.room[name].member) {
-            self.emit(network, i, ...cArgs)
+            if (!CUtility.isServer || self.isClient(i)) result.push(i)
         }
-        return true
-    })
-}
+        return result
+    }
+
+    // @Desc: Verifies whether the client belongs specified room
+    socket.public.isInRoom = function(self, name, client) {
+        if (!self.isRoom(name) || !CServer.socket.client.fetch(client)) return false
+        if (CUtility.isServer) {
+            if (!self.isClient(client)) return false
+            return (self.room[name].member[client] && true) || false   
+        }
+        return (self.room[name].member[client] && true) || false
+    }
+
+    if (CUtility.isServer) {
+        ///////////////////////
+        // Instance Members //
+        ///////////////////////
+
+        // @Desc: Creates a fresh room w/ specified name
+        socket.public.createRoom = function(self, name, ...cArgs) {
+            if (self.isRoom(name)) return false
+            self.room[name] = CRoom.create(`Socket:${CUtility.vid.fetch(self)}:${name}`, ...cArgs)
+            self.room[name].member = {}
+            return true
+        }
+
+        // @Desc: Destroys an existing room by specified name
+        socket.public.destroyRoom = function(self, name) {
+            if (!self.isRoom(name)) return false
+            for (const i in self.room[name].member) {
+                self.leaveRoom(name, i)
+            }
+            self.room[name].destroy()
+            delete self.room[name]
+            return true
+        }
+
+        // @Desc: Joins client to specified room
+        socket.public.joinRoom = function(self, name, client) {
+            if (!self.isClient(client) || !self.isRoom(name) || self.isInRoom(name, client)) return false
+            self.room[name].member[client] = true
+            const clientInstance = CServer.socket.client.fetch(client)
+            clientInstance.socket.send(CUtility.toBase64(JSON.stringify({room: name})))
+            CUtility.exec(self.onClientJoinRoom, name, client)
+            return true
+        }
+
+        // @Desc: Kicks client from specified room
+        socket.public.leaveRoom = function(self, name, client) {
+            if (!self.isClient(client) || !self.isInRoom(name, client)) return false
+            delete self.room[name].member[client]
+            const clientInstance = CServer.socket.client.fetch(client)
+            clientInstance.socket.send(CUtility.toBase64(JSON.stringify({room: name, isLeave: true})))
+            CUtility.exec(self.onClientLeaveRoom, name, client)
+            return true
+        }
+
+        // @Desc: Emits a non-callback network to all clients connected to specified room
+        socket.public.emitRoom = function(self, name, network, ...cArgs) {
+            if (!self.isRoom(name)) return false
+            for (const i in self.room[name].member) {
+                self.emit(network, i, ...cArgs)
+            }
+            return true
+        }
+    }
+})
