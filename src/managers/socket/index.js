@@ -143,9 +143,9 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     reconCounter = 0
                     delete private.isAwaiting
                     private.isConnected = true
-                    if (self.reconnectTimer) {
-                        clearTimeout(self.reconnectTimer)
-                        delete self.reconnectTimer
+                    if (private.timer.reconnectTimer) {
+                        clearTimeout(private.timer.reconnectTimer)
+                        delete private.timer.reconnectTimer
                     }
                     cResolver(private.isConnected)
                     return true
@@ -178,8 +178,8 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                         return false
                     }
                 }
-                self.reconnectTimer = setTimeout(function() {
-                    delete self.reconnectTimer
+                private.timer.reconnectTimer = setTimeout(function() {
+                    delete private.timer.reconnectTimer
                     CUtility.exec(self.onClientReconnect, CUtility.vid.fetch(private.server, null, true) || false, reconCounter, private.options.reconnection.attempts)
                     connect(true)
                 }, private.options.reconnection.interval)
