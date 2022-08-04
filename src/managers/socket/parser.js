@@ -46,7 +46,7 @@ const onSocketInitialize = function(socket, route, options) {
 }
 
 // @Desc: Handles socket's message
-const onSocketMessage = function(socket, client, socket, payload) {
+const onSocketMessage = function(socket, client, receiver, payload) {
     payload = JSON.parse(CUtility.fromBase64(payload.data))
     if (!CUtility.isObject(payload)) return false
     if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
@@ -58,7 +58,7 @@ const onSocketMessage = function(socket, client, socket, payload) {
             else CUtility.exec(socket.public.onHeartbeat, client, deltaTick)
             clearTimeout(socket.public.heartbeatTerminator)
             socket.public.heartbeatTimer = setTimeout(function() {
-                socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
+                receiver.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
             }, socket.private.heartbeat.interval)
             socket.public.heartbeatTerminator = setTimeout(function() {
                 const cDisconnection = (!CUtility.isServer && private) || (socket.public.isClient(client) && socket.private.client[client]) || false
@@ -72,7 +72,7 @@ const onSocketMessage = function(socket, client, socket, payload) {
         else {
             if (!CUtility.isServer) {
                 if (payload.client) {
-                    CUtility.vid.fetch(socket, payload.client)
+                    CUtility.vid.fetch(socket.public, payload.client)
                     CUtility.exec(socket.public.onClientConnect, payload.client)
                 }
                 else if (payload.disconnect) {
@@ -99,15 +99,15 @@ const onSocketMessage = function(socket, client, socket, payload) {
     if (CUtility.isObject(payload.networkCB)) {
         if (!payload.networkCB.isProcessed) {
             payload.networkCB.isProcessed = true
-            const cNetwork = socket.private.onFetchNetwork(socket.public, payload.networkName)
+            const cNetwork = socket.private.onFetchNetwork(payload.networkName)
             if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
             else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
-            socket.send(CUtility.toBase64(JSON.stringify(payload)))
+            receiver.send(CUtility.toBase64(JSON.stringify(payload)))
         }
-        else socket.private.onResolveNetwork(socket.public, client, payload)
+        else receiver.private.onResolveNetwork(socket.public, client, payload)
         return true
     }
-    socket.public.emit(payload.networkName, null, ...payload.networkArgs)
+    receiver.public.emit(payload.networkName, null, ...payload.networkArgs)
     return true
 }
 
