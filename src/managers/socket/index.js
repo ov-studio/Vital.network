@@ -36,7 +36,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
 
     // @Desc: Verifies socket's validity
     CSocket.public.addMethod("isVoid", function(route) {
-        return (CUtility.isString(route) && !CUtility.isObject(CSocket.private.buffer[route]) && true) || false
+        return (CUtility.isString(route) && !CSocket.private.buffer[route] && true) || false
     })
 
     // @Desc: Fetches socket instance by route
