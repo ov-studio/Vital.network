@@ -29,7 +29,7 @@ CNetwork.private.buffer = {}
 
 // @Desc: Verifies whether the network is void
 CNetwork.public.addMethod("isVoid", function(name) {
-    return (CUtility.isString(name) && !CUtility.isObject(CNetwork.private.buffer[name]) && true) || false
+    return (CUtility.isString(name) && !CNetwork.private.buffer[name] && true) || false
 })
 
 // @Desc: Fetches network instance by name

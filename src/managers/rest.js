@@ -47,7 +47,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         // @Desc: Verifies whether the REST API is void
         CRest.public.addMethod("isVoid", function(type, route) {
             if (CRest.private.isUnloaded) return false
-            return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CRest.private[type]) && (!CUtility.isObject(CRest.private[type][route]) || !CRest.private[type][route].handler) && true) || false
+            return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CRest.private[type]) && (!CRest.private[type][route] || !CRest.private[type][route].handler) && true) || false
         })
         
         // @Desc: Creates a fresh REST API

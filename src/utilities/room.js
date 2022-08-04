@@ -29,7 +29,7 @@ CRoom.private.buffer = {}
 
 // @Desc: Verifies whether the room is void
 CRoom.public.addMethod("isVoid", function(name) {
-    return (CUtility.isString(name) && !CUtility.isObject(CRoom.private.buffer[name]) && true) || false
+    return (CUtility.isString(name) && !CRoom.private.buffer[name] && true) || false
 })
 
 // @Desc: Fetches room instance by name
