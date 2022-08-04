@@ -14,7 +14,7 @@
 
 const CWS = require("ws")
 const CUtility = require("../../utilities")
-const CNetwork = require("../utilities/network")
+const CNetwork = require("../../utilities/network")
 const {onSocketInitialize, onSocketMessage} = require("./parser")
 
 
@@ -134,6 +134,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         // @Desc: Instance constructor
         CSocket.public.addMethod("constructor", function(self, route, options) {
             if (CSocket.private.isUnloaded) return false
+            console.log("CALLED")
             const private = CSocket.instance.get(self)
             onSocketInitialize(self, route, options)
             var cResolver = false, reconCounter = 0
@@ -205,6 +206,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         // @Desc: Instance constructor
         CSocket.public.addMethod("constructor", function(self, route, options) {
             if (CSocket.private.isUnloaded) return false
+            console.log("CALLED")
             onSocketInitialize(self, route, options)
             var heartbeat = false, upgrade = false
             self.server = new CWS.Server({

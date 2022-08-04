@@ -15,8 +15,8 @@
 const CUtility = require("./utilities")
 const CServer = require("./managers/server")
 require("./managers/rest")
-/*
 require("./managers/socket/")
+/*
 require("./managers/socket/client")
 require("./managers/socket/network")
 require("./managers/socket/room")
@@ -51,6 +51,7 @@ async function exec() {
     const isConnected = await test.connect()
     if (!isConnected) return false
 
+    console.log(test)
     test.rest.create("get", "", function(request, response) {
         response.status(200).send("API Status Message")
     })
