@@ -62,7 +62,7 @@ const onSocketMessage = function(socket, client, socket, payload) {
             socket.public.heartbeatTerminator = setTimeout(function() {
                 const cDisconnection = (!CUtility.isServer && private) || (socket.public.isClient(client) && socket.private.client[client]) || false
                 if (cDisconnection) {
-                    cDisconnection]["@disconnect"] = cDisconnection["@disconnect"] || {}
+                    cDisconnection["@disconnect"] = cDisconnection["@disconnect"] || {}
                     cDisconnection.reason = "heartbeat-timeout"
                 }
                 socket.close()
