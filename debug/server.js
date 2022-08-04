@@ -116,6 +116,7 @@ async function debug() {
 debug()
 
 
+// TODO: IPV4 AND HOST VALIDATER
 function validURL(str) {
     /*
     var pattern = new RegExp(
