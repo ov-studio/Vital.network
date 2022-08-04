@@ -108,8 +108,8 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 for (const i in private.room) {
                     self.destroyRoom(i)
                 }
-                for (const i in private.instance) {
-                    const j = private.instance[i]
+                for (const i in private.client) {
+                    const j = private.client[i]
                     for (const k in j.queue) {
                         j.queue[k].reject()
                     }
@@ -195,7 +195,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 const timestamp_start = private.timestamp, timestamp_end = new Date()
                 const deltaTick = timestamp_end.getTime() - timestamp_start.getTime()
                 self.destroy()
-                server.private.instance.CHTTP.off("upgrade", upgrade)
+                server.private.client.CHTTP.off("upgrade", upgrade)
                 setTimeout(function() {CUtility.exec(self.onServerDisconnect, timestamp_start, timestamp_end, deltaTick)}, 1)
                 return true
             }
@@ -216,7 +216,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     if (!instance) return false
                     const clientInstance = CSocket.public.client.create(socket)
                     const client = CUtility.vid.fetch(clientInstance, null, true)
-                    private.instance[client] = clientInstance
+                    private.client[client] = clientInstance
                     clientInstance.queue = {}, clientInstance.room = {}
                     query = CUtility.queryString.parse(query)
                     if (!query.version || (query.version != CUtility.version)) {
@@ -227,12 +227,12 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     heartbeat(clientInstance)
                     CUtility.exec(self.onClientConnect, client)
                     clientInstance.socket.onclose = function() {
-                        const reason = private.instance[client].reason || private.reason || "client-disconnected"
+                        const reason = private.client[client].reason || private.reason || "client-disconnected"
                         for (const i in clientInstance.socket.room) {
                             self.leaveRoom(i, client)
                         }
                         clientInstance.destroy()
-                        delete private.instance[client]
+                        delete private.client[client]
                         CUtility.exec(self.onClientDisconnect, client, reason)
                         return true
                     }
@@ -242,7 +242,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 })
                 return true
             }
-            server.private.instance.CHTTP.on("upgrade", upgrade)
+            server.private.client.CHTTP.on("upgrade", upgrade)
         }
     })
 
@@ -259,14 +259,14 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         // @Desc: Verifies client's validity
         CSocket.public.addInstanceMethod("isClient", function(self, client) {
             if (CSocket.private.isUnloaded) return false
-            return (CSocket.public.client.fetch(client) && private.instance[client] && true) || false
+            return (CSocket.public.client.fetch(client) && private.client[client] && true) || false
         })
 
         // @Desc: Fetches an array of existing clients
         CSocket.public.addInstanceMethod("fetchClients", function(self) {
             if (CSocket.private.isUnloaded) return false
             const result = []
-            for (const i in private.instance) {
+            for (const i in private.client) {
                 if (self.isClient(i)) result.push(i)
             }
             return result

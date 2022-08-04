@@ -40,7 +40,7 @@ const onSocketInitialize = function(socket, route, options) {
         }
     }
     if (!CUtility.isServer) socket.public.queue = {}
-    else socket.private.instance = {}
+    else socket.private.client = {}
     return true
 }
 
@@ -62,7 +62,7 @@ const onSocketMessage = function(socket, client, socket, payload) {
             }, socket.private.heartbeat.interval)
             socket.public.heartbeatTerminator = setTimeout(function() {
                 if (!CUtility.isServer) private["@disconnect-reason"] = "heartbeat-timeout"
-                else if (socket.public.isClient(client)) socket.private.instance[client]["@disconnect-reason"] = "heartbeat-timeout"
+                else if (socket.public.isClient(client)) socket.private.client[client]["@disconnect-reason"] = "heartbeat-timeout"
                 socket.close()
             }, socket.private.heartbeat.timeout)
         }
