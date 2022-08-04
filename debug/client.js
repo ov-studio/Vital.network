@@ -97,3 +97,32 @@ async function debug() {
     vNetworkify.util.print(restAPIResult)
 }
 debug()
+
+
+async function debug2() {
+    const cServer = vNetworkify.create({
+        port: 33022
+    })
+    const isConnected = await cServer.connect()
+    if (!isConnected) return false
+
+    // @Socket API Examples
+    const cSocket = cServer.socket.create("Server:MyRoute", {
+        heartbeat: {
+            interval: 10000, // Interval at which heartbeat should be executed
+            timeout: 60000 // Duration b/w each heartbeat
+        },
+        reconnection: {
+            attempts: -1, // Number of attempts before onClientDisconnect is reached. [Note: -1 = infinite attempts]
+            interval: 2500 // Duration b/w each attempt
+        }
+    })
+
+    cSocket.onClientReconnect = function(client, currentAttempt, maxAttempts) {
+        vNetworkify.util.print(`* Client reconnecting [${client}] | Attempts: ${currentAttempt}/${maxAttempts}`)
+    }
+    cSocket.onClientDisconnect = function(client, reason) {
+        vNetworkify.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
+    }
+}
+debug2()

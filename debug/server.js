@@ -114,3 +114,35 @@ async function debug() {
     })
 }
 debug()
+
+
+async function debug2() {
+    const cServer = vNetworkify.create({
+        port: 33022,
+        isCaseSensitive: true
+    })
+    const isConnected = await cServer.connect()
+    if (!isConnected) return false
+
+    // @Socket API Examples
+    const cSocket = cServer.socket.create("Server:MyRoute", {
+        heartbeat: {
+            interval: 10000, // Interval at which heartbeat should be executed
+            timeout: 60000 // Duration b/w each heartbeat
+        }
+    })
+
+    cSocket.onServerConnect = function() {
+        vNetworkify.util.print("* Server successfully connected!")
+    }
+    cSocket.onServerDisconnect = function(timestamp_start, timestamp_end, deltaTick) {
+        vNetworkify.util.print(`* Server successfully disconnected! | Life-Span: [${deltaTick}ms]`)
+    }
+    cSocket.onClientConnect = async function(client) {
+        vNetworkify.util.print(`* Client connected [${client}]`)
+    }
+    cSocket.onClientDisconnect = function(client, reason) {
+        vNetworkify.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
+    }
+}
+debug2()
