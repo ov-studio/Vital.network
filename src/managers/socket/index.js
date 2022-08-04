@@ -31,6 +31,9 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
 
     CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {
         if ((server.public != __server.public) || (server.private != __server.private)) return false
+        for (const i in CSocket.private.buffer[route]) {
+            CSocket.private.buffer[route][i].destroy()
+        }
         CSocket.private.isUnloaded = true
         delete server.public.socket
     })
