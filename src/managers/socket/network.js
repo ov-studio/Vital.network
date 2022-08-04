@@ -15,13 +15,7 @@
 const CUtility = require("../../utilities")
 const CNetwork = require("../../utilities/network")
 
-CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
-    /////////////////////
-    // Static Members //
-    /////////////////////
-
-    var isUnloaded = false
-
+CNetwork.fetch("vNetworkify:Server:onConnect").on(function(socket) {
     // @Desc: Fetches network instance by name
     socket.private.fetchNetwork = function(self, name) {
         if (isUnloaded) return false
@@ -33,7 +27,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         if (isUnloaded) return false
         if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
         if (CUtility.isServer && !self.isClient(client)) return false
-        const cReceiver = (CUtility.isServer && socket.public.client.fetch(client)) || self
+        const cReceiver = (CUtility.isServer && socket.private.client.fetch(client)) || self
         const cQueue = (cReceiver && cReceiver.queue) || false
         const queueID = CUtility.vid.fetch(payload.networkCB, null, true)
         if (!cQueue || !queueID || !cQueue[queueID]) return false
@@ -101,7 +95,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         if (isUnloaded) return false
         if (isRemote) {
             if (CUtility.isServer && !self.isClient(isRemote)) return false
-            const cReceiver = (CUtility.isServer && socket.public.client.fetch(isRemote)) || self.server
+            const cReceiver = (CUtility.isServer && socket.private.client.fetch(isRemote)) || self.server
             cReceiver.socket.send(CUtility.toBase64(JSON.stringify({
                 networkName: name,
                 networkArgs: cArgs
@@ -118,7 +112,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         if (isUnloaded) return false
         if (isRemote) {
             if (CUtility.isServer && !self.isClient(isRemote)) return false
-            const cReceiver = (CUtility.isServer && socket.public.client.fetch(isRemote)) || self.server
+            const cReceiver = (CUtility.isServer && socket.private.client.fetch(isRemote)) || self.server
             const cQueue = (cReceiver && cReceiver.queue) || false
             if (!cQueue) return false
             const networkCB = {}
