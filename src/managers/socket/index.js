@@ -42,6 +42,15 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     // Static Members //
     /////////////////////
 
+    // @Desc: Disconnects instance
+    CSocket.private.onDisconnectInstance = function(instance, reason, isForced) {
+        if (CSocket.private.isUnloaded) return false
+        instance["@disconnect"] = instance["@disconnect"] || {}
+        instance["@disconnect"].isForced = (isForced && true) || false
+        instance["@disconnect"].reason = reason
+        return true
+    }
+
     // @Desc: Verifies socket's validity
     CSocket.public.addMethod("isVoid", function(route) {
         if (CSocket.private.isUnloaded) return false
@@ -116,6 +125,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         if (CSocket.private.isUnloaded) return false
         const private = CSocket.instance.get(self)
         const cPointer = {public: self, private: private}
+        private.onDisconnectInstance = CSocket.private.onDisconnectInstance
         onSocketInitialize(cPointer, route, options)
         if (!CUtility.isServer) {
             var cResolver = false, reconCounter = 0
