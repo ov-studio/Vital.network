@@ -24,16 +24,15 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     const CRest = CUtility.createClass({})
     CRest.private.post = {}, CRest.private.get = {}, CRest.private.put = {}, CRest.private.delete = {}
     server.public.rest = CRest.public
+    CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {
+        if (server == __server) CRest.private.isUnloaded = true
+        delete __server.public.rest
+    })
 
 
     /////////////////////
     // Static Members //
     /////////////////////
-
-    CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {
-        if (server == __server) CRest.private.isUnloaded = true
-        delete __server.public.rest
-    })
 
     if (!CUtility.isServer) {
         // @Desc: Requests a fetch on specified REST API 
