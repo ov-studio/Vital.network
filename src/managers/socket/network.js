@@ -15,7 +15,7 @@
 const CUtility = require("../../utilities")
 const CNetwork = require("../../utilities/network")
 
-CNetwork.fetch("vNetworkify:Server:onConnect").on(function(socket) {
+CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     // @Desc: Fetches network instance by name
     socket.private.onFetchNetwork = function(self, name) {
         if (isUnloaded) return false
