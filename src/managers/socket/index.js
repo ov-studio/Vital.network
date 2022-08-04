@@ -68,7 +68,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         if (CSocket.private.isUnloaded) return false
         if (!CSocket.public.isVoid(route)) return false
         CSocket.private.buffer[route] = CSocket.public.createInstance(route, ...cArgs)
-        return CSocket.private.buffer[route]
+        return CSocket.private.buffer[route].public
     })
 
     // @Desc: Destroys an existing socket by specified route
