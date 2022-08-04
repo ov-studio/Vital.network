@@ -97,8 +97,8 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             }
         }
         else {
-            self["@disconnect-forced"] = true
-            self["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnected`
+            private["@disconnect-forced"] = true
+            private["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnected`
             for (const i in private.network) {
                 const j = private.network[i]
                 j.destroy()
@@ -118,7 +118,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                         const v = j[k]
                         v.reject()
                     }
-                    j.socket.send(CUtility.toBase64(JSON.stringify({["@disconnect-reason"]: self["@disconnect-reason"]})))
+                    j.socket.send(CUtility.toBase64(JSON.stringify({["@disconnect-reason"]: private["@disconnect-reason"]})))
                     j.socket.close()
                 }
             }
@@ -159,9 +159,9 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 }
                 self.server.onclose = function() {
                     self.destroy(true)
-                    const isReconnection = (!self["@disconnect-forced"] && reconnect()) || false
+                    const isReconnection = (!private["@disconnect-forced"] && reconnect()) || false
                     if (!isReconnection) {
-                        const reason = self["@disconnect-reason"] || (private.isConnected && "client-disconnected") || "server-nonexistent"
+                        const reason = private["@disconnect-reason"] || (private.isConnected && "client-disconnected") || "server-nonexistent"
                         self.destroy()
                         private.isConnected = false
                         cResolver(private.isConnected)
@@ -181,7 +181,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 reconCounter += 1
                 if (private.options.reconnection.attempts != -1) {
                     if (reconCounter > private.options.reconnection.attempts) {
-                        self["@disconnect-reason"] = "client-reconnection-expired"
+                        private["@disconnect-reason"] = "client-reconnection-expired"
                         return false
                     }
                 }
@@ -253,7 +253,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     heartbeat(clientInstance)
                     CUtility.exec(self.onClientConnect, client)
                     clientInstance.socket.onclose = function() {
-                        const reason = self.instance[client]["@disconnect-reason"] || self["@disconnect-reason"] || "client-disconnected"
+                        const reason = self.instance[client]["@disconnect-reason"] || private["@disconnect-reason"] || "client-disconnected"
                         for (const i in clientInstance.socket.room) {
                             self.leaveRoom(i, client)
                         }
