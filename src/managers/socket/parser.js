@@ -46,7 +46,7 @@ const onSocketInitialize = function(socket, route, options) {
 }
 
 // @Desc: Handles socket's message
-const onSocketMessage = function(socket, client, receiver, payload) {
+const onSocketMessage = async function(socket, client, receiver, payload) {
     payload = JSON.parse(CUtility.fromBase64(payload.data))
     if (!CUtility.isObject(payload)) return false
     if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
@@ -101,7 +101,7 @@ const onSocketMessage = function(socket, client, receiver, payload) {
             payload.networkCB.isProcessed = true
             const cNetwork = socket.private.onFetchNetwork(payload.networkName)
             if (!cNetwork || !cNetwork.isCallback) payload.networkCB.isErrored = true
-            else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
+            else payload.networkArgs = [await cNetwork.emitCallback(...payload.networkArgs)]
             receiver.send(CUtility.toBase64(JSON.stringify(payload)))
         }
         else socket.private.onResolveNetwork(client, payload)
