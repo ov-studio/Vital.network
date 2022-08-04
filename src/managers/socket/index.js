@@ -30,7 +30,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     CSocket.private.reconnection = {attempts: -1, interval: 2500}
 
     CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {
-        if (server != __server) return false
+        if ((server.public != __server.public) || (server.private != __server.private)) return false
         CSocket.private.isUnloaded = true
         delete server.public.socket
     })
