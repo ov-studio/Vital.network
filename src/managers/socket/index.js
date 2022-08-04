@@ -100,15 +100,12 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             private["@disconnect-forced"] = true
             private["@disconnect-reason"] = `${(CUtility.isServer && "server") || "client"}-disconnected`
             for (const i in private.network) {
-                const j = private.network[i]
-                j.destroy()
+                private.network[i].destroy()
             }
-            clearTimeout(private.heartbeatTimer)
-            clearTimeout(private.heartbeatTerminator)
-            if (!CUtility.isServer) {
-                clearTimeout(private.reconnectTimer)
+            for (const i in private.timers) {
+                clearTimeout(private.timers[i])
             }
-            else {
+            if (CUtility.isServer) {
                 for (const i in private.room) {
                     self.destroyRoom(i)
                 }
