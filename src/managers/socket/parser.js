@@ -62,10 +62,7 @@ const onSocketMessage = async function(socket, client, receiver, payload) {
             }, socket.private.heartbeat.interval)
             socket.public.heartbeatTerminator = setTimeout(function() {
                 const cDisconnection = (!CUtility.isServer && socket.private) || (socket.public.isClient(client) && socket.private.client[client]) || false
-                if (cDisconnection) {
-                    cDisconnection["@disconnect"] = cDisconnection["@disconnect"] || {}
-                    cDisconnection.reason = "heartbeat-timeout"
-                }
+                if (cDisconnection) socket.private.onDisconnectInstance(cDisconnection, "heartbeat-timeout")
                 socket.close()
             }, socket.private.heartbeat.timeout)
         }
@@ -75,11 +72,7 @@ const onSocketMessage = async function(socket, client, receiver, payload) {
                     CUtility.vid.fetch(socket.public, payload.client)
                     CUtility.exec(socket.public.onClientConnect, payload.client)
                 }
-                else if (payload.disconnect) {
-                    socket.private["@disconnect"] = socket.private["@disconnect"] || {}
-                    socket.private["@disconnect"].isForced = true
-                    socket.private["@disconnect"].reason = payload.disconnect
-                }
+                else if (payload.disconnect) socket.private.onDisconnectInstance(socket.private, payload.disconnect, true)
                 else if (payload.room) {
                     if (!payload.isLeave) {
                         socket.private.room[(payload.room)] = socket.private.room[(payload.room)] || {}
