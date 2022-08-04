@@ -27,25 +27,21 @@ const onSocketInitialize = function(socket, route, options) {
     socket.private.timestamp = new Date()
     socket.private.heartbeat = {interval: 10000, timeout: 60000}
     socket.private.reconnection = {attempts: -1, interval: 2500}
+    socket.private.route = route, socket.private.network = {}, socket.public.room = {}
     if (options) {
-        if (CUtility.isObject(options.heartbeat) && CUtility.isNumber(options.heartbeat.interval) && CUtility.isNumber(options.heartbeat.timeout)) {
-            socket.private.heartbeat.interval = Math.max(1, options.heartbeat.interval)
-            socket.private.heartbeat.timeout = Math.max(socket.private.heartbeat.interval + 1, options.heartbeat.timeout)
-        }
-    }
-    socket.public.route = route, socket.public.network = {}, socket.public.room = {}
-    if (!CUtility.isServer) {
-        if (options) {
-            if (CUtility.isObject(options.reconnection) && CUtility.isNumber(options.reconnection.attempts) && CUtility.isNumber(options.reconnection.interval)) {
-                socket.private.reconnection.attempts = ((options.reconnection.attempts == -1) && options.reconnection.attempts) || Math.max(1, options.reconnection.attempts)
-                socket.private.reconnection.interval = Math.max(1, options.reconnection.interval)
+        if (!CUtility.isServer) {
+            if (CUtility.isObject(options.reconnection)) {
+                socket.private.reconnection.attempts = (CUtility.isNumber(options.reconnection.attempts) && ((options.reconnection.attempts == -1) && options.reconnection.attempts) || Math.max(1, options.reconnection.attempts)) || socket.private.reconnection.attempts
+                socket.private.reconnection.interval = (CUtility.isNumber(options.reconnection.interval) && Math.max(1, options.reconnection.interval)) || socket.private.reconnection.interval
             }
         }
-        socket.public.queue = {}
+        if (CUtility.isObject(options.heartbeat)) {
+            socket.private.heartbeat.interval = (CUtility.isNumber(options.heartbeat.interval) && Math.max(1, options.heartbeat.interval)) || socket.private.heartbeat.interval
+            socket.private.heartbeat.timeout = (CUtility.isNumber(options.heartbeat.timeout) && Math.max(socket.private.heartbeat.interval + 1, options.heartbeat.timeout)) || socket.private.heartbeat.timeout
+        }
     }
-    else {
-        socket.public.instance = {}
-    }
+    if (!CUtility.isServer) socket.public.queue = {}
+    else socket.public.instance = {}
     return true
 }
 
