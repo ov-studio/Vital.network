@@ -90,7 +90,6 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         }
         CClient.private.buffer[vid].socket.send(CUtility.toBase64(JSON.stringify({disconnect: (socket.private["@disconnect"] && socket.private["@disconnect"].reason) || (self["@disconnect"] && self["@disconnect"].reason)})))
         CClient.private.buffer[vid].socket.close()
-        CClient.private.buffer[vid].destroy()
         delete CClient.private.buffer[vid]
         self.destroyInstance()
         return true
