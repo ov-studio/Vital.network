@@ -146,7 +146,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 }
                 self.server.onclose = function() {
                     self.destroy(true)
-                    const isReconnection = (!self.isUnloaded && !self["@disconnect-forced"] && reconnect()) || false
+                    const isReconnection = (!self["@disconnect-forced"] && reconnect()) || false
                     if (!isReconnection) {
                         const reason = self["@disconnect-reason"] || (self.config.isConnected && "client-disconnected") || "server-nonexistent"
                         self.destroy()
