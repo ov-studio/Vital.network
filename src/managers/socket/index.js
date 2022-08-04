@@ -222,7 +222,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     private.onHeartbeat(clientInstance)
                     CUtility.exec(self.onClientConnect, client)
                     clientInstance.socket.onclose = function() {
-                        const reason = (private.client[client]["@disconnect"] && private.client[client]["@disconnect"].reason) || private.reason || "client-disconnected"
+                        const reason = (clientInstance["@disconnect"] && clientInstance["@disconnect"].reason) || (private["@disconnect"] && private["@disconnect"].reason) || "client-disconnected"
                         for (const i in clientInstance.socket.room) {
                             self.leaveRoom(i, client)
                         }
