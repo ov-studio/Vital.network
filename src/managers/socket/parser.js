@@ -61,7 +61,7 @@ const onSocketMessage = function(socket, client, receiver, payload) {
                 receiver.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
             }, socket.private.heartbeat.interval)
             socket.public.heartbeatTerminator = setTimeout(function() {
-                const cDisconnection = (!CUtility.isServer && private) || (socket.public.isClient(client) && socket.private.client[client]) || false
+                const cDisconnection = (!CUtility.isServer && socket.private) || (socket.public.isClient(client) && socket.private.client[client]) || false
                 if (cDisconnection) {
                     cDisconnection["@disconnect"] = cDisconnection["@disconnect"] || {}
                     cDisconnection.reason = "heartbeat-timeout"
@@ -76,7 +76,7 @@ const onSocketMessage = function(socket, client, receiver, payload) {
                     CUtility.exec(socket.public.onClientConnect, payload.client)
                 }
                 else if (payload.disconnect) {
-                    socket.private["@disconnect"] = private["@disconnect"] || {}
+                    socket.private["@disconnect"] = socket.private["@disconnect"] || {}
                     socket.private["@disconnect"].isForced = true
                     socket.private["@disconnect"].reason = payload.disconnect
                 }
