@@ -28,7 +28,6 @@ require("./managers/socket/room")
 //////////////
 
 const vNetworkify = CUtility.createAPIs(CServer, {
-    room: true,
     socket: {
         client: true,
         fetchNetwork: true,
