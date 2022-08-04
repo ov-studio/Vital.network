@@ -106,9 +106,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             }
         }
         else {
-            private["@disconnect"] = private["@disconnect"] || {}
-            private["@disconnect"].isForced = true
-            private["@disconnect"].reason = `${(CUtility.isServer && "server") || "client"}-disconnected`
+            CSocket.private.onDisconnectInstance(private, `${(CUtility.isServer && "server") || "client"}-disconnected`, true)
             CNetwork.emit("vNetworkify:Socket:onDestroy", {public: self, private: private})
             for (const i in private.timer) {
                 clearTimeout(private.timer[i])
