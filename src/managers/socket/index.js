@@ -216,8 +216,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     clientInstance.queue = {}, clientInstance.room = {}
                     query = CUtility.queryString.parse(query)
                     if (!query.version || (query.version != CUtility.version)) {
-                        private.client[client]["@disconnect"] = private.client[client]["@disconnect"] || {}
-                        private.client[client]["@disconnect"].reason = "version-mismatch"
+                        private.onDisconnectInstance(private.client[client], "version-mismatch")
                         clientInstance.socket.send(CUtility.toBase64(JSON.stringify({disconnect: private.client[client]["@disconnect"].reason})))
                         clientInstance.socket.close()
                         return false
