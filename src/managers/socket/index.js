@@ -115,7 +115,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     for (const k in j.queue) {
                         j.queue[k].reject()
                     }
-                    j.socket.send(CUtility.toBase64(JSON.stringify({["@disconnect"]: private["@disconnect"].reason})))
+                    j.socket.send(CUtility.toBase64(JSON.stringify({disconnect: private["@disconnect"].reason})))
                     j.socket.close()
                 }
             }
@@ -135,7 +135,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         CSocket.public.addMethod("constructor", function(self, route, options) {
             if (CSocket.private.isUnloaded) return false
             const private = CSocket.instance.get(self)
-            onSocketInitialize(self, route, options)
+            onSocketInitialize({public: self, private: private}, route, options)
             var cResolver = false, reconCounter = 0
             var connect = false, reconnect = false
             connect = function(isReconnection) {
@@ -205,8 +205,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         // @Desc: Instance constructor
         CSocket.public.addMethod("constructor", function(self, route, options) {
             if (CSocket.private.isUnloaded) return false
-            console.log("CALLED")
-            onSocketInitialize(self, route, options)
+            onSocketInitialize({public: self, private: private}, route, options)
             var heartbeat = false, upgrade = false
             self.server = new CWS.Server({
                 noServer: true,
