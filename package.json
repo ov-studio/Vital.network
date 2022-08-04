@@ -29,7 +29,7 @@
     ],
     "main": "./src/importer",
     "scripts": {
-        "debug": "node ./webpack.config && node ./src/importer",
+        "debug": "node ./webpack.config && node ./debug/server",
         "build": "webpack"
     },
     "dependencies": {

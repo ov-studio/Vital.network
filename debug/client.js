@@ -30,20 +30,20 @@ async function debug() {
             interval: 2500 // Duration b/w each attempt
         }
     })
-    vNetworkify.utility.print("* Socket-list:")
-    vNetworkify.utility.print(Object.keys(vNetworkify.socket.fetchSockets()))
+    vNetworkify.util.print("* Socket-list:")
+    vNetworkify.util.print(Object.keys(vNetworkify.socket.fetchSockets()))
 
     cSocket.onHeartbeat = function(deltaTick) {
-        vNetworkify.utility.print(`* Server's heartbeat [${deltaTick}ms] received!`)
+        vNetworkify.util.print(`* Server's heartbeat [${deltaTick}ms] received!`)
     }
     cSocket.onClientConnect = function(client) {
-        vNetworkify.utility.print(`* Client connected [${client}]`)
+        vNetworkify.util.print(`* Client connected [${client}]`)
     }
     cSocket.onClientReconnect = function(client, currentAttempt, maxAttempts) {
-        vNetworkify.utility.print(`* Client reconnecting [${client}] | Attempts: ${currentAttempt}/${maxAttempts}`)
+        vNetworkify.util.print(`* Client reconnecting [${client}] | Attempts: ${currentAttempt}/${maxAttempts}`)
     }
     cSocket.onClientDisconnect = function(client, reason) {
-        vNetworkify.utility.print(`* Client disconnected [${client}] | Reason: ${reason}`)
+        vNetworkify.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
     }
     const isSocketConnected = await cSocket.isConnected()
     if (!isSocketConnected) return false
@@ -52,11 +52,11 @@ async function debug() {
     // @Non-Callback Network Examples
     cSocket.createNetwork("Client:MyNetwork")
     cSocket.on("Client:MyNetwork", function() {
-        vNetworkify.utility.print("Non-Callback network | Handler 1")
+        vNetworkify.util.print("Non-Callback network | Handler 1")
     })
     const secondaryExec = function(...cArgs) {
-        vNetworkify.utility.print("Non-Callback network | Handler 2")
-        vNetworkify.utility.print(...cArgs)
+        vNetworkify.util.print("Non-Callback network | Handler 2")
+        vNetworkify.util.print(...cArgs)
     }
     cSocket.on("Client:MyNetwork", secondaryExec)
     cSocket.off("Client:MyNetwork", secondaryExec)
@@ -67,32 +67,32 @@ async function debug() {
     cSocket.on("Client:MyCBNetwork", function(argA, argB) {
         return argA + argB
     })
-    vNetworkify.utility.print("* Network-list:")
-    vNetworkify.utility.print(cSocket.fetchNetworks())
+    vNetworkify.util.print("* Network-list:")
+    vNetworkify.util.print(cSocket.fetchNetworks())
 
     const networkCBResult = await cSocket.emitCallback("Client:MyCBNetwork", false, 1, 4)
-    vNetworkify.utility.print(`Callback network | Result: ${networkCBResult}`)
+    vNetworkify.util.print(`Callback network | Result: ${networkCBResult}`)
     const networkRemoteCBResult = await cSocket.emitCallback("Server:MyCBNetwork", true, 100, 200)
-    vNetworkify.utility.print(`Remote-Callback network | Result: ${networkRemoteCBResult}`)
+    vNetworkify.util.print(`Remote-Callback network | Result: ${networkRemoteCBResult}`)
 
 
     //@Room Examples
     cSocket.onClientJoinRoom = function(room, client) {
-        vNetworkify.utility.print(`* Client [${client}] joined Room [${room}]`)
-        vNetworkify.utility.print(`* Member-list:`)
-        vNetworkify.utility.print(cSocket.fetchRoomMembers(room))
+        vNetworkify.util.print(`* Client [${client}] joined Room [${room}]`)
+        vNetworkify.util.print(`* Member-list:`)
+        vNetworkify.util.print(cSocket.fetchRoomMembers(room))
     }
     cSocket.onClientLeaveRoom = function(room, client) {
-        vNetworkify.utility.print(`* Client [${client}] left Room [${room}]`)
+        vNetworkify.util.print(`* Client [${client}] left Room [${room}]`)
     }
 
 
     // @Rest API Examples
     var restAPIResult = await vNetworkify.rest.fetch("get", "http://localhost:33021/")
     restAPIResult = await restAPIResult.json()
-    vNetworkify.utility.print(restAPIResult)
+    vNetworkify.util.print(restAPIResult)
     var restAPIResult = await vNetworkify.rest.fetch("get", "http://localhost:33021/invalid")
     restAPIResult = await restAPIResult.json()
-    vNetworkify.utility.print(restAPIResult)
+    vNetworkify.util.print(restAPIResult)
 }
 debug()
