@@ -88,10 +88,10 @@ async function debug() {
 
 
     // @Rest API Examples
-    var restAPIResult = await vNetworkify.rest.fetch("get", "http://localhost:33021/")
+    var restAPIResult = await cServer.rest.fetch("get", "http://localhost:33021/")
     restAPIResult = await restAPIResult.json()
     vNetworkify.util.print(restAPIResult)
-    var restAPIResult = await vNetworkify.rest.fetch("get", "http://localhost:33021/invalid")
+    var restAPIResult = await cServer.rest.fetch("get", "http://localhost:33021/invalid")
     restAPIResult = await restAPIResult.json()
     vNetworkify.util.print(restAPIResult)
 }

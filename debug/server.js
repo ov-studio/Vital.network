@@ -108,11 +108,11 @@ async function debug() {
 
 
     // @Rest API Examples
-    vNetworkify.rest.create("get", "", function(request, response) {
+    cServer.rest.create("get", "", function(request, response) {
         response.status(200).send("API Status Message")
     })
-    vNetworkify.rest.destroy("get", "")
-    vNetworkify.rest.create("get", "", function(request, response) {
+    cServer.rest.destroy("get", "")
+    cServer.rest.create("get", "", function(request, response) {
         response.status(200).send({test: "Updated Status Message"})
     })
 }
