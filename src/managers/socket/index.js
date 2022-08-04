@@ -138,7 +138,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             private.onConnect = function(isReconnection) {
                 if (!isReconnection && self.isConnected()) return false
                 private.isAwaiting = private.isAwaiting || new Promise((resolver) => cResolver = resolver)
-                private.server = new WebSocket(`${((server.private.config.protocol == "https") && "wss") || "ws"}://${server.private.config.hostname}${(server.private.config.port && (":" + server.private.config.port)) || ""}/${private.route}`)
+                private.server = new WebSocket(`${((server.private.config.protocol == "https") && "wss") || "ws"}://${server.private.config.hostname}${(server.private.config.port && (":" + server.private.config.port)) || ""}/${private.route}?version=${CUtility.version}`)
                 private.server.onopen = function() {
                     reconCounter = 0
                     delete private.isAwaiting
@@ -224,6 +224,12 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     if (!query.version || (query.version != CUtility.version)) {
                         console.log("TODO: CLOSE CONNECTION DUE TO VERSION MISMATCH")
                         console.log(query)
+                    }
+                    else {
+                        private.client[client]["@disconnect"] = private.client[client]["@disconnect"] || {}
+                        private.client[client]["@disconnect"].reason = "version-mismatch"
+                        clientInstance.socket.send(CUtility.toBase64(JSON.stringify({disconnect: private.client[client]["@disconnect"].reason})))
+                        clientInstance.socket.close()
                     }
                     clientInstance.socket.send(CUtility.toBase64(JSON.stringify({client: client})))
                     private.onHeartbeat(clientInstance)

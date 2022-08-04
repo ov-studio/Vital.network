@@ -76,9 +76,9 @@ const onSocketMessage = function(socket, client, receiver, payload) {
                     CUtility.exec(socket.public.onClientConnect, payload.client)
                 }
                 else if (payload.disconnect) {
-                    private["@disconnect"] = private["@disconnect"] || {}
-                    private["@disconnect"].isForced = true
-                    private["@disconnect"].reason = payload.disconnect
+                    socket.private["@disconnect"] = private["@disconnect"] || {}
+                    socket.private["@disconnect"].isForced = true
+                    socket.private["@disconnect"].reason = payload.disconnect
                 }
                 else if (payload.room) {
                     if (!payload.isLeave) {
