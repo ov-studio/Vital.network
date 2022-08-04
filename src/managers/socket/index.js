@@ -14,6 +14,7 @@
 
 const CWS = require("ws")
 const CUtility = require("../../utilities")
+const CNetwork = require("../utilities/network")
 const {onSocketInitialize, onSocketMessage} = require("./parser")
 
 
