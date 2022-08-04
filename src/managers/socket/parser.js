@@ -49,7 +49,7 @@ const onSocketInitialize = function(socket, route, options) {
 
 
 // @Desc: Handles socket message
-const onSocketMessage = function(socket.public, client, socket, payload) {
+const onSocketMessage = function(socket, client, socket, payload) {
     payload = JSON.parse(CUtility.fromBase64(payload.data))
     if (!socket || !CUtility.isObject(payload)) return false
     if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
