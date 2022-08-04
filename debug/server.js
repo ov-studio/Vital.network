@@ -47,8 +47,10 @@ async function debug() {
     cSocket.onServerDisconnect = function(timestamp_start, timestamp_end, deltaTick) {
         vNetworkify.util.print(`* Server successfully disconnected! | Life-Span: [${deltaTick}ms]`)
     }
+    console.log(cSocket)
 
 
+    /*
     // @Non-Callback Network Examples
     cSocket.createNetwork("Server:MyNetwork")
     cSocket.on("Server:MyNetwork", function() {
@@ -62,8 +64,6 @@ async function debug() {
     cSocket.off("Server:MyNetwork", secondaryExec)
     cSocket.emit("Server:MyNetwork", false, "Arg 1", "Arg 2")
 
-    console.log(cSocket)
-    /*
     // @Callback Network Examples
     cSocket.createNetwork("Server:MyCBNetwork", true)
     cSocket.on("Server:MyCBNetwork", function(argA, argB) {
