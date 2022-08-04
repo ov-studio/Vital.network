@@ -152,7 +152,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 }
                 private.server.onclose = function() {
                     self.destroy(true)
-                    const isReconnection = (!private["@disconnect"] || !private["@disconnect"].isForced && private.onReconnect()) || false
+                    const isReconnection = ((!private["@disconnect"] || !private["@disconnect"].isForced) && private.onReconnect()) || false
                     if (!isReconnection) {
                         const reason = (private["@disconnect"] && private["@disconnect"].reason) || (private.isConnected && "client-disconnected") || "server-nonexistent"
                         self.destroy()
@@ -171,6 +171,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 }
             }
             private.onReconnect = function() {
+                console.log("Started reconnect attempt")
                 reconCounter += 1
                 if (private.options.reconnection.attempts != -1) {
                     if (reconCounter > private.options.reconnection.attempts) {
@@ -179,6 +180,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     }
                 }
                 private.timer.reconnectTimer = setTimeout(function() {
+                    console.log("Trying to reconnect")
                     delete private.timer.reconnectTimer
                     CUtility.exec(self.onClientReconnect, CUtility.vid.fetch(private.server, null, true) || false, reconCounter, private.options.reconnection.attempts)
                     private.onConnect(true)
