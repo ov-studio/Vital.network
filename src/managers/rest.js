@@ -28,7 +28,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {
         if (server != __server) return false
         CRest.private.isUnloaded = true
-        delete __server.public.rest
+        delete server.public.rest
     })
 
 

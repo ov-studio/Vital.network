@@ -32,7 +32,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {
         if (server != __server) return false
         CSocket.private.isUnloaded = true
-        delete __server.public.socket
+        delete server.public.socket
     })
 
 
