@@ -114,20 +114,3 @@ async function debug() {
     })
 }
 debug()
-
-
-// TODO: IPV4 AND HOST VALIDATER
-function validURL(str) {
-    /*
-    var pattern = new RegExp(
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-    )
-    return !!pattern.test(str);
-    */
-    let ipv4_regex = /^(?:25[0-5]|2[0-4]\d|1\d\d|[1-9]\d|\d){3}$/gm
-   return ipv4_regex.test(str)
-}
-
-//console.log(validURL("localhost"))
-//console.log(validURL("1.1.1.100"))
