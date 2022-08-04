@@ -23,13 +23,13 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     var isUnloaded = false
 
     // @Desc: Fetches network instance by name
-    socket.public.addMethod("fetchNetwork", function(self, name) {
+    socket.private.fetchNetwork = function(self, name) {
         if (isUnloaded) return false
         return (self.isNetwork(name) && self.network[name]) || false
     })
 
     // @Desc: Resolves an awaiting callback network's handler
-    socket.public.addMethod("resolveCallback", function(self, client, payload) {
+    socket.private.resolveCallback = function(self, client, payload) {
         if (isUnloaded) return false
         if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
         if (CUtility.isServer && !self.isClient(client)) return false
@@ -83,7 +83,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     // @Desc: Attaches a handler on specified network
     socket.public.addInstanceMethod("on", function(self, name, ...cArgs) {
         if (isUnloaded) return false
-        const cNetwork = socket.public.fetchNetwork(self, name)
+        const cNetwork = socket.private.fetchNetwork(self, name)
         if (!cNetwork) return false
         return cNetwork.on(...cArgs)
     })
@@ -91,7 +91,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     // @Desc: Detaches a handler from specified network
     socket.public.addInstanceMethod("off", function(self, name, ...cArgs) {
         if (isUnloaded) return false
-        const cNetwork = socket.public.fetchNetwork(self, name)
+        const cNetwork = socket.private.fetchNetwork(self, name)
         if (!cNetwork) return false
         return cNetwork.off(...cArgs)
     })
@@ -108,7 +108,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
             })))
             return true
         }
-        const cNetwork = socket.public.fetchNetwork(self, name)
+        const cNetwork = socket.private.fetchNetwork(self, name)
         if (!cNetwork) return false
         return cNetwork.emit(...cArgs)
     })
@@ -142,7 +142,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
             })))
             return cPromise
         }
-        const cNetwork = socket.public.fetchNetwork(self, name)
+        const cNetwork = socket.private.fetchNetwork(self, name)
         if (!cNetwork) return false
         return cNetwork.emitCallback(...cArgs)
     })
