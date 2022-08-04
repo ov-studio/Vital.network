@@ -28,6 +28,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
 
     CNetwork.fetch("vNetworkify:Socket:onDestroy").on(function(__socket) {
         if ((socket.public != __socket.public) || (socket.private != __socket.private)) return false
+        CNetwork.fetch("vNetworkify:Socket:onDestroy").off(this)
         for (const i in CClient.private.buffer) {
             CClient.private.buffer[i].destroy()
             delete CClient.private.buffer[i]

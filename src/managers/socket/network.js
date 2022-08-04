@@ -18,6 +18,7 @@ const CNetwork = require("../../utilities/network")
 CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     CNetwork.fetch("vNetworkify:Socket:onDestroy").on(function(__socket) {
         if ((socket.public != __socket.public) || (socket.private != __socket.private)) return false
+        CNetwork.fetch("vNetworkify:Socket:onDestroy").off(this)
         for (const i in socket.private.network) {
             socket.private.network[i].destroy()
             delete socket.private.network[i]
