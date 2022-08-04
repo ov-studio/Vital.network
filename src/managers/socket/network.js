@@ -16,6 +16,10 @@ const CUtility = require("../../utilities")
 const CNetwork = require("../../utilities/network")
 
 CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
+    ///////////////////////
+    // Instance Members //
+    ///////////////////////
+
     // @Desc: Fetches network instance by name
     socket.private.onFetchNetwork = function(name) {
         if (!socket.public.isInstance()) return false
@@ -35,11 +39,6 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         else cQueue[queueID].resolve(...payload.networkArgs)
         return true
     }
-
-
-    ///////////////////////
-    // Instance Members //
-    ///////////////////////
 
     // @Desc: Verifies network's validity
     socket.public.isNetwork = function(name) {
