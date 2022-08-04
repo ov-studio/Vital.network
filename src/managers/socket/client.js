@@ -82,6 +82,14 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     CClient.public.addInstanceMethod("destroy", function(self) {
         if (CClient.private.isUnloaded) return false
         const vid = CUtility.vid.fetch(self, null, true)
+        if (CClient.private.buffer[vid].queue) {
+            for (const i in CClient.private.buffer[vid].queue) {
+                CClient.private.buffer[vid].queue[i].reject()
+            }
+        }
+        CClient.private.buffer[vid].socket.send(CUtility.toBase64(JSON.stringify({disconnect: socket.private["@disconnect"].reason})))
+        CClient.private.buffer[vid].socket.close()
+        CClient.private.buffer[i].destroy()
         delete CClient.private.buffer[vid]
         self.destroyInstance()
         return true

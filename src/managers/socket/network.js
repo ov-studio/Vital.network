@@ -16,6 +16,14 @@ const CUtility = require("../../utilities")
 const CNetwork = require("../../utilities/network")
 
 CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
+    CNetwork.fetch("vNetworkify:Socket:onDestroy").on(function(__socket) {
+        if ((socket.public != __socket.public) || (socket.private != __socket.private)) return false
+        for (const i in socket.private.network) {
+            socket.private.network[i].destroy()
+        }
+    })
+
+
     ///////////////////////
     // Instance Members //
     ///////////////////////
