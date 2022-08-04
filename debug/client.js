@@ -118,8 +118,9 @@ async function debug2() {
         }
     })
 
-    cSocket.onClientReconnect = function(client, currentAttempt, maxAttempts) {
-        vNetworkify.util.print(`* Client reconnecting [${client}] | Attempts: ${currentAttempt}/${maxAttempts}`)
+
+    cSocket.onClientConnect = function(client) {
+        vNetworkify.util.print(`* Client connected [${client}]`)
     }
     cSocket.onClientDisconnect = function(client, reason) {
         vNetworkify.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
