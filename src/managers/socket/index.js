@@ -131,7 +131,8 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     CSocket.public.addMethod("constructor", function(self, route, options) {
         if (CSocket.private.isUnloaded) return false
         const private = CSocket.instance.get(self)
-        onSocketInitialize({public: self, private: private}, route, options)
+        const cPointer = {public: self, private: private}
+        onSocketInitialize(cPointer, route, options)
         if (!CUtility.isServer) {
             var cResolver = false, reconCounter = 0
             private.onConnect = function(isReconnection) {
@@ -167,7 +168,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     return true
                 }
                 private.server.onmessage = function(payload) {
-                    return onSocketMessage(self, CUtility.vid.fetch(private.server, null, true), private.server, payload)
+                    return onSocketMessage(cPointer, CUtility.vid.fetch(private.server, null, true), private.server, payload)
                 }
             }
             private.onReconnect = function() {
@@ -239,7 +240,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                         return true
                     }
                     clientInstance.socket.onmessage = function(payload) {
-                        return onSocketMessage(self, client, clientInstance.socket, payload)
+                        return onSocketMessage(cPointer, client, clientInstance.socket, payload)
                     }
                 })
                 return true
