@@ -205,6 +205,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         // @Desc: Instance constructor
         CSocket.public.addMethod("constructor", function(self, route, options) {
             if (CSocket.private.isUnloaded) return false
+            const private = CSocket.instance.get(self)
             onSocketInitialize({public: self, private: private}, route, options)
             var heartbeat = false, upgrade = false
             self.server = new CWS.Server({
