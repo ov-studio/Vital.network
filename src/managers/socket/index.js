@@ -25,15 +25,16 @@ const {onSocketInitialize, onSocketMessage} = require("./parser")
 CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     server.public = CUtility.createClass({})
     server.private
-    buffer: {},
-    heartbeat: {
+    server.private.buffer = {}
+    server.private.heartbeat = {
         interval: 10000,
         timeout: 60000
-    },
-    reconnection: {
+    }
+    server.private.reconnection = {
         attempts: -1,
         interval: 2500
     }
+
 
     /////////////////////
     // Static Members //
@@ -61,7 +62,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     // @Desc: Creates a fresh socket w/ specified route
     server.public.addMethod("create", function(route, ...cArgs) {
         if (!CServer.isConnected(true) || !server.public.isVoid(route)) return false
-        server.private.buffer[route] = new server.public(route, ...cArgs)
+        server.private.buffer[route] = server.public.createInstance(route, ...cArgs)
         return server.private.buffer[route]
     })
 
@@ -111,9 +112,9 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     j.socket.close()
                 }
             }
-            self.isUnloaded = true
             self.server.close()
             delete server.private.buffer[(this.route)]
+            self.destroyInstance()
         }
         return true
     })
