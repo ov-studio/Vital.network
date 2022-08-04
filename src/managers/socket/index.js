@@ -188,7 +188,6 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             connect()
         }
         else {
-            var heartbeat = false, upgrade = false
             private.server = new CWS.Server({
                 noServer: true,
                 path: `/${self.route}`
@@ -198,7 +197,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 const timestamp_start = private.timestamp, timestamp_end = new Date()
                 const deltaTick = timestamp_end.getTime() - timestamp_start.getTime()
                 self.destroy()
-                server.private.instance.CHTTP.off("upgrade", upgrade)
+                server.private.instance.CHTTP.off("upgrade", private.onUpgradeSocket)
                 setTimeout(function() {CUtility.exec(self.onServerDisconnect, timestamp_start, timestamp_end, deltaTick)}, 1)
                 return true
             }
@@ -208,11 +207,11 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             }
             private.server.on("close", private.server.onclose)
             private.server.on("error", private.server.onerror)
-            heartbeat = function(instance) {
+            private.onHeartbeat = function(instance) {
                 instance.socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
                 return true
             }
-            upgrade = function(request, socket, head) {
+            private.onUpgradeSocket = function(request, socket, head) {
                 private.server.handleUpgrade(request, socket, head, function(socket) {
                     var [instance, query] = request.url.split("?")
                     instance = CSocket.public.fetch(instance.slice(1))
@@ -227,7 +226,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                         console.log(query)
                     }
                     clientInstance.socket.send(CUtility.toBase64(JSON.stringify({client: client})))
-                    heartbeat(clientInstance)
+                    private.onHeartbeat(clientInstance)
                     CUtility.exec(self.onClientConnect, client)
                     clientInstance.socket.onclose = function() {
                         const reason = private.client[client].reason || private.reason || "client-disconnected"
@@ -245,7 +244,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 })
                 return true
             }
-            server.private.instance.CHTTP.on("upgrade", upgrade)
+            server.private.instance.CHTTP.on("upgrade", private.onUpgradeSocket)
         }
     })
 
