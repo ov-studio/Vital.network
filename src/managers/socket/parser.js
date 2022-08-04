@@ -25,6 +25,7 @@ const onSocketInitialize = function(socket, route, options) {
     options = (CUtility.isObject(options) && options) || false
     socket.private.timestamp = new Date()
     socket.private.heartbeat = {interval: 10000, timeout: 60000}
+    socket.private.timer = {}
     if (!CUtility.isServer) socket.private.reconnection = {attempts: -1, interval: 2500}
     socket.private.route = route, socket.private.network = {}, socket.private.room = {}
     if (options) {

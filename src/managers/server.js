@@ -96,7 +96,7 @@ CServer.public.addInstanceMethod("isConnected", function(self, isSync) {
     return private.isAwaiting || private.isConnected || false
 })
 
-// @Desc: Handles Connection Status
+// @Desc: Connects the server
 CServer.public.addInstanceMethod("connect", function(self) {
     if (self.isConnected()) return false
     const private = CServer.instance.get(self)

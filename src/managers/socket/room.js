@@ -51,7 +51,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     // @Desc: Verifies whether the client belongs specified room
     socket.public.isInRoom = function(name, client) {
         if (!socket.public.isInstance()) return false
-        if (!socket.public.isRoom(name) || !CServer.socket.client.fetch(client)) return false
+        if (!socket.public.isRoom(name) || !socket.public.client.fetch(client)) return false
         if (CUtility.isServer) {
             if (!socket.public.isClient(client)) return false
             return (socket.private.room[name].member[client] && true) || false   
@@ -86,7 +86,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
             if (!socket.public.isInstance()) return false
             if (!socket.public.isClient(client) || !socket.public.isRoom(name) || socket.public.isInRoom(name, client)) return false
             socket.private.room[name].member[client] = true
-            const clientInstance = CServer.socket.client.fetch(client)
+            const clientInstance = socket.public.client.fetch(client)
             clientInstance.socket.send(CUtility.toBase64(JSON.stringify({room: name})))
             CUtility.exec(socket.public.onClientJoinRoom, name, client)
             return true
@@ -97,7 +97,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
             if (!socket.public.isInstance()) return false
             if (!socket.public.isClient(client) || !socket.public.isInRoom(name, client)) return false
             delete socket.private.room[name].member[client]
-            const clientInstance = CServer.socket.client.fetch(client)
+            const clientInstance = socket.public.client.fetch(client)
             clientInstance.socket.send(CUtility.toBase64(JSON.stringify({room: name, isLeave: true})))
             CUtility.exec(socket.public.onClientLeaveRoom, name, client)
             return true

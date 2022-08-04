@@ -137,7 +137,8 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             private.onConnect = function(isReconnection) {
                 if (!isReconnection && self.isConnected()) return false
                 private.isAwaiting = private.isAwaiting || new Promise((resolver) => cResolver = resolver)
-                private.server = new WebSocket(`${((server.private.config.protocol == "https") && "wss") || "ws"}://${server.private.config.hostname}${(server.private.config.port && (":" + server.private.config.port)) || ""}/${self.route}`)
+                private.server = new WebSocket(`${((server.private.config.protocol == "https") && "wss") || "ws"}://${server.private.config.hostname}${(server.private.config.port && (":" + server.private.config.port)) || ""}/${private.route}`)
+                console.log(private.server)
                 private.server.onopen = function() {
                     reconCounter = 0
                     delete private.isAwaiting
@@ -189,7 +190,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         else {
             private.server = new CWS.Server({
                 noServer: true,
-                path: `/${self.route}`
+                path: `/${private.route}`
             })
             setTimeout(function() {CUtility.exec(self.onServerConnect)}, 1)
             private.server.onclose = function() {
@@ -215,7 +216,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     var [instance, query] = request.url.split("?")
                     instance = CSocket.public.fetch(instance.slice(1))
                     if (!instance) return false
-                    const clientInstance = CSocket.public.client.create(socket)
+                    const clientInstance = self.client.create(socket)
                     const client = CUtility.vid.fetch(clientInstance, null, true)
                     private.client[client] = clientInstance
                     clientInstance.queue = {}, clientInstance.room = {}
@@ -260,12 +261,14 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         // @Desc: Verifies client's validity
         CSocket.public.addInstanceMethod("isClient", function(self, client) {
             if (CSocket.private.isUnloaded) return false
-            return (CSocket.public.client.fetch(client) && private.client[client] && true) || false
+            const private = CSocket.instance.get(self)
+            return (self.client.fetch(client) && private.client[client] && true) || false
         })
 
         // @Desc: Fetches an array of existing clients
         CSocket.public.addInstanceMethod("fetchClients", function(self) {
             if (CSocket.private.isUnloaded) return false
+            const private = CSocket.instance.get(self)
             const result = []
             for (const i in private.client) {
                 if (self.isClient(i)) result.push(i)

@@ -19,6 +19,7 @@ const CUtility = require("./")
 // Class: VID //
 /////////////////
 
+// TODO: MAKE IT AS CLASS
 CUtility.vid = {}
 const cache = {
     vid: {

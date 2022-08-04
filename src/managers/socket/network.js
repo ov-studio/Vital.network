@@ -31,7 +31,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         if (!socket.public.isInstance()) return false
         if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
         if (CUtility.isServer && !socket.public.isClient(client)) return false
-        const cReceiver = (CUtility.isServer && socket.private.client.fetch(client)) || socket.public
+        const cReceiver = (CUtility.isServer && socket.public.client.fetch(client)) || socket.public
         const cQueue = (cReceiver && cReceiver.queue) || false
         const queueID = CUtility.vid.fetch(payload.networkCB, null, true)
         if (!cQueue || !queueID || !cQueue[queueID]) return false
@@ -94,7 +94,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         if (!socket.public.isInstance()) return false
         if (isRemote) {
             if (CUtility.isServer && !socket.public.isClient(isRemote)) return false
-            const cReceiver = (CUtility.isServer && socket.private.client.fetch(isRemote)) || socket.public.server
+            const cReceiver = (CUtility.isServer && socket.public.client.fetch(isRemote)) || socket.public.server
             cReceiver.socket.send(CUtility.toBase64(JSON.stringify({
                 networkName: name,
                 networkArgs: cArgs
@@ -111,7 +111,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         if (!socket.public.isInstance()) return false
         if (isRemote) {
             if (CUtility.isServer && !socket.public.isClient(isRemote)) return false
-            const cReceiver = (CUtility.isServer && socket.private.client.fetch(isRemote)) || socket.public.server
+            const cReceiver = (CUtility.isServer && socket.public.client.fetch(isRemote)) || socket.public.server
             const cQueue = (cReceiver && cReceiver.queue) || false
             if (!cQueue) return false
             const networkCB = {}

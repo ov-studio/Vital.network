@@ -73,9 +73,9 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     // @Desc: Instance constructor
     CClient.public.addMethod("constructor", function(self, socket) {
         if (CClient.private.isUnloaded) return false
-        const private = CSocket.instance.get(self)
+        const private = CClient.instance.get(self)
         CUtility.vid.fetch(self, CUtility.vid.fetch(socket))
-        private.socket = socket
+        self.socket = socket
     })
 
     // @Desc: Destroys the instance
