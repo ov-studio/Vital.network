@@ -104,7 +104,7 @@ const onSocketMessage = function(socket, client, receiver, payload) {
             else payload.networkArgs = [cNetwork.handler.exec(...payload.networkArgs)]
             receiver.send(CUtility.toBase64(JSON.stringify(payload)))
         }
-        else socket.private.onResolveNetwork(socket.public, client, payload)
+        else socket.private.onResolveNetwork(client, payload)
         return true
     }
     socket.public.emit(payload.networkName, null, ...payload.networkArgs)
