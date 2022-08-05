@@ -22,7 +22,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
             if ((socket.public != __socket.public) || (socket.private != __socket.private)) return false
             CNetwork.fetch("vNetworkify:Socket:onDestroy").off(this)
             for (const i in socket.private.room) {
-                    socket.private.room[i].destroy()
+                socket.private.room[i].destroy()
             }
         })
     }
