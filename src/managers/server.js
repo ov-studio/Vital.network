@@ -133,9 +133,9 @@ CServer.public.addInstanceMethod("connect", async function(self) {
                     method: "DELETE"
                 })
             }
-        }
-        //const health = await private.instance.CExpress.get()
-        //console.log(health)
+        })
+        const isServerHealthy = await self.rest.fetch(private.healthpoint)
+        console.log(isServerHealthy)
         CServer.private.onConnectionStatus(self, true)
     }
     else {
