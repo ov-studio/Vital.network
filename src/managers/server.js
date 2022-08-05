@@ -43,14 +43,7 @@ CServer.private.onConnectionStatus = function(self, state) {
     delete private.isAwaiting
     private.isConnected = state
     CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || "" } [Version: ${CUtility.fromBase64(CUtility.version)}]`)
-    if (private.isConnected) {
-        CNetwork.emit("vNetworkify:Server:onConnect", {public: self, private: private})
-        if (CUtility.isServer) {
-            self.rest.create("get", private.healthpoint, function(request, response) {
-                response.status(200).send({status: true})
-            })
-        }
-    }
+    if (private.isConnected) CNetwork.emit("vNetworkify:Server:onConnect", {public: self, private: private})
     CUtility.exec(private.resolver, private.isConnected)
     return true
 }
@@ -111,7 +104,7 @@ CServer.public.addInstanceMethod("connect", async function(self) {
     if (!CUtility.isBool(isConnected)) return isConnected
     const private = CServer.instance.get(self)
     if (!CUtility.isServer) {
-        private.instance.CExpress = {
+        private.instance.CExpress = private.instance.CExpress || {
             post: function(route, data) {
                 if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
                 return fetch(route, {
@@ -153,7 +146,12 @@ CServer.public.addInstanceMethod("connect", async function(self) {
         private.instance.CExpress.use(CExpress.json())
         private.instance.CExpress.use(CExpress.urlencoded({extended: true}))
         private.instance.CExpress.set("case sensitive routing", private.config.isCaseSensitive)
-        private.instance.CHTTP.listen(private.config.port, () => CServer.private.onConnectionStatus(self, true))
+        private.instance.CHTTP.listen(private.config.port, function() {
+            CServer.private.onConnectionStatus(self, true)
+            self.rest.create("get", private.healthpoint, function(request, response) {
+                response.status(200).send({status: true})
+            })
+        })
         .on("error", () => CServer.private.onConnectionStatus(self, false))
         return private.isAwaiting
     }
