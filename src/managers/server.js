@@ -134,9 +134,13 @@ CServer.public.addInstanceMethod("connect", async function(self) {
                 })
             }
         }
-        const isServerHealthy = await self.rest.fetch(private.healthpoint)
-        console.log(isServerHealthy)
-        CServer.private.onConnectionStatus(self, true)
+        try {
+            var isServerHealthy = await private.instance.CExpress.get(private.healthpoint)
+            isServerHealthy = await isServerHealthy.json()
+            if (isServerHealthy && (isServerHealthy.status == true)) CServer.private.onConnectionStatus(self, true)
+        }
+        catch(error) {}
+        CServer.private.onConnectionStatus(self, false)
     }
     else {
         private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
