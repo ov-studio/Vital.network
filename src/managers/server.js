@@ -135,13 +135,14 @@ CServer.public.addInstanceMethod("connect", async function(self) {
                 })
             }
         }
+        var isConnectionAccepted = false
         try {
             var isServerHealthy = await private.instance.CExpress.get(private.healthpoint)
             isServerHealthy = await isServerHealthy.json()
-            if (isServerHealthy && (isServerHealthy.status == true)) CServer.private.onConnectionStatus(self, true)
+            if (isServerHealthy && (isServerHealthy.status == true)) isConnectionAccepted = true
         }
         catch(error) {}
-        CServer.private.onConnectionStatus(self, false)
+        CServer.private.onConnectionStatus(self, isConnectionAccepted)
     }
     else {
         private.instance.CExpress = CExpress()
