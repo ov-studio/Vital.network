@@ -54,7 +54,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         // @Desc: Creates a fresh REST API
         CRest.public.addMethod("create", function(type, route, exec) {
             if (CRest.private.isUnloaded) return false
-            if ((route == server.private.healthpoint) || !CRest.public.isVoid(type, route) || !CUtility.isFunction(exec)) return false
+            if (!CRest.public.isVoid(type, route) || !CUtility.isFunction(exec)) return false
             CRest.private[type][route] = CRest.private[type][route] || {}
             CRest.private[type][route].manager = CRest.private[type][route].manager || function(...cArgs) {
                 CUtility.exec(CRest.private[type][route].handler, ...cArgs)
@@ -68,7 +68,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         // @Desc: Destroys an existing REST API
         CRest.public.addMethod("destroy", function(type, route) {
             if (CRest.private.isUnloaded) return false
-            if (CRest.public.isVoid(type, route)) return false
+            if ((route == server.private.healthpoint) || CRest.public.isVoid(type, route)) return false
             delete CRest.private[type][route].handler
             return true
         })

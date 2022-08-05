@@ -44,12 +44,12 @@ CServer.private.onConnectionStatus = function(self, state) {
     private.isConnected = state
     CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || "" } [Version: ${CUtility.fromBase64(CUtility.version)}]`)
     if (private.isConnected) {
+        CNetwork.emit("vNetworkify:Server:onConnect", {public: self, private: private})
         if (CUtility.isServer) {
-            cServer.rest.create("get", private.healthpoint, function(request, response) {
+            self.rest.create("get", private.healthpoint, function(request, response) {
                 response.status(200).send({status: true})
             })
         }
-        CNetwork.emit("vNetworkify:Server:onConnect", {public: self, private: private})
     }
     CUtility.exec(private.resolver, private.isConnected)
     return true
