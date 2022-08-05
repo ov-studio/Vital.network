@@ -59,9 +59,11 @@ CServer.public.addMethod("constructor", function(self, options) {
     options = (CUtility.isObject(options) && options) || {}
     private.config = {}, private.instance = {}
     private.config.port = (CUtility.isNumber(options.port) && options.port) || false
+    private.healthpoint = "vhealth"
     if (!CUtility.isServer) {
         private.config.protocol = (options.isSSL && "https") || "http"
         private.config.hostname = (CUtility.isString(options.hostname) && options.hostname) || window.location.hostname
+        private.healthpoint = `${private.config.protocol}://${private.config.hostname}${(private.config.port && (":" + private.config.port)) || ""}/${private.healthpoint}`
     }
     else {
         private.config.isCaseSensitive = (options.isCaseSensitive && true) || false
@@ -97,7 +99,7 @@ CServer.public.addInstanceMethod("isConnected", function(self, isSync) {
 })
 
 // @Desc: Connects the server
-CServer.public.addInstanceMethod("connect", function(self) {
+CServer.public.addInstanceMethod("connect", async function(self) {
     if (self.isConnected()) return false
     const private = CServer.instance.get(self)
     if (!CUtility.isServer) {
@@ -131,6 +133,8 @@ CServer.public.addInstanceMethod("connect", function(self) {
                 })
             }
         }
+        //const health = await private.instance.CExpress.get()
+        //console.log(health)
         CServer.private.onConnectionStatus(self, true)
     }
     else {
