@@ -103,6 +103,7 @@ CServer.public.addInstanceMethod("connect", async function(self) {
     const isConnected = self.isConnected()
     if (!CUtility.isBool(isConnected)) return isConnected
     const private = CServer.instance.get(self)
+    private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
     if (!CUtility.isServer) {
         private.instance.CExpress = private.instance.CExpress || {
             post: function(route, data) {
@@ -143,7 +144,6 @@ CServer.public.addInstanceMethod("connect", async function(self) {
         CServer.private.onConnectionStatus(self, false)
     }
     else {
-        private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
         private.instance.CExpress = CExpress()
         private.instance.CHTTP = CHTTP.Server(private.instance.CExpress)
         private.instance.CExpress.use(CCors(private.config.cors))
@@ -157,9 +157,8 @@ CServer.public.addInstanceMethod("connect", async function(self) {
             })
         })
         .on("error", () => CServer.private.onConnectionStatus(self, false))
-        return private.isAwaiting
     }
-    return true
+    return private.isAwaiting
 })
 
 
