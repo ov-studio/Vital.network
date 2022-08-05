@@ -42,9 +42,9 @@ CServer.private.onConnectionStatus = function(self, state) {
     const private = CServer.instance.get(self)
     delete private.isAwaiting
     private.isConnected = state
-    CUtility.exec(private.resolver, private.isConnected)
     CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || "" } [Version: ${CUtility.fromBase64(CUtility.version)}]`)
     if (private.isConnected) CNetwork.emit("vNetworkify:Server:onConnect", {public: self, private: private})
+    CUtility.exec(private.resolver, private.isConnected)
     return true
 }
 
@@ -100,7 +100,8 @@ CServer.public.addInstanceMethod("isConnected", function(self, isSync) {
 
 // @Desc: Connects the server
 CServer.public.addInstanceMethod("connect", async function(self) {
-    if (self.isConnected()) return false
+    const isConnected = self.isConnected()
+    if (!CUtility.isBool(isConnected)) return isConnected
     const private = CServer.instance.get(self)
     if (!CUtility.isServer) {
         private.instance.CExpress = {
@@ -147,7 +148,7 @@ CServer.public.addInstanceMethod("connect", async function(self) {
         private.instance.CExpress.set("case sensitive routing", private.config.isCaseSensitive)
         private.instance.CHTTP.listen(private.config.port, () => CServer.private.onConnectionStatus(self, true))
         .on("error", () => CServer.private.onConnectionStatus(self, false))
-        return true
+        return private.isAwaiting
     }
     return true
 })
