@@ -32,7 +32,7 @@ async function debug() {
     const cSocket = cServer.socket.create("Server:MyRoute", {
         heartbeat: {
             interval: 10000, // Interval at which heartbeat should be executed
-            timeout: 60000 // Duration b/w each heartbeat
+            timeout: 60000 // Duration at which it should disconnect instance if no response is received
         }
     })
     vNetworkify.util.print("* Socket-list:")
@@ -128,7 +128,7 @@ async function debug2() {
     const cSocket = cServer.socket.create("Server:MyRoute", {
         heartbeat: {
             interval: 10000, // Interval at which heartbeat should be executed
-            timeout: 60000 // Duration b/w each heartbeat
+            timeout: 60000 // Duration at which it should disconnect instance if no response is received
         }
     })
 
