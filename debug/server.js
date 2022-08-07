@@ -147,7 +147,7 @@ async function debug2() {
 
 
     // @Rest API Examples
-    var restAPIResult = await cServer.rest.fetch("get", "https://raw.githubusercontent.com/ov-studio/vNetworkify/main/package.json")
-    vNetworkify.util.print(JSON.parse(restAPIResult))
+    //var restAPIResult = await cServer.rest.fetch("get", "https://raw.githubusercontent.com/ov-studio/vNetworkify/main/package.json")
+    //vNetworkify.util.print(JSON.parse(restAPIResult))
 }
 debug2()
