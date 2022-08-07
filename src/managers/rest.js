@@ -55,10 +55,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on((server) => {
             if (CRest.private.isUnloaded) return false
             if (!CRest.public.isVoid(type, route) || !CUtility.isFunction(exec)) return false
             CRest.private[type][route] = CRest.private[type][route] || {}
-            CRest.private[type][route].manager = CRest.private[type][route].manager || ((...cArgs) => {
-                CUtility.exec(CRest.private[type][route].handler, ...cArgs)
-                return true
-            })
+            CRest.private[type][route].manager = CRest.private[type][route].manager || ((...cArgs) => CUtility.exec(CRest.private[type][route].handler, ...cArgs))
             CRest.private[type][route].handler = exec
             server.private.instance.express[type](`/${route}`, CRest.private[type][route].manager)
             return true
@@ -77,12 +74,8 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on((server) => {
             if (CRest.private.isUnloaded) return false
             const type = request.method.toLowerCase()
             const route = request.url.slice(1)
-            if (CRest.public.isVoid(type, route)) {
-                response.status(404).send({isAuthorized: false, type: type, route: route})
-                return false
-            }
+            if (CRest.public.isVoid(type, route)) return response.status(404).send({isAuthorized: false, type: type, route: route})
             next()
-            return true
         })
         server.private.instance.express.all("*", CRest.public.onMiddleware)
     }
