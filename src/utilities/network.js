@@ -28,14 +28,10 @@ CNetwork.private.buffer = {}
 /////////////////////
 
 // @Desc: Verifies whether the network is void
-CNetwork.public.addMethod("isVoid", (name) => {
-    return (CUtility.isString(name) && !CNetwork.private.buffer[name] && true) || false
-})
+CNetwork.public.addMethod("isVoid", (name) => (CUtility.isString(name) && !CNetwork.private.buffer[name] && true) || false)
 
 // @Desc: Fetches network instance by name
-CNetwork.public.addMethod("fetch", (name) => {
-    return (!CNetwork.public.isVoid(name) && CNetwork.private.buffer[name]) || false
-})
+CNetwork.public.addMethod("fetch", (name) => (!CNetwork.public.isVoid(name) && CNetwork.private.buffer[name]) || false)
 
 // @Desc: Creates a fresh network w/ specified name
 CNetwork.public.addMethod("create", (name, ...cArgs) => {
@@ -100,15 +96,11 @@ CNetwork.public.addInstanceMethod("on", (self, exec) => {
     if (!private.isCallback) {
         const execVID = CUtility.vid.fetch(exec)
         if (private.handler[execVID]) return false
-        private.handler[execVID] = {
-            exec: exec
-        }
+        private.handler[execVID] = {exec: exec}
     }
     else {
         if (private.handler) return false
-        private.handler = {
-            exec: exec
-        }
+        private.handler = {exec: exec}
     }
     return true
 })
@@ -134,8 +126,7 @@ CNetwork.public.addInstanceMethod("emit", (self, ...cArgs) => {
     const private = CNetwork.instance.get(self)
     if (private.isCallback) return false
     for (const i in private.handler) {
-        const j = private.handler[i]
-        j.exec(...cArgs)
+        private.handler[i].exec(...cArgs)
     }
     return true
 })
