@@ -100,9 +100,7 @@ CUtility.createClass = (parent) => {
         delete __C.prototype[index]
         return true
     }
-    __C.createInstance = (...cArgs) => {
-        return new __C(...cArgs)
-    }
+    __C.createInstance = (...cArgs) => new __C(...cArgs)
     __C.addInstanceMethod("isInstance", (self) => __I.has(self))
     __C.addInstanceMethod("destroyInstance", (self) => __I.delete(self))
     return {public: __C, private: {}, instance: __I}
