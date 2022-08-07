@@ -100,25 +100,9 @@ CServer.public.addInstanceMethod("isConnected", function(self, isSync) {
 
 // @Desc: Connects the server
 CServer.private.onHTTPInitialize = function(https) {
-    const fetch = CUtility.global.fetch || function(route, options) {
-        var resolve = false, reject = false
-        const cPromise = new Promise((resolve, reject) => {resolve = resolve, reject = reject})
-        const request = https.request(route, options, (response) => {
-            let data = ""
-            response.on("data", (chunk) => data += chunk.toString())
-            response.on("end", () => {
-                const body = JSON.parse(data)
-                console.log(body)
-                resolve(data)
-            })
-        })
-        request.on("error", (error) => reject(error))
-        request.end()
-        return cPromise
-    }
     https.post = function(route, data) {
         if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
-        return fetch(route, {
+        return CUtility.fetch(route, {
             method: "POST",
             headers: {["Content-Type"]: "application/json"},
             body: JSON.stringify(data)
@@ -126,13 +110,13 @@ CServer.private.onHTTPInitialize = function(https) {
     }
     https.get = function(route) {
         if (!CUtility.isString(route)) return false
-        return fetch(route, {
+        return CUtility.fetch(route, {
             method: "GET"
         })
     }
     https.put = function(route, data) {
         if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
-        return fetch(route, {
+        return CUtility.fetch(route, {
             method: "PUT",
             headers: {["Content-Type"]: "application/json"},
             body: JSON.stringify(data)
@@ -140,7 +124,7 @@ CServer.private.onHTTPInitialize = function(https) {
     }
     https.delete = function(route) {
         if (!CUtility.isString(route)) return false
-        return fetch(route, {
+        return CUtility.fetch(route, {
             method: "DELETE"
         })
     }
