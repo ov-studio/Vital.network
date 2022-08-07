@@ -32,7 +32,13 @@ CUtility.exec = function(exec, ...cArgs) {
 }
 
 // @Desc: Fetches an API
-CUtility.fetch = (!CUtility.isServer && function(route, options) {return fetch(route, options)}) || function(route, options, https) {
+CUtility.fetch = (!CUtility.isServer && async function(route, options) {
+    try {
+        const result = await fetch(route, options)
+        return await result.text()
+    }
+    catch(error) {throw error}
+}) || function(route, options, https) {
     var resolve = false, reject = false
     const result = new Promise((__resolve, __reject) => {resolve = __resolve, reject = __reject})
     const request = https.request(route, options, (response) => {
