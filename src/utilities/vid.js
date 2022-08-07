@@ -30,7 +30,7 @@ CVID.private.counter = 0
 /////////////////////
 
 // @Desc: Creates a unique VID
-CVID.public.addMethod("create", function() {
+CVID.public.addMethod("create", () => {
     var cvid = false
     while(!cvid) {
         const vvid = CUtility.toBase64(CUtility.crypto.randomUUID() + (Date.now() + CVID.private.counter))
@@ -44,14 +44,14 @@ CVID.public.addMethod("create", function() {
 })
 
 // @Desc: Blacklists a VID
-CVID.public.addMethod("blacklist", function(vid) {
+CVID.public.addMethod("blacklist", (vid) => {
     if (!CUtility.isString(vid) || CVID.private.buffer[vid]) return false
     CVID.private.buffer[vid] = true
     return true
 })
 
 // @Desc: Assigns/Fetches VID (Virtual ID) on/from valid instance
-CVID.public.addMethod("fetch", function(parent, assignVID, isReadOnly) {
+CVID.public.addMethod("fetch", (parent, assignVID, isReadOnly) => {
     if (CUtility.isNull(parent) || CUtility.isBool(parent) || CUtility.isString(parent) || CUtility.isNumber(parent)) return false
     parent.prototype = parent.prototype || {}
     if (!isReadOnly && !parent.prototype.vid) {
