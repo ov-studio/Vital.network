@@ -144,5 +144,11 @@ async function debug2() {
     cSocket.onClientDisconnect = function(client, reason) {
         vNetworkify.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
     }
+
+
+    // @Rest API Examples
+    var restAPIResult = await cServer.rest.fetch("get", "https://raw.githubusercontent.com/ov-studio/vNetworkify/main/package.json")
+    restAPIResult = JSON.parse(restAPIResult)
+    vNetworkify.util.print(restAPIResult)
 }
 debug2()
