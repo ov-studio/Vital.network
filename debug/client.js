@@ -99,8 +99,7 @@ debug()
 
 async function debug2() {
     const cServer = vNetworkify.create({
-        port: 33022,
-        isSSL: false
+        port: 33022
     })
     const isConnected = await cServer.connect()
     if (!isConnected) return false
