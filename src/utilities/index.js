@@ -26,7 +26,7 @@ Object.defineProperty(CUtility, "identifier", {value: CUtility.toBase64(`vNetwor
 CUtility.version = Object.defineProperty(CUtility, "version", {value: CUtility.toBase64("3.0.1"), enumerable: true, configurable: false, writable: false})
 
 // @Desc: Fetches an API
-CUtility.fetch = (!CUtility.isServer && fetch) || function(route, options) {
+CUtility.fetch = (!CUtility.isServer && function(route, options) {return fetch(route, options)}) || function(route, options, https) {
     var resolve = false, reject = false
     const cPromise = new Promise((resolve, reject) => {resolve = resolve, reject = reject})
     const request = https.request(route, options, (response) => {
