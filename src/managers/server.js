@@ -106,13 +106,13 @@ CServer.private.onHTTPInitialize = function(https) {
             method: "POST",
             headers: {["Content-Type"]: "application/json"},
             body: JSON.stringify(data)
-        })
+        }, https)
     }
     https.get = function(route) {
         if (!CUtility.isString(route)) return false
         return CUtility.fetch(route, {
             method: "GET"
-        })
+        }, https)
     }
     https.put = function(route, data) {
         if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
@@ -120,13 +120,13 @@ CServer.private.onHTTPInitialize = function(https) {
             method: "PUT",
             headers: {["Content-Type"]: "application/json"},
             body: JSON.stringify(data)
-        })
+        }, https)
     }
     https.delete = function(route) {
         if (!CUtility.isString(route)) return false
         return CUtility.fetch(route, {
             method: "DELETE"
-        })
+        }, https)
     }
     return true
 }
