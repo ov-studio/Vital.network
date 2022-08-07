@@ -137,7 +137,6 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     private.isConnected = true
                     clearTimeout(private.timer.reconnectTimer)
                     cResolver(private.isConnected)
-                    return true
                 }
                 private.server.onclose = () => {
                     self.destroy(true)
@@ -149,7 +148,6 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                         cResolver(private.isConnected)
                         CUtility.exec(self.onClientDisconnect, CUtility.vid.fetch(private.server, null, true) || false, reason)
                     }
-                    return true
                 }
                 private.server.onerror = (error) => CUtility.exec(self.onConnectionError, error)
                 private.server.onmessage = (payload) => onSocketMessage(cPointer, CUtility.vid.fetch(self, null, true), private.server, payload)
@@ -159,7 +157,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 if (private.reconnection.attempts != -1) {
                     if (reconCounter > private.reconnection.attempts) {
                         private.reason = "client-reconnection-expired"
-                        return false
+                        return
                     }
                 }
                 private.timer.reconnectTimer = setTimeout(() => {
@@ -167,7 +165,6 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     CUtility.exec(self.onClientReconnect, CUtility.vid.fetch(private.server, null, true) || false, reconCounter, private.reconnection.attempts)
                     private.onConnect(true)
                 }, private.reconnection.interval)
-                return true
             }
             private.onConnect()
         }
@@ -183,15 +180,11 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 self.destroy()
                 server.private.instance.http.off("upgrade", private.onUpgradeSocket)
                 setTimeout(() => CUtility.exec(self.onServerDisconnect, timestamp_start, timestamp_end, deltaTick), 1)
-                return true
             }
             private.server.onerror = (error) => CUtility.exec(self.onConnectionError, error)
             private.server.on("close", private.server.onclose)
             private.server.on("error", private.server.onerror)
-            private.onHeartbeat = (instance) => {
-                instance.socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
-                return true
-            }
+            private.onHeartbeat = (instance) => instance.socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
             private.onUpgradeSocket = (request, socket, head) => {
                 private.server.handleUpgrade(request, socket, head, (socket) => {
                     var [instance, query] = request.url.split("?")
@@ -205,7 +198,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     if (!query.version || (query.version != CUtility.version)) {
                         private.onDisconnectInstance(private.client[client], "version-mismatch")
                         clientInstance.destroy()
-                        return false
+                        return
                     }
                     clientInstance.socket.send(CUtility.toBase64(JSON.stringify({client: client})))
                     private.onHeartbeat(clientInstance)
@@ -217,13 +210,9 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                         }
                         clientInstance.destroy()
                         CUtility.exec(self.onClientDisconnect, client, reason)
-                        return true
                     }
-                    clientInstance.socket.onmessage = (payload) => {
-                        return onSocketMessage(cPointer, client, clientInstance.socket, payload)
-                    }
+                    clientInstance.socket.onmessage = (payload) => onSocketMessage(cPointer, client, clientInstance.socket, payload)
                 })
-                return true
             }
             server.private.instance.http.on("upgrade", private.onUpgradeSocket)
         }
