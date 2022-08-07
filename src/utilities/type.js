@@ -80,12 +80,12 @@ CUtility.createClass = (parent) => {
         __C[index] = exec
         return true
     }
-    __C.removeMethod = function(index) {
+    __C.removeMethod = (index) => {
         if (!CUtility.isString(index) || !CUtility.isFunction(__C[index])) return false
         delete __C[index]
         return true
     }
-    __C.addInstanceMethod = function(index, exec) {
+    __C.addInstanceMethod = (index, exec) => {
         if (!CUtility.isString(index) || !CUtility.isFunction(exec)) return false
         __C.prototype[index] = function(...cArgs) {
             const self = this
@@ -95,19 +95,15 @@ CUtility.createClass = (parent) => {
         }
         return true
     }
-    __C.removeInstanceMethod = function(index) {
+    __C.removeInstanceMethod = (index) => {
         if (!CUtility.isString(index) || !CUtility.isFunction(__C.prototype[index])) return false
         delete __C.prototype[index]
         return true
     }
-    __C.createInstance = function(...cArgs) {
+    __C.createInstance = (...cArgs) => {
         return new __C(...cArgs)
     }
-    __C.addInstanceMethod("isInstance", function(self) {
-        return __I.has(self)
-    })
-    __C.addInstanceMethod("destroyInstance", function(self) {
-        __I.delete(self)
-    })
+    __C.addInstanceMethod("isInstance", (self) => __I.has(self))
+    __C.addInstanceMethod("destroyInstance", (self) => __I.delete(self))
     return {public: __C, private: {}, instance: __I}
 }
