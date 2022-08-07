@@ -25,6 +25,12 @@ CUtility.fromBase64 = (!CUtility.isServer && atob.bind(window)) || function(data
 Object.defineProperty(CUtility, "identifier", {value: CUtility.toBase64(`vNetworkify-${(CUtility.isServer && "Server") || "Client"}`), enumerable: true, configurable: false, writable: false})
 CUtility.version = Object.defineProperty(CUtility, "version", {value: CUtility.toBase64("3.0.1"), enumerable: true, configurable: false, writable: false})
 
+// @Desc: Executes the specified handler
+CUtility.exec = function(exec, ...cArgs) {
+    if (!CUtility.isFunction(exec)) return false
+    return exec(...cArgs)
+}
+
 // @Desc: Fetches an API
 CUtility.fetch = (!CUtility.isServer && function(route, options) {return fetch(route, options)}) || function(route, options, https) {
     var resolve = false, reject = false
@@ -37,12 +43,6 @@ CUtility.fetch = (!CUtility.isServer && function(route, options) {return fetch(r
     request.on("error", (error) => reject(error))
     request.end()
     return cPromise
-}
-
-// @Desc: Executes the specified handler
-CUtility.exec = function(exec, ...cArgs) {
-    if (!CUtility.isFunction(exec)) return false
-    return exec(...cArgs)
 }
 
 // @Desc: Creates dynamic whitelisted module APIs
