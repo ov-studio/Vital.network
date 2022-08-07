@@ -62,7 +62,7 @@ CUtility.fetch = (!CUtility.isServer && async function(route, options) {
 }
 
 // @Desc: Creates dynamic whitelisted module APIs
-CUtility.createAPIs = function(buffer, blacklist) {
+CUtility.createAPIs = (buffer, blacklist) => {
     if (!CUtility.isObject(buffer) && !CUtility.isClass(buffer)) return false
     blacklist = (blacklist && CUtility.isObject(blacklist) && blacklist) || false
     var isVoid = true
