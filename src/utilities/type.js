@@ -35,9 +35,7 @@ CType.forEach((j) => {
 })
 
 // @Desc: Verifies whether specified data is null
-CUtility.isNull = (data) => {
-    return data == null
-}
+CUtility.isNull = (data) => data == null
 
 // @Desc: Verifies specified data's type
 CUtility.isType = (data, type) => (!CUtility.isNull(data) && !CUtility.isNull(type) && (typeof(type) == "string") && (typeof(data) == type) && true) || false
