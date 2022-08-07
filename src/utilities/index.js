@@ -29,25 +29,25 @@ const CUtility = {
 Object.defineProperty(CUtility, "isServer", {value: ((typeof(process) != "undefined") && !process.browser && true) || false, enumerable: true, configurable: false, writable: false})
 Object.defineProperty(CUtility, "global", {value: (CUtility.isServer && global) || window, enumerable: true, configurable: false, writable: false})
 CUtility.crypto = (CUtility.isServer && require("crypto")) || crypto
-CUtility.toBase64 = (!CUtility.isServer && btoa.bind(window)) || function(data) { return Buffer.from(data).toString("base64") }
-CUtility.fromBase64 = (!CUtility.isServer && atob.bind(window)) || function(data) { return Buffer.from(data, "base64").toString("binary") }
+CUtility.toBase64 = (!CUtility.isServer && btoa.bind(window)) || ((data) => Buffer.from(data).toString("base64"))
+CUtility.fromBase64 = (!CUtility.isServer && atob.bind(window)) || ((data) => Buffer.from(data, "base64").toString("binary"))
 Object.defineProperty(CUtility, "identifier", {value: CUtility.toBase64(`vNetworkify-${(CUtility.isServer && "Server") || "Client"}`), enumerable: true, configurable: false, writable: false})
 CUtility.version = Object.defineProperty(CUtility, "version", {value: CUtility.toBase64("3.0.1"), enumerable: true, configurable: false, writable: false})
 
 // @Desc: Executes the specified handler
-CUtility.exec = function(exec, ...cArgs) {
+CUtility.exec = (exec, ...cArgs) => {
     if (!CUtility.isFunction(exec)) return false
     return exec(...cArgs)
 }
 
 // @Desc: Fetches an API
-CUtility.fetch = (!CUtility.isServer && async function(route, options) {
+CUtility.fetch = (!CUtility.isServer && (async (route, options) => {
     try {
         const result = await fetch(route, options)
         return await result.text()
     }
     catch(error) {throw error}
-}) || function(route, options) {
+})) || ((route, options) => {
     const url = new CURL(route)
     var resolve = false, reject = false
     const result = new Promise((__resolve, __reject) => {resolve = __resolve, reject = __reject})
@@ -59,7 +59,7 @@ CUtility.fetch = (!CUtility.isServer && async function(route, options) {
     request.on("error", (error) => reject(error))
     request.end()
     return result
-}
+})
 
 // @Desc: Creates dynamic whitelisted module APIs
 CUtility.createAPIs = (buffer, blacklist) => {
