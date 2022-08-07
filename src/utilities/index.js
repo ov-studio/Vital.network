@@ -49,10 +49,9 @@ CUtility.fetch = (!CUtility.isServer && async function(route, options) {
     catch(error) {throw error}
 }) || function(route, options) {
     const url = new CURL(route)
-    if (url) url.protocol = url.protocol.slice(0, -1)
     var resolve = false, reject = false
     const result = new Promise((__resolve, __reject) => {resolve = __resolve, reject = __reject})
-    const request = ((url && (url.protocol == "https") && CHTTPS) || CHTTP).request(route, options, (response) => {
+    const request = ((url && (url.protocol.slice(0, -1) == "https") && CHTTPS) || CHTTP).request(route, options, (response) => {
         let buffer = ""
         response.on("data", (chunk) => buffer += chunk.toString())
         response.on("end", () => resolve(buffer))
