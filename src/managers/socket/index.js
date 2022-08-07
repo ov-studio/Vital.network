@@ -29,7 +29,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     server.public.socket = CSocket.public
     CSocket.private.buffer = {}
     CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {
-        if ((server.public != __server.public) || (server.private != __server.private)) return false
+        if ((server.public != __server.public) || (server.private != __server.private)) return
         for (const i in CSocket.private.buffer) {
             CSocket.private.buffer[i].destroy()
         }
@@ -128,7 +128,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         if (!CUtility.isServer) {
             var cResolver = false, reconCounter = 0
             private.onConnect = (isReconnection) => {
-                if (!isReconnection && self.isConnected()) return false
+                if (!isReconnection && self.isConnected()) return
                 private.isAwaiting = private.isAwaiting || new Promise((resolver) => cResolver = resolver)
                 private.server = new WebSocket(`${((server.private.config.protocol == "https") && "wss") || "ws"}://${server.private.config.hostname}${(server.private.config.port && (":" + server.private.config.port)) || ""}/${private.route}?version=${CUtility.version}`)
                 private.server.onopen = () => {
@@ -189,7 +189,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 private.server.handleUpgrade(request, socket, head, (socket) => {
                     var [instance, query] = request.url.split("?")
                     instance = CSocket.public.fetch(instance.slice(1))
-                    if (!instance) return false
+                    if (!instance) return
                     const clientInstance = self.client.create(socket)
                     const client = CUtility.vid.fetch(clientInstance, null, true)
                     private.client[client] = clientInstance
