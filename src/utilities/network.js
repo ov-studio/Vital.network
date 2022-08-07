@@ -28,44 +28,44 @@ CNetwork.private.buffer = {}
 /////////////////////
 
 // @Desc: Verifies whether the network is void
-CNetwork.public.addMethod("isVoid", function(name) {
+CNetwork.public.addMethod("isVoid", (name) => {
     return (CUtility.isString(name) && !CNetwork.private.buffer[name] && true) || false
 })
 
 // @Desc: Fetches network instance by name
-CNetwork.public.addMethod("fetch", function(name) {
+CNetwork.public.addMethod("fetch", (name) => {
     return (!CNetwork.public.isVoid(name) && CNetwork.private.buffer[name]) || false
 })
 
 // @Desc: Creates a fresh network w/ specified name
-CNetwork.public.addMethod("create", function(name, ...cArgs) {
+CNetwork.public.addMethod("create", (name, ...cArgs) => {
     if (!CNetwork.public.isVoid(name)) return false
     CNetwork.private.buffer[name] = CNetwork.public.createInstance(name, ...cArgs)
     return CNetwork.private.buffer[name]
 })
 
 // @Desc: Destroys an existing network by specified name
-CNetwork.public.addMethod("destroy", function(name) {
+CNetwork.public.addMethod("destroy", (name) => {
     if (CNetwork.public.isVoid(name)) return false
     return CNetwork.private.buffer[name].destroy()
 })
 
 // @Desc: Attaches a handler on specified network
-CNetwork.public.addMethod("on", function(name, ...cArgs) {
+CNetwork.public.addMethod("on", (name, ...cArgs) => {
     const cInstance = CNetwork.public.fetch(name)
     if (!cInstance) return false
     return cInstance.on(...cArgs)
 })
 
 // @Desc: Detaches a handler from specified network
-CNetwork.public.addMethod("off", function(name, ...cArgs) {
+CNetwork.public.addMethod("off", (name, ...cArgs) => {
     const cInstance = CNetwork.public.fetch(name)
     if (!cInstance) return false
     return cInstance.off(...cArgs)
 })
 
 // @Desc: Emits to all attached non-callback handlers of specified network
-CNetwork.public.addMethod("emit", function(name, ...cArgs) {
+CNetwork.public.addMethod("emit", (name, ...cArgs) => {
     const cInstance = CNetwork.public.fetch(name)
     if (!cInstance) return false
     return cInstance.emit(...cArgs)
@@ -77,7 +77,7 @@ CNetwork.public.addMethod("emit", function(name, ...cArgs) {
 ///////////////////////
 
 // @Desc: Instance constructor
-CNetwork.public.addMethod("constructor", function(self, name, isCallback) {
+CNetwork.public.addMethod("constructor", (self, name, isCallback) => {
     const private = CNetwork.instance.get(self)
     private.name = name
     private.isCallback = (CUtility.isBool(isCallback) && true) || false
@@ -86,7 +86,7 @@ CNetwork.public.addMethod("constructor", function(self, name, isCallback) {
 })
 
 // @Desc: Destroys the instance
-CNetwork.public.addInstanceMethod("destroy", function(self) {
+CNetwork.public.addInstanceMethod("destroy", (self) => {
     const private = CNetwork.instance.get(self)
     delete CNetwork.private.buffer[(private.name)]
     self.destroyInstance()
@@ -94,7 +94,7 @@ CNetwork.public.addInstanceMethod("destroy", function(self) {
 })
 
 // @Desc: Attaches a handler on instance
-CNetwork.public.addInstanceMethod("on", function(self, exec) {
+CNetwork.public.addInstanceMethod("on", (self, exec) => {
     const private = CNetwork.instance.get(self)
     if (!CUtility.isFunction(exec)) return false
     if (!private.isCallback) {
@@ -114,7 +114,7 @@ CNetwork.public.addInstanceMethod("on", function(self, exec) {
 })
 
 // @Desc: Detaches a handler from instance
-CNetwork.public.addInstanceMethod("off", function(self, exec) {
+CNetwork.public.addInstanceMethod("off", (self, exec) => {
     const private = CNetwork.instance.get(self)
     if (!CUtility.isFunction(exec)) return false
     if (!private.isCallback) {
@@ -130,7 +130,7 @@ CNetwork.public.addInstanceMethod("off", function(self, exec) {
 })
 
 // @Desc: Emits to all attached non-callback handlers of instance
-CNetwork.public.addInstanceMethod("emit", function(self, ...cArgs) {
+CNetwork.public.addInstanceMethod("emit", (self, ...cArgs) => {
     const private = CNetwork.instance.get(self)
     if (private.isCallback) return false
     for (const i in private.handler) {
@@ -141,7 +141,7 @@ CNetwork.public.addInstanceMethod("emit", function(self, ...cArgs) {
 })
 
 // @Desc: Emits to attached callback handler of instance
-CNetwork.public.addInstanceMethod("emitCallback", async function(self, ...cArgs) {
+CNetwork.public.addInstanceMethod("emitCallback", async (self, ...cArgs) => {
     const private = CNetwork.instance.get(self)
     if (!private.isCallback || !private.handler) return false
     return await private.handler.exec(...cArgs)
