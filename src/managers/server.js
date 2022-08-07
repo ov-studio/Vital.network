@@ -34,24 +34,26 @@ CNetwork.create("vNetworkify:Server:onDisconnect")
 /////////////////////
 
 // @Desc: Creates a fresh server
-CServer.public.addMethod("create", function(...cArgs) {
+CServer.public.addMethod("create", (...cArgs) => {
     return CServer.public.createInstance(...cArgs)
 })
 
 // @Desc: Handles connection's status
-CServer.private.onConnectionStatus = function(self, state) {
+CServer.private.onConnectionStatus = (self, state) => {
     const private = CServer.instance.get(self)
-    delete private.isAwaiting
     private.isConnected = state
     CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || "" } [Version: ${CUtility.fromBase64(CUtility.version)}]`)
     if (private.isConnected) CNetwork.emit("vNetworkify:Server:onConnect", {public: self, private: private})
-    CUtility.exec(private.resolver, private.isConnected)
+    setTimeout(() => {
+        delete private.isAwaiting
+        CUtility.exec(private.resolver, private.isConnected)
+    }, 1)
     return true
 }
 
 // @Desc: Initializes a HTTPS instance
-CServer.private.onHTTPSInitialize = function(http) {
-    http.post = function(route, data) {
+CServer.private.onHTTPSInitialize = (http) => {
+    http.post = (route, data) => {
         if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
         return CUtility.fetch(route, {
             method: "POST",
@@ -59,13 +61,13 @@ CServer.private.onHTTPSInitialize = function(http) {
             body: JSON.stringify(data)
         })
     }
-    http.get = function(route) {
+    http.get = (route) => {
         if (!CUtility.isString(route)) return false
         return CUtility.fetch(route, {
             method: "GET"
         })
     }
-    http.put = function(route, data) {
+    http.put = (route, data) => {
         if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
         return CUtility.fetch(route, {
             method: "PUT",
@@ -73,7 +75,7 @@ CServer.private.onHTTPSInitialize = function(http) {
             body: JSON.stringify(data)
         })
     }
-    http.delete = function(route) {
+    http.delete = (route) => {
         if (!CUtility.isString(route)) return false
         return CUtility.fetch(route, {
             method: "DELETE"
@@ -88,7 +90,7 @@ CServer.private.onHTTPSInitialize = function(http) {
 ///////////////////////
 
 // @Desc: Instance constructor
-CServer.public.addMethod("constructor", function(self, options) {
+CServer.public.addMethod("constructor", (self, options) => {
     const private = CServer.instance.get(self)
     options = (CUtility.isObject(options) && options) || {}
     private.config = {}, private.instance = {}
@@ -106,7 +108,7 @@ CServer.public.addMethod("constructor", function(self, options) {
 })
 
 // @Desc: Destroys the instance
-CServer.public.addInstanceMethod("destroy", function(self) {
+CServer.public.addInstanceMethod("destroy", (self) => {
     const private = CServer.instance.get(self)
     if (self.isConnected(true)) CNetwork.emit("vNetworkify:Server:onDisconnect", {public: self, private: private})
     if (CUtility.isServer) private.instance.http.close()
@@ -115,25 +117,25 @@ CServer.public.addInstanceMethod("destroy", function(self) {
 })
 
 // @Desc: Retrieves instance's config
-CServer.public.addInstanceMethod("fetchConfig", function(self) {
+CServer.public.addInstanceMethod("fetchConfig", (self) => {
     const private = CServer.instance.get(self)
     return private.config
 })
 
 // @Desc: Retrieves instance's server
-CServer.public.addInstanceMethod("fetchServer", function(self, index) {
+CServer.public.addInstanceMethod("fetchServer", (self, index) => {
     return (index && private.instance[index]) || false
 })
 
 // @Desc: Retrieves connection's status
-CServer.public.addInstanceMethod("isConnected", function(self, isSync) {
+CServer.public.addInstanceMethod("isConnected", (self, isSync) => {
     const private = CServer.instance.get(self)
     if (isSync) return (CUtility.isBool(private.isConnected) && private.isConnected) || false
     return private.isAwaiting || private.isConnected || false
 })
 
 // @Desc: Connects the server
-CServer.public.addInstanceMethod("connect", async function(self) {
+CServer.public.addInstanceMethod("connect", async (self) => {
     const isConnected = self.isConnected()
     if (!CUtility.isBool(isConnected)) return isConnected
     const private = CServer.instance.get(self)
@@ -145,8 +147,8 @@ CServer.public.addInstanceMethod("connect", async function(self) {
             CServer.private.onHTTPSInitialize(private.instance.http)
         }
         try {
-            var isServerHealthy = await private.instance.express.get(private.healthpoint)
-            isServerHealthy = await isServerHealthy.json()
+            var isServerHealthy = await private.instance.http.get(private.healthpoint)
+            isServerHealthy = JSON.parse(isServerHealthy)
             if (isServerHealthy && (isServerHealthy.status == true)) isConnectionAccepted = true
         }
         catch(error) {}
@@ -160,7 +162,7 @@ CServer.public.addInstanceMethod("connect", async function(self) {
         private.instance.express.use(CExpress.json())
         private.instance.express.use(CExpress.urlencoded({extended: true}))
         private.instance.express.set("case sensitive routing", private.config.isCaseSensitive)
-        private.instance.http.listen(private.config.port, function() {
+        private.instance.http.listen(private.config.port, () => {
             CServer.private.onConnectionStatus(self, true)
             self.rest.create("get", private.healthpoint, (request, response) => response.status(200).send({status: true}))
         })
