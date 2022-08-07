@@ -99,9 +99,9 @@ CServer.public.addInstanceMethod("isConnected", function(self, isSync) {
 })
 
 // @Desc: Connects the server
-CServer.private.onHTTPInitialize = function(http) {
+CServer.private.onHTTPInitialize = function(https) {
     if (!CUtility.isServer) {
-        http.post = function(route, data) {
+        https.post = function(route, data) {
             if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
             return fetch(route, {
                 method: "POST",
@@ -109,13 +109,13 @@ CServer.private.onHTTPInitialize = function(http) {
                 body: JSON.stringify(data)
             })
         },
-        http.get = function(route) {
+        https.get = function(route) {
             if (!CUtility.isString(route)) return false
             return fetch(route, {
                 method: "GET"
             })
         },
-        http.put = function(route, data) {
+        https.put = function(route, data) {
             if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
             return fetch(route, {
                 method: "PUT",
@@ -123,7 +123,7 @@ CServer.private.onHTTPInitialize = function(http) {
                 body: JSON.stringify(data)
             })
         },
-        http.delete = function(route) {
+        https.delete = function(route) {
             if (!CUtility.isString(route)) return false
             return fetch(route, {
                 method: "DELETE"
