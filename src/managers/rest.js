@@ -60,7 +60,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 return true
             }
             CRest.private[type][route].handler = exec
-            server.private.instance.CExpress[type](`/${route}`, CRest.private[type][route].manager)
+            server.private.instance.express[type](`/${route}`, CRest.private[type][route].manager)
             return true
         })
         
@@ -84,6 +84,6 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             next()
             return true
         })
-        server.private.instance.CExpress.all("*", CRest.public.onMiddleware)
+        server.private.instance.express.all("*", CRest.public.onMiddleware)
     }
 })
