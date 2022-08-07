@@ -43,7 +43,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     /////////////////////
 
     // @Desc: Disconnects instance
-    CSocket.private.onDisconnectInstance = function(instance, reason, isForced) {
+    CSocket.private.onDisconnectInstance = (instance, reason, isForced) => {
         if (CSocket.private.isUnloaded) return false
         instance["@disconnect"] = instance["@disconnect"] || {}
         instance["@disconnect"].isForced = (isForced && true) || false
@@ -52,19 +52,19 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     }
 
     // @Desc: Verifies socket's validity
-    CSocket.public.addMethod("isVoid", function(route) {
+    CSocket.public.addMethod("isVoid", (route) => {
         if (CSocket.private.isUnloaded) return false
         return (CUtility.isString(route) && !CSocket.private.buffer[route] && true) || false
     })
 
     // @Desc: Fetches socket instance by route
-    CSocket.public.addMethod("fetch", function(route) {
+    CSocket.public.addMethod("fetch", (route) => {
         if (CSocket.private.isUnloaded) return false
         return (!CSocket.public.isVoid(route) && CSocket.private.buffer[route]) || false
     })
 
     // @Desc: Fetches an array of existing sockets
-    CSocket.public.addMethod("fetchSockets", function() {
+    CSocket.public.addMethod("fetchSockets", () => {
         if (CSocket.private.isUnloaded) return false
         const result = {}
         for (const i in CSocket.private.buffer) {
@@ -74,7 +74,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     })
 
     // @Desc: Creates a fresh socket w/ specified route
-    CSocket.public.addMethod("create", function(route, ...cArgs) {
+    CSocket.public.addMethod("create", (route, ...cArgs) => {
         if (CSocket.private.isUnloaded) return false
         if (!CSocket.public.isVoid(route)) return false
         CSocket.private.buffer[route] = CSocket.public.createInstance(route, ...cArgs)
@@ -83,7 +83,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     })
 
     // @Desc: Destroys an existing socket by specified route
-    CSocket.public.addMethod("destroy", function(route) {
+    CSocket.public.addMethod("destroy", (route) => {
         if (CSocket.private.isUnloaded) return false
         if (CSocket.public.isVoid(route)) return false
         return CSocket.private.buffer[route].destroy()
@@ -95,7 +95,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     ///////////////////////
 
     // @Desc: Destroys the instance
-    CSocket.public.addInstanceMethod("destroy", function(self, isFlush) {
+    CSocket.public.addInstanceMethod("destroy", (self, isFlush) => {
         if (CSocket.private.isUnloaded) return false
         const private = CSocket.instance.get(self)
         if (isFlush) {
@@ -119,7 +119,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     })
 
     // @Desc: Instance constructor
-    CSocket.public.addMethod("constructor", function(self, route, options) {
+    CSocket.public.addMethod("constructor", (self, route, options) => {
         if (CSocket.private.isUnloaded) return false
         const private = CSocket.instance.get(self)
         const cPointer = {public: self, private: private}
@@ -127,11 +127,11 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         onSocketInitialize(cPointer, route, options)
         if (!CUtility.isServer) {
             var cResolver = false, reconCounter = 0
-            private.onConnect = function(isReconnection) {
+            private.onConnect = (isReconnection) => {
                 if (!isReconnection && self.isConnected()) return false
                 private.isAwaiting = private.isAwaiting || new Promise((resolver) => cResolver = resolver)
                 private.server = new WebSocket(`${((server.private.config.protocol == "https") && "wss") || "ws"}://${server.private.config.hostname}${(server.private.config.port && (":" + server.private.config.port)) || ""}/${private.route}?version=${CUtility.version}`)
-                private.server.onopen = function() {
+                private.server.onopen = () => {
                     reconCounter = 0
                     delete private.isAwaiting
                     private.isConnected = true
@@ -139,7 +139,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     cResolver(private.isConnected)
                     return true
                 }
-                private.server.onclose = function() {
+                private.server.onclose = () => {
                     self.destroy(true)
                     const isReconnection = ((!private["@disconnect"] || !private["@disconnect"].isForced) && private.onReconnect()) || false
                     if (!isReconnection) {
@@ -151,15 +151,10 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     }
                     return true
                 }
-                private.server.onerror = function(error) {
-                    CUtility.exec(self.onConnectionError, error)
-                    return true
-                }
-                private.server.onmessage = function(payload) {
-                    return onSocketMessage(cPointer, CUtility.vid.fetch(self, null, true), private.server, payload)
-                }
+                private.server.onerror = (error) => CUtility.exec(self.onConnectionError, error)
+                private.server.onmessage = (payload) => onSocketMessage(cPointer, CUtility.vid.fetch(self, null, true), private.server, payload)
             }
-            private.onReconnect = function() {
+            private.onReconnect = () => {
                 reconCounter += 1
                 if (private.reconnection.attempts != -1) {
                     if (reconCounter > private.reconnection.attempts) {
@@ -167,7 +162,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                         return false
                     }
                 }
-                private.timer.reconnectTimer = setTimeout(function() {
+                private.timer.reconnectTimer = setTimeout(() => {
                     delete private.timer.reconnectTimer
                     CUtility.exec(self.onClientReconnect, CUtility.vid.fetch(private.server, null, true) || false, reconCounter, private.reconnection.attempts)
                     private.onConnect(true)
@@ -182,7 +177,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 path: `/${private.route}`
             })
             setTimeout(() => CUtility.exec(self.onServerConnect), 1)
-            private.server.onclose = function() {
+            private.server.onclose = () => {
                 const timestamp_start = private.timestamp, timestamp_end = new Date()
                 const deltaTick = timestamp_end.getTime() - timestamp_start.getTime()
                 self.destroy()
@@ -190,18 +185,15 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 setTimeout(() => CUtility.exec(self.onServerDisconnect, timestamp_start, timestamp_end, deltaTick), 1)
                 return true
             }
-            private.server.onerror = function(error) {
-                CUtility.exec(self.onConnectionError, error)
-                return true
-            }
+            private.server.onerror = (error) => CUtility.exec(self.onConnectionError, error)
             private.server.on("close", private.server.onclose)
             private.server.on("error", private.server.onerror)
-            private.onHeartbeat = function(instance) {
+            private.onHeartbeat = (instance) => {
                 instance.socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
                 return true
             }
-            private.onUpgradeSocket = function(request, socket, head) {
-                private.server.handleUpgrade(request, socket, head, function(socket) {
+            private.onUpgradeSocket = (request, socket, head) => {
+                private.server.handleUpgrade(request, socket, head, (socket) => {
                     var [instance, query] = request.url.split("?")
                     instance = CSocket.public.fetch(instance.slice(1))
                     if (!instance) return false
@@ -218,7 +210,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     clientInstance.socket.send(CUtility.toBase64(JSON.stringify({client: client})))
                     private.onHeartbeat(clientInstance)
                     CUtility.exec(self.onClientConnect, client)
-                    clientInstance.socket.onclose = function() {
+                    clientInstance.socket.onclose = () => {
                         const reason = (clientInstance["@disconnect"] && clientInstance["@disconnect"].reason) || (private["@disconnect"] && private["@disconnect"].reason) || "client-disconnected"
                         for (const i in clientInstance.socket.room) {
                             self.leaveRoom(i, client)
@@ -227,7 +219,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                         CUtility.exec(self.onClientDisconnect, client, reason)
                         return true
                     }
-                    clientInstance.socket.onmessage = function(payload) {
+                    clientInstance.socket.onmessage = (payload) => {
                         return onSocketMessage(cPointer, client, clientInstance.socket, payload)
                     }
                 })
@@ -239,7 +231,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
 
     if (!CUtility.isServer) {
         // @Desc: Retrieves connection's status of instance
-        CSocket.public.addInstanceMethod("isConnected", function(self, isSync) {
+        CSocket.public.addInstanceMethod("isConnected", (self, isSync) => {
             if (CSocket.private.isUnloaded) return false
             const private = CSocket.instance.get(self)
             if (isSync) return (CUtility.isBool(private.isConnected) && private.isConnected) || false
@@ -248,14 +240,14 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     }
     else {
         // @Desc: Verifies client's validity
-        CSocket.public.addInstanceMethod("isClient", function(self, client) {
+        CSocket.public.addInstanceMethod("isClient", (self, client) => {
             if (CSocket.private.isUnloaded) return false
             const private = CSocket.instance.get(self)
             return (self.client.fetch(client) && private.client[client] && true) || false
         })
 
         // @Desc: Fetches an array of existing clients
-        CSocket.public.addInstanceMethod("fetchClients", function(self) {
+        CSocket.public.addInstanceMethod("fetchClients", (self) => {
             if (CSocket.private.isUnloaded) return false
             const private = CSocket.instance.get(self)
             const result = []

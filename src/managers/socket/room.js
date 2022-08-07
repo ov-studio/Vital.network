@@ -39,7 +39,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     }
 
     // @Desc: Fetches an array of existing rooms
-    socket.public.fetchRooms = function() {
+    socket.public.fetchRooms = () => {
         if (!socket.public.isInstance()) return false
         const result = []
         for (const i in socket.private.room) {
@@ -49,7 +49,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     }
 
     // @Desc: Fetches an array of existing room's members
-    socket.public.fetchRoomMembers = function(name) {
+    socket.public.fetchRoomMembers = (name) => {
         if (!socket.public.isInstance()) return false
         if (!socket.public.isRoom(name)) return false
         const result = []
@@ -60,7 +60,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     }
 
     // @Desc: Verifies whether the client belongs specified room
-    socket.public.isInRoom = function(name, client) {
+    socket.public.isInRoom = (name, client) => {
         if (!socket.public.isInstance()) return false
         if (!socket.public.isRoom(name) || !socket.public.client.fetch(client)) return false
         if (CUtility.isServer) {
@@ -72,7 +72,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
 
     if (CUtility.isServer) {
         // @Desc: Creates a fresh room w/ specified name
-        socket.public.createRoom = function(name, ...cArgs) {
+        socket.public.createRoom = (name, ...cArgs) => {
             if (!socket.public.isInstance()) return false
             if (socket.public.isRoom(name)) return false
             socket.private.room[name] = CRoom.create(`Socket:${CUtility.vid.fetch(socket.public)}:${name}`, ...cArgs)
@@ -81,7 +81,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         }
 
         // @Desc: Destroys an existing room by specified name
-        socket.public.destroyRoom = function(name) {
+        socket.public.destroyRoom = (name) => {
             if (!socket.public.isInstance()) return false
             if (!socket.public.isRoom(name)) return false
             for (const i in socket.private.room[name].member) {
@@ -93,7 +93,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         }
 
         // @Desc: Joins client to specified room
-        socket.public.joinRoom = function(name, client) {
+        socket.public.joinRoom = (name, client) => {
             if (!socket.public.isInstance()) return false
             if (!socket.public.isClient(client) || !socket.public.isRoom(name) || socket.public.isInRoom(name, client)) return false
             socket.private.room[name].member[client] = true
@@ -104,7 +104,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         }
 
         // @Desc: Kicks client from specified room
-        socket.public.leaveRoom = function(name, client) {
+        socket.public.leaveRoom = (name, client) => {
             if (!socket.public.isInstance()) return false
             if (!socket.public.isClient(client) || !socket.public.isInRoom(name, client)) return false
             delete socket.private.room[name].member[client]
@@ -115,7 +115,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
         }
 
         // @Desc: Emits a non-callback network to all clients connected to specified room
-        socket.public.emitRoom = function(name, network, ...cArgs) {
+        socket.public.emitRoom = (name, network, ...cArgs) => {
             if (!socket.public.isInstance()) return false
             if (!socket.public.isRoom(name)) return false
             for (const i in socket.private.room[name].member) {
