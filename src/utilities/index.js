@@ -32,11 +32,7 @@ CUtility.fetch = (!CUtility.isServer && function(route, options) {return fetch(r
     const request = https.request(route, options, (response) => {
         let data = ""
         response.on("data", (chunk) => data += chunk.toString())
-        response.on("end", () => {
-            const body = JSON.parse(data)
-            console.log(body)
-            resolve(data)
-        })
+        response.on("end", () => resolve(data))
     })
     request.on("error", (error) => reject(error))
     request.end()
