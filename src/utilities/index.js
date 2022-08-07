@@ -34,7 +34,7 @@ CUtility.exec = function(exec, ...cArgs) {
 // @Desc: Fetches an API
 CUtility.fetch = (!CUtility.isServer && function(route, options) {return fetch(route, options)}) || function(route, options, https) {
     var resolve = false, reject = false
-    const cPromise = new Promise((resolve, reject) => {resolve = resolve, reject = reject})
+    const result = new Promise((__resolve, __reject) => {resolve = __resolve, reject = __reject})
     const request = https.request(route, options, (response) => {
         let data = ""
         response.on("data", (chunk) => data += chunk.toString())
@@ -42,7 +42,7 @@ CUtility.fetch = (!CUtility.isServer && function(route, options) {return fetch(r
     })
     request.on("error", (error) => reject(error))
     request.end()
-    return cPromise
+    return result
 }
 
 // @Desc: Creates dynamic whitelisted module APIs
