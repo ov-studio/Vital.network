@@ -42,9 +42,9 @@ CUtility.fetch = (!CUtility.isServer && async function(route, options) {
     var resolve = false, reject = false
     const result = new Promise((__resolve, __reject) => {resolve = __resolve, reject = __reject})
     const request = https.request(route, options, (response) => {
-        let data = ""
-        response.on("data", (chunk) => data += chunk.toString())
-        response.on("end", () => resolve(data))
+        let buffer = ""
+        response.on("data", (chunk) => buffer += chunk.toString())
+        response.on("end", () => resolve(buffer))
     })
     request.on("error", (error) => reject(error))
     request.end()
