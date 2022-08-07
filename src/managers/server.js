@@ -48,6 +48,39 @@ CServer.private.onConnectionStatus = function(self, state) {
     return true
 }
 
+// @Desc: Initializes a HTTPS instance
+CServer.private.onHTTPSInitialize = function(https) {
+    https.post = function(route, data) {
+        if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
+        return CUtility.fetch(route, {
+            method: "POST",
+            headers: {["Content-Type"]: "application/json"},
+            body: JSON.stringify(data)
+        }, https)
+    }
+    https.get = function(route) {
+        if (!CUtility.isString(route)) return false
+        return CUtility.fetch(route, {
+            method: "GET"
+        }, https)
+    }
+    https.put = function(route, data) {
+        if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
+        return CUtility.fetch(route, {
+            method: "PUT",
+            headers: {["Content-Type"]: "application/json"},
+            body: JSON.stringify(data)
+        }, https)
+    }
+    https.delete = function(route) {
+        if (!CUtility.isString(route)) return false
+        return CUtility.fetch(route, {
+            method: "DELETE"
+        }, https)
+    }
+    return true
+}
+
 
 ///////////////////////
 // Instance Members //
@@ -99,38 +132,6 @@ CServer.public.addInstanceMethod("isConnected", function(self, isSync) {
 })
 
 // @Desc: Connects the server
-CServer.private.onHTTPInitialize = function(https) {
-    https.post = function(route, data) {
-        if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
-        return CUtility.fetch(route, {
-            method: "POST",
-            headers: {["Content-Type"]: "application/json"},
-            body: JSON.stringify(data)
-        }, https)
-    }
-    https.get = function(route) {
-        if (!CUtility.isString(route)) return false
-        return CUtility.fetch(route, {
-            method: "GET"
-        }, https)
-    }
-    https.put = function(route, data) {
-        if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
-        return CUtility.fetch(route, {
-            method: "PUT",
-            headers: {["Content-Type"]: "application/json"},
-            body: JSON.stringify(data)
-        }, https)
-    }
-    https.delete = function(route) {
-        if (!CUtility.isString(route)) return false
-        return CUtility.fetch(route, {
-            method: "DELETE"
-        }, https)
-    }
-    return true
-}
-
 CServer.public.addInstanceMethod("connect", async function(self) {
     const isConnected = self.isConnected()
     if (!CUtility.isBool(isConnected)) return isConnected
@@ -140,7 +141,7 @@ CServer.public.addInstanceMethod("connect", async function(self) {
         var isConnectionAccepted = false
         if (!private.instance.https) {
             private.instance.https = {}
-            CServer.private.onHTTPInitialize(private.instance.https)
+            CServer.private.onHTTPSInitialize(private.instance.https)
         }
         try {
             var isServerHealthy = await private.instance.express.get(private.healthpoint)
@@ -154,7 +155,7 @@ CServer.public.addInstanceMethod("connect", async function(self) {
         private.instance.express = CExpress()
         private.instance.https = CHTTPS.Server(private.instance.express)
         private.instance.https.request = CHTTPS.request
-        CServer.private.onHTTPInitialize(private.instance.https)
+        CServer.private.onHTTPSInitialize(private.instance.https)
         private.instance.express.use(CCors(private.config.cors))
         private.instance.express.use(CExpress.json())
         private.instance.express.use(CExpress.urlencoded({extended: true}))
