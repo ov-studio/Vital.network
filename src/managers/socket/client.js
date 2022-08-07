@@ -26,15 +26,16 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on((socket) => {
     socket.public.client = CClient.public
     CClient.private.buffer = {}
 
-    CNetwork.fetch("vNetworkify:Socket:onDestroy").on((__socket) => {
+    const onSocketDestroy = function(__socket) {
         if ((socket.public != __socket.public) || (socket.private != __socket.private)) return
-        CNetwork.fetch("vNetworkify:Socket:onDestroy").off(this)
+        CNetwork.fetch("vNetworkify:Socket:onDestroy").off(onSocketDestroy)
         for (const i in CClient.private.buffer) {
             CClient.private.buffer[i].destroy()
         }
         CClient.private.isUnloaded = true
         delete socket.public.client
-    })
+    }
+    CNetwork.fetch("vNetworkify:Socket:onDestroy").on(onSocketDestroy)
 
 
     /////////////////////
