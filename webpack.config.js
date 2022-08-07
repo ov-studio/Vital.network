@@ -46,9 +46,10 @@ module.exports = [
                 "querystring": false,
                 "crypto": false,
                 "cors": false,
-                "express": false,
                 "http": false,
                 "https": false,
+                "express": false,
+                "compression": false,
                 "url": false,
                 "ws": false
             }
