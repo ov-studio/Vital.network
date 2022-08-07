@@ -36,15 +36,14 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     // Static Members //
     /////////////////////
 
-    if (!CUtility.isServer) {
-        // @Desc: Requests a fetch on specified REST API 
-        CRest.public.addMethod("fetch", function(type, ...cArgs) {
-            if (CRest.private.isUnloaded) return false
-            if (!CUtility.isObject(CRest.private[type])) return false
-            return server.private.instance.CExpress[type](...cArgs)
-        })
-    }
-    else {
+    // @Desc: Requests a fetch on specified REST API 
+    CRest.public.addMethod("fetch", function(type, ...cArgs) {
+        if (CRest.private.isUnloaded) return false
+        if (!CUtility.isObject(CRest.private[type])) return false
+        return server.private.instance.CHTTP[type](...cArgs)
+    })
+
+    if (CUtility.isServer) {
         // @Desc: Verifies whether the REST API is void
         CRest.public.addMethod("isVoid", function(type, route) {
             if (CRest.private.isUnloaded) return false
