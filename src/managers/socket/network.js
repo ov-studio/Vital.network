@@ -116,7 +116,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     }
 
     // @Desc: Emits to attached callback handler of specified network
-    socket.public.emitCallback = function(name, isRemote, ...cArgs) {
+    socket.public.emitCallback = (name, isRemote, ...cArgs) => {
         if (!socket.public.isInstance()) return false
         if (isRemote) {
             if (CUtility.isServer && !socket.public.isClient(isRemote)) return false

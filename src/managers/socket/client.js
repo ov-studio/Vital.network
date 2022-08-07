@@ -20,13 +20,13 @@ const CNetwork = require("../../utilities/network")
 // Class: Client //
 ////////////////////
 
-CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
+CNetwork.fetch("vNetworkify:Socket:onCreate").on((socket) => {
     if (!CUtility.isServer) return false
     const CClient = CUtility.createClass()
     socket.public.client = CClient.public
     CClient.private.buffer = {}
 
-    CNetwork.fetch("vNetworkify:Socket:onDestroy").on(function(__socket) {
+    CNetwork.fetch("vNetworkify:Socket:onDestroy").on((__socket) => {
         if ((socket.public != __socket.public) || (socket.private != __socket.private)) return false
         CNetwork.fetch("vNetworkify:Socket:onDestroy").off(this)
         for (const i in CClient.private.buffer) {
@@ -42,14 +42,14 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     /////////////////////
 
     // @Desc: Fetches client instance by VID or socket
-    CClient.public.addMethod("fetch", function(vid, socket, isFetchSocket) {
+    CClient.public.addMethod("fetch", (vid, socket, isFetchSocket) => {
         if (CClient.private.isUnloaded) return false
         vid = vid || CUtility.vid.fetch(socket, null, true)
         return (vid && CClient.private.buffer[vid] && ((isFetchSocket && CClient.private.buffer[vid].socket) || CClient.private.buffer[vid])) || false
     })
 
     // @Desc: Creates a fresh client w/ specified socket
-    CClient.public.addMethod("create", function(socket) {
+    CClient.public.addMethod("create", (socket) => {
         if (CClient.private.isUnloaded) return false
         if (!CUtility.isObject(socket) || CClient.public.fetch(null, socket)) return false
         const cInstance = CClient.public.createInstance(socket)
@@ -59,7 +59,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     })
 
     // @Desc: Destroys an existing client by specified VID or socket
-    CClient.public.addMethod("destroy", function(vid, socket) {
+    CClient.public.addMethod("destroy", (vid, socket) => {
         if (CClient.private.isUnloaded) return false
         vid = vid || CUtility.vid.fetch(socket, null, true)
         if (!CClient.public.fetch(vid)) return false
@@ -72,14 +72,14 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     ///////////////////////
 
     // @Desc: Instance constructor
-    CClient.public.addMethod("constructor", function(self, socket) {
+    CClient.public.addMethod("constructor", (self, socket) => {
         if (CClient.private.isUnloaded) return false
         CUtility.vid.fetch(self, CUtility.vid.fetch(socket))
         self.socket = socket
     })
 
     // @Desc: Destroys the instance
-    CClient.public.addInstanceMethod("destroy", function(self) {
+    CClient.public.addInstanceMethod("destroy", (self) => {
         if (CClient.private.isUnloaded) return false
         const vid = CUtility.vid.fetch(self, null, true)
         if (CClient.private.buffer[vid].queue) {
