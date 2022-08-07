@@ -47,7 +47,7 @@ module.exports = [
                 "crypto": false,
                 "cors": false,
                 "express": false,
-                "http": false,
+                "https": false,
                 "ws": false
             }
         }
