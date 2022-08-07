@@ -20,7 +20,7 @@ const CUtility = require("../../utilities")
 /////////////////////
 
 // @Desc: Handles socket's initialization
-const onSocketInitialize = function(socket, route, options) {
+const onSocketInitialize = (socket, route, options) => {
     CUtility.vid.fetch(socket.public)
     options = (CUtility.isObject(options) && options) || false
     socket.private.timestamp = new Date()
@@ -46,7 +46,7 @@ const onSocketInitialize = function(socket, route, options) {
 }
 
 // @Desc: Handles socket's message
-const onSocketMessage = async function(socket, client, receiver, payload) {
+const onSocketMessage = async (socket, client, receiver, payload) => {
     payload = JSON.parse(CUtility.fromBase64(payload.data))
     if (!CUtility.isObject(payload)) return false
     if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
@@ -57,10 +57,8 @@ const onSocketMessage = async function(socket, client, receiver, payload) {
             if (!CUtility.isServer) CUtility.exec(socket.public.onHeartbeat, deltaTick)
             else CUtility.exec(socket.public.onHeartbeat, client, deltaTick)
             clearTimeout(socket.public.heartbeatTerminator)
-            socket.public.heartbeatTimer = setTimeout(function() {
-                receiver.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
-            }, socket.private.heartbeat.interval)
-            socket.public.heartbeatTerminator = setTimeout(function() {
+            socket.public.heartbeatTimer = setTimeout(() => receiver.send(CUtility.toBase64(JSON.stringify({heartbeat: true}))), socket.private.heartbeat.interval)
+            socket.public.heartbeatTerminator = setTimeout(() => {
                 const cDisconnection = (!CUtility.isServer && socket.private) || (socket.public.isClient(client) && socket.private.client[client]) || false
                 if (cDisconnection) socket.private.onDisconnectInstance(cDisconnection, "heartbeat-timeout")
                 receiver.close()
