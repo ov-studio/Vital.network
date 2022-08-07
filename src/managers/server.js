@@ -190,7 +190,7 @@ CServer.public.addInstanceMethod("connect", async function(self) {
         }
         var isConnectionAccepted = false
         try {
-            var isServerHealthy = await private.instance.CExpress.get(private.healthpoint)
+            var isServerHealthy = await private.instance.express.get(private.healthpoint)
             isServerHealthy = await isServerHealthy.json()
             if (isServerHealthy && (isServerHealthy.status == true)) isConnectionAccepted = true
         }
@@ -198,19 +198,17 @@ CServer.public.addInstanceMethod("connect", async function(self) {
         CServer.private.onConnectionStatus(self, isConnectionAccepted)
     }
     else {
-        private.instance.CExpress = CExpress()
-        private.instance.https = CHTTPS.Server(private.instance.CExpress)
+        private.instance.express = CExpress()
+        private.instance.https = CHTTPS.Server(private.instance.express)
         private.instance.https.request = https.request
         CServer.private.onHTTPInitialize(private.instance.https)
-        private.instance.CExpress.use(CCors(private.config.cors))
-        private.instance.CExpress.use(CExpress.json())
-        private.instance.CExpress.use(CExpress.urlencoded({extended: true}))
-        private.instance.CExpress.set("case sensitive routing", private.config.isCaseSensitive)
+        private.instance.express.use(CCors(private.config.cors))
+        private.instance.express.use(CExpress.json())
+        private.instance.express.use(CExpress.urlencoded({extended: true}))
+        private.instance.express.set("case sensitive routing", private.config.isCaseSensitive)
         private.instance.https.listen(private.config.port, function() {
             CServer.private.onConnectionStatus(self, true)
-            self.rest.create("get", private.healthpoint, function(request, response) {
-                response.status(200).send({status: true})
-            })
+            self.rest.create("get", private.healthpoint, (request, response) => response.status(200).send({status: true}))
         })
         .on("error", () => CServer.private.onConnectionStatus(self, false))
     }
