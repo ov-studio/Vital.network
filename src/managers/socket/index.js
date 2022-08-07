@@ -160,7 +160,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                         return
                     }
                 }
-                private.timer.reconnectTimer = setTimeout(() => {
+                private.timer.reconnectTimer = CUtility.scheduleExec(() => {
                     delete private.timer.reconnectTimer
                     CUtility.exec(self.onClientReconnect, CUtility.vid.fetch(private.server, null, true) || false, reconCounter, private.reconnection.attempts)
                     private.onConnect(true)
@@ -173,13 +173,13 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 noServer: true,
                 path: `/${private.route}`
             })
-            setTimeout(() => CUtility.exec(self.onServerConnect), 1)
+            CUtility.scheduleExec(() => CUtility.exec(self.onServerConnect), 1)
             private.server.onclose = () => {
                 const timestamp_start = private.timestamp, timestamp_end = new Date()
                 const deltaTick = timestamp_end.getTime() - timestamp_start.getTime()
                 self.destroy()
                 server.private.instance.http.off("upgrade", private.onUpgradeSocket)
-                setTimeout(() => CUtility.exec(self.onServerDisconnect, timestamp_start, timestamp_end, deltaTick), 1)
+                CUtility.scheduleExec(() => CUtility.exec(self.onServerDisconnect, timestamp_start, timestamp_end, deltaTick), 1)
             }
             private.server.onerror = (error) => CUtility.exec(self.onConnectionError, error)
             private.server.on("close", private.server.onclose)

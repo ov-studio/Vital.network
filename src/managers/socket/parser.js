@@ -57,8 +57,8 @@ const onSocketMessage = async (socket, client, receiver, payload) => {
             if (!CUtility.isServer) CUtility.exec(socket.public.onHeartbeat, deltaTick)
             else CUtility.exec(socket.public.onHeartbeat, client, deltaTick)
             clearTimeout(socket.public.heartbeatTerminator)
-            socket.public.heartbeatTimer = setTimeout(() => receiver.send(CUtility.toBase64(JSON.stringify({heartbeat: true}))), socket.private.heartbeat.interval)
-            socket.public.heartbeatTerminator = setTimeout(() => {
+            socket.public.heartbeatTimer = CUtility.scheduleExec(() => receiver.send(CUtility.toBase64(JSON.stringify({heartbeat: true}))), socket.private.heartbeat.interval)
+            socket.public.heartbeatTerminator = CUtility.scheduleExec(() => {
                 const cDisconnection = (!CUtility.isServer && socket.private) || (socket.public.isClient(client) && socket.private.client[client]) || false
                 if (cDisconnection) socket.private.onDisconnectInstance(cDisconnection, "heartbeat-timeout")
                 receiver.close()

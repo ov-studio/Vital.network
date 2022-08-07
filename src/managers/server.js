@@ -42,7 +42,7 @@ CServer.private.onConnectionStatus = (self, state) => {
     private.isConnected = state
     CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || "" } [Version: ${CUtility.fromBase64(CUtility.version)}]`)
     if (private.isConnected) CNetwork.emit("vNetworkify:Server:onConnect", {public: self, private: private})
-    setTimeout(() => {
+    CUtility.scheduleExec(() => {
         delete private.isAwaiting
         CUtility.exec(private.resolver, private.isConnected)
     }, 1)

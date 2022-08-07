@@ -40,6 +40,12 @@ CUtility.exec = (exec, ...cArgs) => {
     return exec(...cArgs)
 }
 
+// @Desc: Schedules the specified handler to be executed at desired interval
+CUtility.scheduleExec = (exec, duration, isInterval) => {
+    if (!CUtility.isFunction(exec)) return false
+    return ((isInterval && setInterval) || setTimeout)(exec, duration)
+}
+
 // @Desc: Fetches an API
 CUtility.fetch = (!CUtility.isServer && (async (route, options) => {
     try {

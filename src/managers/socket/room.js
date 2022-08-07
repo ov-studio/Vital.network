@@ -16,15 +16,16 @@ const CUtility = require("../../utilities")
 const CNetwork = require("../../utilities/network")
 const CRoom = require("../../utilities/room")
 
-CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
+CNetwork.fetch("vNetworkify:Socket:onCreate").on((socket) => {
     if (CUtility.isServer) {
-        CNetwork.fetch("vNetworkify:Socket:onDestroy").on(function(__socket) {
+        const onSocketDestroy = function(__socket) {
             if ((socket.public != __socket.public) || (socket.private != __socket.private)) return
-            CNetwork.fetch("vNetworkify:Socket:onDestroy").off(this)
+            CNetwork.fetch("vNetworkify:Socket:onDestroy").off(onSocketDestroy)
             for (const i in socket.private.room) {
                 socket.private.room[i].destroy()
             }
-        })
+        }
+        CNetwork.fetch("vNetworkify:Socket:onDestroy").on(onSocketDestroy)
     }
     
 

@@ -15,14 +15,15 @@
 const CUtility = require("../../utilities")
 const CNetwork = require("../../utilities/network")
 
-CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
-    CNetwork.fetch("vNetworkify:Socket:onDestroy").on(function(__socket) {
+CNetwork.fetch("vNetworkify:Socket:onCreate").on((socket) => {
+    const onSocketDestroy = function(__socket) {
         if ((socket.public != __socket.public) || (socket.private != __socket.private)) return
-        CNetwork.fetch("vNetworkify:Socket:onDestroy").off(this)
+        CNetwork.fetch("vNetworkify:Socket:onDestroy").off(onSocketDestroy)
         for (const i in socket.private.network) {
             socket.public.destroyNetwork(i)
         }
-    })
+    }
+    CNetwork.fetch("vNetworkify:Socket:onDestroy").on(onSocketDestroy)
 
 
     ///////////////////////
