@@ -13,7 +13,7 @@
 //////////////
 
 const CCors = require("cors")
-const CHTTPS = require("https")
+const CHTTP = require("http")
 const CExpress = require("express")
 const CUtility = require("../utilities")
 const CNetwork = require("../utilities/network")
@@ -49,34 +49,34 @@ CServer.private.onConnectionStatus = function(self, state) {
 }
 
 // @Desc: Initializes a HTTPS instance
-CServer.private.onHTTPSInitialize = function(https) {
-    https.post = function(route, data) {
+CServer.private.onHTTPSInitialize = function(http) {
+    http.post = function(route, data) {
         if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
         return CUtility.fetch(route, {
             method: "POST",
             headers: {["Content-Type"]: "application/json"},
             body: JSON.stringify(data)
-        }, https)
+        }, http)
     }
-    https.get = function(route) {
+    http.get = function(route) {
         if (!CUtility.isString(route)) return false
         return CUtility.fetch(route, {
             method: "GET"
-        }, https)
+        }, http)
     }
-    https.put = function(route, data) {
+    http.put = function(route, data) {
         if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
         return CUtility.fetch(route, {
             method: "PUT",
             headers: {["Content-Type"]: "application/json"},
             body: JSON.stringify(data)
-        }, https)
+        }, http)
     }
-    https.delete = function(route) {
+    http.delete = function(route) {
         if (!CUtility.isString(route)) return false
         return CUtility.fetch(route, {
             method: "DELETE"
-        }, https)
+        }, http)
     }
     return true
 }
@@ -108,7 +108,7 @@ CServer.public.addMethod("constructor", function(self, options) {
 CServer.public.addInstanceMethod("destroy", function(self) {
     const private = CServer.instance.get(self)
     if (self.isConnected(true)) CNetwork.emit("vNetworkify:Server:onDisconnect", {public: self, private: private})
-    if (CUtility.isServer) private.instance.https.close()
+    if (CUtility.isServer) private.instance.http.close()
     self.destroyInstance()
     return true
 })
@@ -139,9 +139,9 @@ CServer.public.addInstanceMethod("connect", async function(self) {
     private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
     if (!CUtility.isServer) {
         var isConnectionAccepted = false
-        if (!private.instance.https) {
-            private.instance.https = {}
-            CServer.private.onHTTPSInitialize(private.instance.https)
+        if (!private.instance.http) {
+            private.instance.http = {}
+            CServer.private.onHTTPSInitialize(private.instance.http)
         }
         try {
             var isServerHealthy = await private.instance.express.get(private.healthpoint)
@@ -153,14 +153,14 @@ CServer.public.addInstanceMethod("connect", async function(self) {
     }
     else {
         private.instance.express = CExpress()
-        private.instance.https = CHTTPS.Server(private.instance.express)
-        private.instance.https.request = CHTTPS.request
-        CServer.private.onHTTPSInitialize(private.instance.https)
+        private.instance.http = CHTTP.Server(private.instance.express)
+        private.instance.http.request = CHTTP.request
+        CServer.private.onHTTPSInitialize(private.instance.http)
         private.instance.express.use(CCors(private.config.cors))
         private.instance.express.use(CExpress.json())
         private.instance.express.use(CExpress.urlencoded({extended: true}))
         private.instance.express.set("case sensitive routing", private.config.isCaseSensitive)
-        private.instance.https.listen(private.config.port, function() {
+        private.instance.http.listen(private.config.port, function() {
             CServer.private.onConnectionStatus(self, true)
             self.rest.create("get", private.healthpoint, (request, response) => response.status(200).send({status: true}))
         })

@@ -40,7 +40,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     CRest.public.addMethod("fetch", function(type, ...cArgs) {
         if (CRest.private.isUnloaded) return false
         if (!CUtility.isObject(CRest.private[type])) return false
-        return server.private.instance.https[type](...cArgs)
+        return server.private.instance.http[type](...cArgs)
     })
 
     if (CUtility.isServer) {
