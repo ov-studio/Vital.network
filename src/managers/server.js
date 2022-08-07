@@ -34,9 +34,7 @@ CNetwork.create("vNetworkify:Server:onDisconnect")
 /////////////////////
 
 // @Desc: Creates a fresh server
-CServer.public.addMethod("create", (...cArgs) => {
-    return CServer.public.createInstance(...cArgs)
-})
+CServer.public.addMethod("create", (...cArgs) => CServer.public.createInstance(...cArgs))
 
 // @Desc: Handles connection's status
 CServer.private.onConnectionStatus = (self, state) => {
@@ -117,15 +115,10 @@ CServer.public.addInstanceMethod("destroy", (self) => {
 })
 
 // @Desc: Retrieves instance's config
-CServer.public.addInstanceMethod("fetchConfig", (self) => {
-    const private = CServer.instance.get(self)
-    return private.config
-})
+CServer.public.addInstanceMethod("fetchConfig", (self) => CServer.instance.get(self).config)
 
 // @Desc: Retrieves instance's server
-CServer.public.addInstanceMethod("fetchServer", (self, index) => {
-    return (index && private.instance[index]) || false
-})
+CServer.public.addInstanceMethod("fetchServer", (self, index) => (index && private.instance[index]) || false)
 
 // @Desc: Retrieves connection's status
 CServer.public.addInstanceMethod("isConnected", (self, isSync) => {
