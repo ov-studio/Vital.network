@@ -23,40 +23,32 @@ const CType = [
     {handler: "isBool", type: "boolean"},
     {handler: "isString", type: "string"},
     {handler: "isNumber", type: "number"},
-    {handler: "isObject", type: "object", middleware: function(data, isArray) {return (!isArray && true) || Array.isArray(data)}},
+    {handler: "isObject", type: "object", middleware: ((data, isArray) => (!isArray && true) || Array.isArray(data))},
     {handler: "isFunction", type: "function"}
 ]
-CType.forEach(function(j) {
-    CUtility[(j.handler)] = function(data, ...cArgs) {
+CType.forEach((j) => {
+    CUtility[(j.handler)] = (data, ...cArgs) => {
         var isTypeValid = CUtility.isType(data, j.type)
-        if (isTypeValid && j.middleware) {
-            isTypeValid = (j.middleware(data, ...cArgs) && isTypeValid) || false
-        }
+        if (isTypeValid && j.middleware) isTypeValid = (j.middleware(data, ...cArgs) && isTypeValid) || false
         return isTypeValid
     }
 })
 
 // @Desc: Verifies whether specified data is null
-CUtility.isNull = function(data) {
+CUtility.isNull = (data) => {
     return data == null
 }
 
 // @Desc: Verifies specified data's type
-CUtility.isType = function(data, type) {
-    return (!CUtility.isNull(data) && !CUtility.isNull(type) && (typeof(type) == "string") && (typeof(data) == type) && true) || false
-}
+CUtility.isType = (data, type) => (!CUtility.isNull(data) && !CUtility.isNull(type) && (typeof(type) == "string") && (typeof(data) == type) && true) || false
 
 // @Desc: Verifies whether specified data is an array
-CUtility.isArray = function(data) {
-    return CUtility.isObject(data, true)
-}
+CUtility.isArray = (data) => CUtility.isObject(data, true)
 
 // @Desc: Verifies whether specified data is a class
-CUtility.isClass = function(data) {
-    return (CUtility.isFunction(data, "function") && data.isClass && true) || false
-}
+CUtility.isClass = (data) => (CUtility.isFunction(data, "function") && data.isClass && true) || false
 
-CUtility.cloneObject = function(parent, isRecursive) {
+CUtility.cloneObject = (parent, isRecursive) => {
     if (!CUtility.isObject(parent)) return false
     const result = {}
     for (const i in parent) {
@@ -68,7 +60,7 @@ CUtility.cloneObject = function(parent, isRecursive) {
 }
 
 // @Desc: Creates a new dynamic class
-CUtility.createClass = function(parent) {
+CUtility.createClass = (parent) => {
     const __I = new WeakMap()
     class __C {
         static isClass = true
@@ -82,7 +74,7 @@ CUtility.createClass = function(parent) {
             __C[i] = parent[i]
         }
     }
-    __C.addMethod = function(index, exec, isInstanceware) {
+    __C.addMethod = (index, exec, isInstanceware) => {
         if (!CUtility.isString(index) || !CUtility.isFunction(exec)) return false
         if ((index == "constructor") && CUtility.isString(isInstanceware)) __C.isInstanceware = isInstanceware
         __C[index] = exec
