@@ -19,7 +19,7 @@ const CRoom = require("../../utilities/room")
 CNetwork.fetch("vNetworkify:Socket:onCreate").on(function(socket) {
     if (CUtility.isServer) {
         CNetwork.fetch("vNetworkify:Socket:onDestroy").on(function(__socket) {
-            if ((socket.public != __socket.public) || (socket.private != __socket.private)) return false
+            if ((socket.public != __socket.public) || (socket.private != __socket.private)) return
             CNetwork.fetch("vNetworkify:Socket:onDestroy").off(this)
             for (const i in socket.private.room) {
                 socket.private.room[i].destroy()

@@ -27,7 +27,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on((socket) => {
     CClient.private.buffer = {}
 
     CNetwork.fetch("vNetworkify:Socket:onDestroy").on((__socket) => {
-        if ((socket.public != __socket.public) || (socket.private != __socket.private)) return false
+        if ((socket.public != __socket.public) || (socket.private != __socket.private)) return
         CNetwork.fetch("vNetworkify:Socket:onDestroy").off(this)
         for (const i in CClient.private.buffer) {
             CClient.private.buffer[i].destroy()
