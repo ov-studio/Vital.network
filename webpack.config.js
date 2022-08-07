@@ -49,6 +49,7 @@ module.exports = [
                 "express": false,
                 "http": false,
                 "https": false,
+                "url": false,
                 "ws": false
             }
         }

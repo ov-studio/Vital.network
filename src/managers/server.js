@@ -57,13 +57,13 @@ CServer.private.onHTTPSInitialize = function(http) {
             method: "POST",
             headers: {["Content-Type"]: "application/json"},
             body: JSON.stringify(data)
-        }, http)
+        })
     }
     http.get = function(route) {
         if (!CUtility.isString(route)) return false
         return CUtility.fetch(route, {
             method: "GET"
-        }, http)
+        })
     }
     http.put = function(route, data) {
         if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
@@ -71,13 +71,13 @@ CServer.private.onHTTPSInitialize = function(http) {
             method: "PUT",
             headers: {["Content-Type"]: "application/json"},
             body: JSON.stringify(data)
-        }, http)
+        })
     }
     http.delete = function(route) {
         if (!CUtility.isString(route)) return false
         return CUtility.fetch(route, {
             method: "DELETE"
-        }, http)
+        })
     }
     return true
 }
@@ -155,7 +155,6 @@ CServer.public.addInstanceMethod("connect", async function(self) {
     else {
         private.instance.express = CExpress()
         private.instance.http = CHTTP.Server(private.instance.express)
-        private.instance.http.request = CHTTP.request
         CServer.private.onHTTPSInitialize(private.instance.http)
         private.instance.express.use(CCors(private.config.cors))
         private.instance.express.use(CExpress.json())
