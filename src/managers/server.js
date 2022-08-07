@@ -158,37 +158,11 @@ CServer.public.addInstanceMethod("connect", async function(self) {
     const private = CServer.instance.get(self)
     private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
     if (!CUtility.isServer) {
-        private.instance.https = private.instance.https || {
-            post: function(route, data) {
-                if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
-                return fetch(route, {
-                    method: "POST",
-                    headers: {["Content-Type"]: "application/json"},
-                    body: JSON.stringify(data)
-                })
-            },
-            get: function(route) {
-                if (!CUtility.isString(route)) return false
-                return fetch(route, {
-                    method: "GET"
-                })
-            },
-            put: function(route, data) {
-                if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
-                return fetch(route, {
-                    method: "PUT",
-                    headers: {["Content-Type"]: "application/json"},
-                    body: JSON.stringify(data)
-                })
-            },
-            delete: function(route) {
-                if (!CUtility.isString(route)) return false
-                return fetch(route, {
-                    method: "DELETE"
-                })
-            }
-        }
         var isConnectionAccepted = false
+        if (!private.instance.https) {
+            private.instance.https = {}
+            CServer.private.onHTTPInitialize(private.instance.https)
+        }
         try {
             var isServerHealthy = await private.instance.express.get(private.healthpoint)
             isServerHealthy = await isServerHealthy.json()
@@ -200,7 +174,7 @@ CServer.public.addInstanceMethod("connect", async function(self) {
     else {
         private.instance.express = CExpress()
         private.instance.https = CHTTPS.Server(private.instance.express)
-        private.instance.https.request = https.request
+        private.instance.https.request = CHTTPS.request
         CServer.private.onHTTPInitialize(private.instance.https)
         private.instance.express.use(CCors(private.config.cors))
         private.instance.express.use(CExpress.json())
