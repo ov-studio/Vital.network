@@ -47,9 +47,9 @@ const onSocketInitialize = (socket, route, options) => {
 
 // @Desc: Handles socket's heartbeat
 const onSocketHeartbeat = function(socket, client, receiver, payload) {
-    const prevTick = socket.public.heatbeatTick
-    socket.public.heatbeatTick = Date.now()
     if (payload) {
+        const prevTick = socket.public.heatbeatTick
+        socket.public.heatbeatTick = Date.now()
         const deltaTick = socket.public.heatbeatTick - (prevTick || socket.public.heatbeatTick)
         if (!CUtility.isServer) CUtility.exec(socket.public.onHeartbeat, deltaTick)
         else CUtility.exec(socket.public.onHeartbeat, client, deltaTick)
