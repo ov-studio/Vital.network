@@ -52,8 +52,6 @@ const onSocketHeartbeat = function(socket, client, receiver, payload) {
     const prevPreTick = socket.public["@heartbeat"].preTick
     socket.public["@heartbeat"].preTick = currentTick
     const prevDeltaTick = socket.public["@heartbeat"].preTick - (prevPreTick || socket.public["@heartbeat"].preTick)
-    if (!CUtility.isServer) CUtility.exec(socket.public.onPreHeartbeat, prevDeltaTick)
-    else CUtility.exec(socket.public.onPreHeartbeat, client, prevDeltaTick)
     if (payload) {
         const prevTick = socket.public["@heartbeat"].tick
         socket.public["@heartbeat"].tick = currentTick
@@ -61,6 +59,8 @@ const onSocketHeartbeat = function(socket, client, receiver, payload) {
         if (!CUtility.isServer) CUtility.exec(socket.public.onHeartbeat, deltaTick)
         else CUtility.exec(socket.public.onHeartbeat, client, deltaTick)
     }
+    if (!CUtility.isServer) CUtility.exec(socket.public.onPreHeartbeat, prevDeltaTick)
+    else CUtility.exec(socket.public.onPreHeartbeat, client, prevDeltaTick)
     clearTimeout(socket.public.heartbeatTerminator)
     socket.public.heartbeatTimer = CUtility.scheduleExec(() => receiver.send(CUtility.toBase64(JSON.stringify({heartbeat: true}))), (payload && socket.private.heartbeat.interval) || 0)
     socket.public.heartbeatTerminator = CUtility.scheduleExec(() => {
