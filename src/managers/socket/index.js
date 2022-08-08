@@ -15,7 +15,7 @@
 const CWS = require("ws")
 const CUtility = require("../../utilities")
 const CNetwork = require("../../utilities/network")
-const {onSocketInitialize, onSocketMessage} = require("./parser")
+const {onSocketInitialize, onSocketHeartbeat, onSocketMessage} = require("./parser")
 
 
 ////////////////////
@@ -184,7 +184,6 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             private.server.onerror = (error) => CUtility.exec(self.onConnectionError, error)
             private.server.on("close", private.server.onclose)
             private.server.on("error", private.server.onerror)
-            private.onHeartbeat = (instance) => instance.socket.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
             private.onUpgradeSocket = (request, socket, head) => {
                 private.server.handleUpgrade(request, socket, head, (socket) => {
                     var [instance, query] = request.url.split("?")
@@ -201,7 +200,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                         return
                     }
                     clientInstance.socket.send(CUtility.toBase64(JSON.stringify({client: client})))
-                    private.onHeartbeat(clientInstance)
+                    onSocketHeartbeat(cPointer, client, clientInstance.socket)
                     CUtility.exec(self.onClientConnect, client)
                     clientInstance.socket.onclose = () => {
                         const reason = (clientInstance["@disconnect"] && clientInstance["@disconnect"].reason) || (private["@disconnect"] && private["@disconnect"].reason) || "client-disconnected"
