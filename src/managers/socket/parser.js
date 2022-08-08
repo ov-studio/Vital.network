@@ -47,10 +47,17 @@ const onSocketInitialize = (socket, route, options) => {
 
 // @Desc: Handles socket's heartbeat
 const onSocketHeartbeat = function(socket, client, receiver, payload) {
+    const currentTick = Date.now()
+    socket.public["@heartbeat"] = socket.public["@heartbeat"] || {}
+    const prevPreTick = socket.public["@heartbeat"].preTick
+    socket.public["@heartbeat"].preTick = currentTick
+    const prevDeltaTick = socket.public["@heartbeat"].preTick - (prevPreTick || socket.public["@heartbeat"].preTick)
+    if (!CUtility.isServer) CUtility.exec(socket.public.onPreHeartbeat, prevDeltaTick)
+    else CUtility.exec(socket.public.onPreHeartbeat, client, prevDeltaTick)
     if (payload) {
-        const prevTick = socket.public.heatbeatTick
-        socket.public.heatbeatTick = Date.now()
-        const deltaTick = socket.public.heatbeatTick - (prevTick || socket.public.heatbeatTick)
+        const prevTick = socket.public["@heartbeat"].tick
+        socket.public["@heartbeat"].tick = currentTick
+        const deltaTick = socket.public["@heartbeat"].tick - (prevTick || socket.public["@heartbeat"].tick)
         if (!CUtility.isServer) CUtility.exec(socket.public.onHeartbeat, deltaTick)
         else CUtility.exec(socket.public.onHeartbeat, client, deltaTick)
     }
