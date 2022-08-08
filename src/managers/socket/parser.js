@@ -45,25 +45,29 @@ const onSocketInitialize = (socket, route, options) => {
     return true
 }
 
+// @Desc: Handles socket's heartbeat
+const onSocketHeartbeat = function(socket, client, receiver) {
+    const prevTick = socket.public.heatbeatTick
+    socket.public.heatbeatTick = Date.now()
+    const deltaTick = socket.public.heatbeatTick - (prevTick || socket.public.heatbeatTick)
+    if (!CUtility.isServer) CUtility.exec(socket.public.onHeartbeat, deltaTick)
+    else CUtility.exec(socket.public.onHeartbeat, client, deltaTick)
+    clearTimeout(socket.public.heartbeatTerminator)
+    socket.public.heartbeatTimer = CUtility.scheduleExec(() => receiver.send(CUtility.toBase64(JSON.stringify({heartbeat: true}))), socket.private.heartbeat.interval)
+    socket.public.heartbeatTerminator = CUtility.scheduleExec(() => {
+        const cDisconnection = (!CUtility.isServer && socket.private) || (socket.public.isClient(client) && socket.private.client[client]) || false
+        if (cDisconnection) socket.private.onDisconnectInstance(cDisconnection, "heartbeat-timeout")
+        receiver.close()
+    }, socket.private.heartbeat.timeout)
+    return true
+}
+
 // @Desc: Handles socket's message
 const onSocketMessage = async (socket, client, receiver, payload) => {
     payload = JSON.parse(CUtility.fromBase64(payload.data))
     if (!CUtility.isObject(payload)) return false
     if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
-        if (payload.heartbeat) {
-            const prevTick = socket.public.heatbeatTick
-            socket.public.heatbeatTick = Date.now()
-            const deltaTick = socket.public.heatbeatTick - (prevTick || socket.public.heatbeatTick)
-            if (!CUtility.isServer) CUtility.exec(socket.public.onHeartbeat, deltaTick)
-            else CUtility.exec(socket.public.onHeartbeat, client, deltaTick)
-            clearTimeout(socket.public.heartbeatTerminator)
-            socket.public.heartbeatTimer = CUtility.scheduleExec(() => receiver.send(CUtility.toBase64(JSON.stringify({heartbeat: true}))), socket.private.heartbeat.interval)
-            socket.public.heartbeatTerminator = CUtility.scheduleExec(() => {
-                const cDisconnection = (!CUtility.isServer && socket.private) || (socket.public.isClient(client) && socket.private.client[client]) || false
-                if (cDisconnection) socket.private.onDisconnectInstance(cDisconnection, "heartbeat-timeout")
-                receiver.close()
-            }, socket.private.heartbeat.timeout)
-        }
+        if (payload.heartbeat) onSocketHeartbeat(socket, client, receiver)
         else {
             if (!CUtility.isServer) {
                 if (payload.client) {
