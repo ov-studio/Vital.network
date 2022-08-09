@@ -95,7 +95,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     ///////////////////////
 
     // @Desc: Destroys the instance
-    CSocket.public.addInstanceMethod("destroy", (self, isFlush) => {
+    CSocket.public.addInstanceMethod("destroy", (self, isFlush, isSilent) => {
         if (CSocket.private.isUnloaded) return false
         const private = CSocket.instance.get(self)
         if (isFlush) {
@@ -106,7 +106,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             }
         }
         else {
-            CSocket.private.onDisconnectInstance(private, `${(CUtility.isServer && "server") || "client"}-disconnected`, true)
+            CSocket.private.onDisconnectInstance(private, `${(CUtility.isServer && "server") || "client"}-disconnected`, ((CUtility.isServer || !isSilent) && true) || false)
             CNetwork.emit("vNetworkify:Socket:onDestroy", {public: self, private: private})
             for (const i in private.timer) {
                 clearTimeout(private.timer[i])
