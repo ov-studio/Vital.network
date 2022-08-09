@@ -116,7 +116,6 @@ async function debug2() {
         }
     })
 
-
     cSocket.onClientConnect = function(client) {
         vNetworkify.util.print(`* Client connected [${client}]`)
     }
