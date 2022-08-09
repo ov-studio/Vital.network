@@ -13,6 +13,7 @@
 //////////////
 
 const CCors = require("cors")
+const CHTTP = require("http")
 const CHTTPS = require("https")
 const CExpress = require("express")
 const CCompression = require("compression")
@@ -149,7 +150,7 @@ CServer.public.addInstanceMethod("connect", async (self) => {
     }
     else {
         private.instance.express = CExpress()
-        private.instance.http = CHTTPS.Server(CServer.private.sslcert, private.instance.express)
+        private.instance.http = (CServer.private.sslcert && CHTTPS.Server(CServer.private.sslcert, private.instance.express)) || CHTTP.Server(private.instance.express)
         CServer.private.onHTTPInitialize(private.instance.http)
         private.instance.express.use(CCors(private.config.cors))
         private.instance.express.use(CCompression())
