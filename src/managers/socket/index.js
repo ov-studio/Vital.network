@@ -184,11 +184,12 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             private.server.onerror = (error) => CUtility.exec(self.onConnectionError, error)
             private.server.on("close", private.server.onclose)
             private.server.on("error", private.server.onerror)
-            private.onUpgradeSocket = (request, socket, head) => {
+            private.onUpgradeSocket = function(request, socket, head) {
+                var [path, query] = request.url.split("?")
+                path = path.slice(1)
+                if (path != route) return
                 private.server.handleUpgrade(request, socket, head, (socket) => {
-                    var [instance, query] = request.url.split("?")
-                    instance = CSocket.public.fetch(instance.slice(1))
-                    if (!instance) return
+                    if (!CSocket.public.fetch(path)) return
                     const clientInstance = self.client.create(socket)
                     const client = CUtility.vid.fetch(clientInstance, null, true)
                     private.client[client] = clientInstance
