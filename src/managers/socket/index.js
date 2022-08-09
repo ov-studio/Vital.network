@@ -112,8 +112,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 clearTimeout(private.timer[i])
             }
             private.server.close()
-            // TODO: ...??
-            delete CSocket.private.buffer[(this.route)]
+            delete CSocket.private.buffer[(private.route)]
             self.destroyInstance()
         }
         return true
