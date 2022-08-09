@@ -50,8 +50,8 @@ CServer.private.onConnectionStatus = (self, state) => {
     return true
 }
 
-// @Desc: Initializes a HTTPS instance
-CServer.private.onHTTPSInitialize = (http) => {
+// @Desc: Initializes a HTTP instance
+CServer.private.onHTTPInitialize = (http) => {
     http.post = (route, data) => {
         if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
         return CUtility.fetch(route, {
@@ -138,7 +138,7 @@ CServer.public.addInstanceMethod("connect", async (self) => {
         var isConnectionAccepted = false
         if (!private.instance.http) {
             private.instance.http = {}
-            CServer.private.onHTTPSInitialize(private.instance.http)
+            CServer.private.onHTTPInitialize(private.instance.http)
         }
         try {
             var isServerHealthy = await private.instance.http.get(private.healthpoint)
@@ -151,7 +151,7 @@ CServer.public.addInstanceMethod("connect", async (self) => {
     else {
         private.instance.express = CExpress()
         private.instance.http = CHTTP.Server(private.instance.express)
-        CServer.private.onHTTPSInitialize(private.instance.http)
+        CServer.private.onHTTPInitialize(private.instance.http)
         private.instance.express.use(CCors(private.config.cors))
         private.instance.express.use(CCompression())
         private.instance.express.use(CExpress.json())
