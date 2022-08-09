@@ -12,8 +12,6 @@
 // Imports //
 //////////////
 
-const CURL = require("url").URL
-const CHTTP = require("http")
 const CHTTPS = require("https")
 
 
@@ -54,10 +52,9 @@ CUtility.fetch = (!CUtility.isServer && (async (route, options) => {
     }
     catch(error) {throw error}
 })) || ((route, options) => {
-    const url = new CURL(route)
     var resolve = false, reject = false
     const result = new Promise((__resolve, __reject) => {resolve = __resolve, reject = __reject})
-    const request = ((url && (url.protocol.slice(0, -1) == "https") && CHTTPS) || CHTTP).request(route, options, (response) => {
+    const request = CHTTPS.request(route, options, (response) => {
         let buffer = ""
         response.on("data", (chunk) => buffer += chunk.toString())
         response.on("end", () => resolve(buffer))

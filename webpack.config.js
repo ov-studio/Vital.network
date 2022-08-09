@@ -50,7 +50,6 @@ module.exports = [
                 "https": false,
                 "express": false,
                 "compression": false,
-                "url": false,
                 "ws": false
             }
         }
