@@ -112,6 +112,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                 clearTimeout(private.timer[i])
             }
             private.server.close()
+            // TODO: ...??
             delete CSocket.private.buffer[(this.route)]
             self.destroyInstance()
         }
@@ -184,7 +185,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
             private.server.onerror = (error) => CUtility.exec(self.onConnectionError, error)
             private.server.on("close", private.server.onclose)
             private.server.on("error", private.server.onerror)
-            private.onUpgradeSocket = function(request, socket, head) {
+            private.onUpgradeSocket = (request, socket, head) => {
                 var [path, query] = request.url.split("?")
                 path = path.slice(1)
                 if (path != route) return
