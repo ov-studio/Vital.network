@@ -112,6 +112,8 @@ async function debug() {
     cServer.rest.create("get", "", function(request, response) {
         response.status(200).send({test: "Updated Status Message"})
     })
+    var restAPIResult = await cServer.rest.fetch("get", "https://raw.githubusercontent.com/ov-studio/vNetworkify/main/package.json")
+    vNetworkify.util.print(JSON.parse(restAPIResult))
 }
 debug()
 
@@ -144,10 +146,5 @@ async function debug2() {
     cSocket.onClientDisconnect = function(client, reason) {
         vNetworkify.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
     }
-
-
-    // @Rest API Examples
-    var restAPIResult = await cServer.rest.fetch("get", "https://raw.githubusercontent.com/ov-studio/vNetworkify/main/package.json")
-    vNetworkify.util.print(JSON.parse(restAPIResult))
 }
 debug2()
