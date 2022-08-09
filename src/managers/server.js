@@ -83,6 +83,16 @@ CServer.private.onHTTPInitialize = (http) => {
     return true
 }
 
+if (CUtility.isServer) {
+    // @Desc: Sets/Revokes SSL Cert
+    CServer.public.addMethod("setSSLCert", (sslcert) => {
+        if (sslcert && !CUtility.isObject(sslcert)) return false
+        if (!sslcert) delete CServer.private.sslcert
+        else CServer.private.sslcert = sslcert
+        return true
+    })
+}
+
 
 ///////////////////////
 // Instance Members //
