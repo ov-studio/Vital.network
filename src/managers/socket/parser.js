@@ -49,7 +49,7 @@ const onSocketInitialize = (socket, route, options) => {
 const onSocketHeartbeat = function(socket, client, receiver, payload) {
     const currentTick = Date.now()
     socket.private["@heartbeat"] = socket.private["@heartbeat"] || {}
-    socket.private["@heartbeat"].id = (socket.private["@heartbeat"].id || 0) + 1
+    socket.private["@heartbeat"].id = (socket.private["@heartbeat"].id || (payload && 1) || 0) + 1
     if (payload) {
         const prevID = socket.private["@heartbeat"].id - 1
         const prevTick = socket.private["@heartbeat"].tick
