@@ -51,11 +51,12 @@ const onSocketHeartbeat = function(socket, client, receiver, payload) {
     socket.private["@heartbeat"] = socket.private["@heartbeat"] || {}
     socket.private["@heartbeat"].id = (socket.private["@heartbeat"].id || 0) + 1
     if (payload) {
+        const prevID = socket.private["@heartbeat"].id - 1
         const prevTick = socket.private["@heartbeat"].tick
         socket.private["@heartbeat"].tick = currentTick
         const deltaTick = socket.private["@heartbeat"].tick - (prevTick || socket.private["@heartbeat"].tick)
-        if (!CUtility.isServer) CUtility.exec(socket.public.onHeartbeat, socket.private["@heartbeat"].id - 1, deltaTick)
-        else CUtility.exec(socket.public.onHeartbeat, client, socket.private["@heartbeat"].id - 1, deltaTick)
+        if (!CUtility.isServer) CUtility.exec(socket.public.onHeartbeat, prevID, deltaTick)
+        else CUtility.exec(socket.public.onHeartbeat, client, prevID, deltaTick)
     }
     clearTimeout(socket.public.heartbeatTerminator)
     const prevPreTick = socket.private["@heartbeat"].preTick
