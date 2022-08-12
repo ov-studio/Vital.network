@@ -30,7 +30,7 @@ CUtility.crypto = (CUtility.isServer && require("crypto")) || crypto
 CUtility.toBase64 = (!CUtility.isServer && btoa.bind(window)) || ((data) => Buffer.from(data).toString("base64"))
 CUtility.fromBase64 = (!CUtility.isServer && atob.bind(window)) || ((data) => Buffer.from(data, "base64").toString("binary"))
 Object.defineProperty(CUtility, "identifier", {value: CUtility.toBase64(`vNetworkify-${(CUtility.isServer && "Server") || "Client"}`), enumerable: true, configurable: false, writable: false})
-CUtility.version = Object.defineProperty(CUtility, "version", {value: CUtility.toBase64("3.2.2"), enumerable: true, configurable: false, writable: false})
+CUtility.version = Object.defineProperty(CUtility, "version", {value: CUtility.toBase64("3.2.3"), enumerable: true, configurable: false, writable: false})
 
 // @Desc: Executes the specified handler
 CUtility.exec = (exec, ...cArgs) => {
