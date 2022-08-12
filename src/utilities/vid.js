@@ -33,7 +33,7 @@ CVID.private.counter = 0
 CVID.public.addMethod("create", () => {
     var cvid = false
     while(!cvid) {
-        const vvid = CUtility.toBase64(CUtility.crypto.randomUUID() + (Date.now() + CVID.private.counter))
+        const vvid = CUtility.toBase64(CUtility.crypto.getRandomValues((new Uint8Array(8)).join("")) + (Date.now() + CVID.private.counter))
         if (!CVID.private.buffer[vvid]) {
             CUtility.vid.blacklist(vvid)
             cvid = vvid
