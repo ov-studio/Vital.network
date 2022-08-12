@@ -48,21 +48,22 @@ const onSocketInitialize = (socket, route, options) => {
 // @Desc: Handles socket's heartbeat
 const onSocketHeartbeat = function(socket, client, receiver, payload) {
     const currentTick = Date.now()
-    socket.public["@heartbeat"] = socket.public["@heartbeat"] || {}
+    socket.private["@heartbeat"] = socket.private["@heartbeat"] || {}
+    socket.private["@heartbeat"].counter = (socket.private["@heartbeat"].counter || 0) + 1
     if (payload) {
-        const prevTick = socket.public["@heartbeat"].tick
-        socket.public["@heartbeat"].tick = currentTick
-        const deltaTick = socket.public["@heartbeat"].tick - (prevTick || socket.public["@heartbeat"].tick)
-        if (!CUtility.isServer) CUtility.exec(socket.public.onHeartbeat, deltaTick)
-        else CUtility.exec(socket.public.onHeartbeat, client, deltaTick)
+        const prevTick = socket.private["@heartbeat"].tick
+        socket.private["@heartbeat"].tick = currentTick
+        const deltaTick = socket.private["@heartbeat"].tick - (prevTick || socket.private["@heartbeat"].tick)
+        if (!CUtility.isServer) CUtility.exec(socket.public.onHeartbeat, socket.private["@heartbeat"].counter, deltaTick)
+        else CUtility.exec(socket.public.onHeartbeat, client, socket.private["@heartbeat"].counter, deltaTick)
     }
     clearTimeout(socket.public.heartbeatTerminator)
-    const prevPreTick = socket.public["@heartbeat"].preTick
-    socket.public["@heartbeat"].preTick = currentTick
-    const prevDeltaTick = socket.public["@heartbeat"].preTick - (prevPreTick || socket.public["@heartbeat"].preTick)
+    const prevPreTick = socket.private["@heartbeat"].preTick
+    socket.private["@heartbeat"].preTick = currentTick
+    const prevDeltaTick = socket.private["@heartbeat"].preTick - (prevPreTick || socket.private["@heartbeat"].preTick)
     socket.public.heartbeatTimer = CUtility.scheduleExec(() => {
-        if (!CUtility.isServer) CUtility.exec(socket.public.onPreHeartbeat, prevDeltaTick)
-        else CUtility.exec(socket.public.onPreHeartbeat, client, prevDeltaTick)
+        if (!CUtility.isServer) CUtility.exec(socket.public.onPreHeartbeat, socket.private["@heartbeat"].counter, prevDeltaTick)
+        else CUtility.exec(socket.public.onPreHeartbeat, client, socket.private["@heartbeat"].counter, prevDeltaTick)
         receiver.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
     }, (payload && socket.private.heartbeat.interval) || 0)
     socket.public.heartbeatTerminator = CUtility.scheduleExec(() => {
