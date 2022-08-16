@@ -132,9 +132,23 @@ CServer.public.addInstanceMethod("fetchConfig", (self) => CServer.instance.get(s
 CServer.public.addInstanceMethod("fetchServer", (self, index) => (index && private.instance[index]) || false)
 
 // @Desc: Retrieves connection's status
-CServer.public.addInstanceMethod("isConnected", (self, isSync) => {
+CServer.public.addInstanceMethod("isConnected", async (self, isSync, fetchHealth) => {
     const private = CServer.instance.get(self)
     if (isSync) return (CUtility.isBool(private.isConnected) && private.isConnected) || false
+    if (!CUtility.isServer && fetchHealth) {
+        var isServerHealthy = false
+        if (!private.instance.http) {
+            private.instance.http = {}
+            CServer.private.onHTTPInitialize(private.instance.http)
+        }
+        try {
+            isServerHealthy = await private.instance.http.get(private.healthpoint)
+            isServerHealthy = JSON.parse(isServerHealthy)
+            isServerHealthy = (isServerHealthy && (isServerHealthy.status == true)) || false
+        }
+        catch(error) {}
+        return isServerHealthy
+    }
     return private.isAwaiting || private.isConnected || false
 })
 
@@ -145,18 +159,8 @@ CServer.public.addInstanceMethod("connect", async (self) => {
     const private = CServer.instance.get(self)
     private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
     if (!CUtility.isServer) {
-        var isConnectionAccepted = false
-        if (!private.instance.http) {
-            private.instance.http = {}
-            CServer.private.onHTTPInitialize(private.instance.http)
-        }
-        try {
-            var isServerHealthy = await private.instance.http.get(private.healthpoint)
-            isServerHealthy = JSON.parse(isServerHealthy)
-            if (isServerHealthy && (isServerHealthy.status == true)) isConnectionAccepted = true
-        }
-        catch(error) {}
-        CServer.private.onConnectionStatus(self, isConnectionAccepted)
+        var isServerHealthy = await self.isConnected(null, true)
+        CServer.private.onConnectionStatus(self, isServerHealthy)
     }
     else {
         private.instance.express = CExpress()
