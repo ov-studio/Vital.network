@@ -58,15 +58,15 @@ const onSocketHeartbeat = function(socket, client, instance, receiver, payload) 
         if (!CUtility.isServer) CUtility.exec(socket.public.onHeartbeat, prevID, deltaTick)
         else CUtility.exec(socket.public.onHeartbeat, client, prevID, deltaTick)
     }
-    clearTimeout(instance.heartbeatTerminator)
+    clearTimeout(instance.timer.heartbeatTerminator)
     const prevPreTick = instance["@heartbeat"].preTick
     instance["@heartbeat"].preTick = currentTick
     const prevDeltaTick = instance["@heartbeat"].preTick - (prevPreTick || instance["@heartbeat"].preTick)
-    instance.heartbeatTimer = CUtility.scheduleExec(() => {
+    instance.timer.heartbeat = CUtility.scheduleExec(() => {
         if (!CUtility.isServer) CUtility.exec(socket.public.onPreHeartbeat, instance["@heartbeat"].id, prevDeltaTick)
         else CUtility.exec(socket.public.onPreHeartbeat, client, instance["@heartbeat"].id, prevDeltaTick)
         receiver.send(CUtility.toBase64(JSON.stringify({heartbeat: true})))
-        instance.heartbeatTerminator = CUtility.scheduleExec(() => {
+        instance.timer.heartbeatTerminator = CUtility.scheduleExec(() => {
             const cDisconnection = (!CUtility.isServer && socket.private) || (socket.public.isClient(client) && socket.private.client[client]) || false
             if (cDisconnection) socket.private.onDisconnectInstance(cDisconnection, "heartbeat-timeout")
             receiver.close()
