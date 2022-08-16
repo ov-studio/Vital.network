@@ -159,8 +159,7 @@ CServer.public.addInstanceMethod("isConnected", (self, isSync, fetchHealth) => {
 
 // @Desc: Connects the server
 CServer.public.addInstanceMethod("connect", async (self) => {
-    const isConnected = self.isConnected(true)
-    console.log(isConnected)
+    const isConnected = self.isConnected()
     if (!CUtility.isBool(isConnected)) return isConnected
     const private = CServer.instance.get(self)
     private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
