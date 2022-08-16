@@ -98,6 +98,10 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
     CSocket.public.addInstanceMethod("destroy", (self, isFlush) => {
         if (CSocket.private.isUnloaded) return false
         const private = CSocket.instance.get(self)
+        for (const i in private.timer) {
+            clearTimeout(private.timer[i])
+            delete private.timer[i]
+        }
         if (isFlush) {
             if (!CUtility.isServer) {
                 delete private["@heartbeat"]
@@ -109,9 +113,6 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         else {
             CSocket.private.onDisconnectInstance(private, `${(CUtility.isServer && "server") || "client"}-disconnected`, true)
             CNetwork.emit("vNetworkify:Socket:onDestroy", {public: self, private: private})
-            for (const i in private.timer) {
-                clearTimeout(private.timer[i])
-            }
             private.server.close()
             delete CSocket.private.buffer[(private.route)]
             self.destroyInstance()
