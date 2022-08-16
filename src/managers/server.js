@@ -132,29 +132,35 @@ CServer.public.addInstanceMethod("fetchConfig", (self) => CServer.instance.get(s
 CServer.public.addInstanceMethod("fetchServer", (self, index) => (index && private.instance[index]) || false)
 
 // @Desc: Retrieves connection's status
-CServer.public.addInstanceMethod("isConnected", async (self, isSync, fetchHealth) => {
+CServer.public.addInstanceMethod("isConnected", (self, isSync, fetchHealth) => {
     const private = CServer.instance.get(self)
     if (isSync) return (CUtility.isBool(private.isConnected) && private.isConnected) || false
     if (!CUtility.isServer && fetchHealth) {
-        var isServerHealthy = false
+        let resolver = null
+        const cHealth = new Promise((__resolver) => resolver = __resolver)
         if (!private.instance.http) {
             private.instance.http = {}
             CServer.private.onHTTPInitialize(private.instance.http)
         }
-        try {
-            isServerHealthy = await private.instance.http.get(private.healthpoint)
-            isServerHealthy = JSON.parse(isServerHealthy)
-            isServerHealthy = (isServerHealthy && (isServerHealthy.status == true)) || false
-        }
-        catch(error) {}
-        return isServerHealthy
+        CUtility.scheduleExec(async () => {
+            var isServerHealthy = false
+            try {
+                isServerHealthy = await private.instance.http.get(private.healthpoint)
+                isServerHealthy = JSON.parse(isServerHealthy)
+                isServerHealthy = (isServerHealthy && (isServerHealthy.status == true)) || false
+            }
+            catch(error) {}
+            resolver(isServerHealthyss)
+        }, 1)
+        return cHealth
     }
     return private.isAwaiting || private.isConnected || false
 })
 
 // @Desc: Connects the server
 CServer.public.addInstanceMethod("connect", async (self) => {
-    const isConnected = self.isConnected()
+    const isConnected = self.isConnected(true)
+    console.log(isConnected)
     if (!CUtility.isBool(isConnected)) return isConnected
     const private = CServer.instance.get(self)
     private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
