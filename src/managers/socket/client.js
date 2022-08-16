@@ -77,6 +77,7 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on((socket) => {
         if (CClient.private.isUnloaded) return false
         CUtility.vid.fetch(self, CUtility.vid.fetch(socket))
         self.socket = socket
+        self.timer = {}
     })
 
     // @Desc: Destroys the instance
@@ -90,6 +91,9 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on((socket) => {
         }
         CClient.private.buffer[vid].socket.send(CUtility.toBase64(JSON.stringify({disconnect: (socket.private["@disconnect"] && socket.private["@disconnect"].reason) || (self["@disconnect"] && self["@disconnect"].reason)})))
         CClient.private.buffer[vid].socket.close()
+        for (const i in CClient.private.buffer[vid].timer) {
+            clearTimeout(CClient.private.buffer[vid].timer[i])
+        }
         delete CClient.private.buffer[vid]
         delete socket.private.client[vid]
         self.destroyInstance()

@@ -195,8 +195,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     const clientInstance = self.client.create(socket)
                     const client = CUtility.vid.fetch(clientInstance, null, true)
                     private.client[client] = clientInstance
-                    clientInstance.timer = {}, clientInstance.queue = {}
-                    clientInstance.room = {}
+                    clientInstance.queue = {}, clientInstance.room = {}
                     query = CUtility.queryString.parse(query)
                     if (!query.version || (query.version != CUtility.version)) {
                         private.onDisconnectInstance(private.client[client], "version-mismatch")
