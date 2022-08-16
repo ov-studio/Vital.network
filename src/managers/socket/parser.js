@@ -76,11 +76,11 @@ const onSocketHeartbeat = function(socket, client, instance, receiver, payload) 
 }
 
 // @Desc: Handles socket's message
-const onSocketMessage = async (socket, client, clientInstance, receiver, payload) => {
+const onSocketMessage = async (socket, client, instance, receiver, payload) => {
     payload = JSON.parse(CUtility.fromBase64(payload.data))
     if (!CUtility.isObject(payload)) return false
     if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
-        if (payload.heartbeat) onSocketHeartbeat(socket, client, clientInstance, receiver, payload)
+        if (payload.heartbeat) onSocketHeartbeat(socket, client, instance, receiver, payload)
         else {
             if (!CUtility.isServer) {
                 if (payload.client) {
