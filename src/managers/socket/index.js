@@ -151,7 +151,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                     }
                 }
                 private.server.onerror = (error) => CUtility.exec(self.onConnectionError, error)
-                private.server.onmessage = (payload) => onSocketMessage(cPointer, CUtility.vid.fetch(self, null, true), private.server, payload)
+                private.server.onmessage = (payload) => onSocketMessage(cPointer, CUtility.vid.fetch(self, null, true), private, private.server, payload)
             }
             private.onReconnect = () => {
                 reconCounter += 1
@@ -203,7 +203,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                         return
                     }
                     clientInstance.socket.send(CUtility.toBase64(JSON.stringify({client: client})))
-                    onSocketHeartbeat(cPointer, client, clientInstance.socket)
+                    onSocketHeartbeat(cPointer, client, clientInstance, clientInstance.socket)
                     CUtility.exec(self.onClientConnect, client)
                     clientInstance.socket.onclose = () => {
                         const reason = (clientInstance["@disconnect"] && clientInstance["@disconnect"].reason) || (private["@disconnect"] && private["@disconnect"].reason) || "client-disconnected"
@@ -213,7 +213,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
                         clientInstance.destroy()
                         CUtility.exec(self.onClientDisconnect, client, reason)
                     }
-                    clientInstance.socket.onmessage = (payload) => onSocketMessage(cPointer, client, clientInstance.socket, payload)
+                    clientInstance.socket.onmessage = (payload) => onSocketMessage(cPointer, client, clientInstance, clientInstance.socket, payload)
                 })
             }
             server.private.instance.http.on("upgrade", private.onUpgradeSocket)

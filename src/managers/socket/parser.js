@@ -46,7 +46,7 @@ const onSocketInitialize = (socket, route, options) => {
 }
 
 // @Desc: Handles socket's heartbeat
-const onSocketHeartbeat = function(socket, client, receiver, payload) {
+const onSocketHeartbeat = function(socket, client, clientInstance, receiver, payload) {
     const currentTick = Date.now()
     socket.private["@heartbeat"] = socket.private["@heartbeat"] || {}
     socket.private["@heartbeat"].id = (socket.private["@heartbeat"].id || (payload && 1) || 0) + 1
@@ -76,11 +76,11 @@ const onSocketHeartbeat = function(socket, client, receiver, payload) {
 }
 
 // @Desc: Handles socket's message
-const onSocketMessage = async (socket, client, receiver, payload) => {
+const onSocketMessage = async (socket, client, clientInstance, receiver, payload) => {
     payload = JSON.parse(CUtility.fromBase64(payload.data))
     if (!CUtility.isObject(payload)) return false
     if (!CUtility.isString(payload.networkName) || !CUtility.isArray(payload.networkArgs)) {
-        if (payload.heartbeat) onSocketHeartbeat(socket, client, receiver, payload)
+        if (payload.heartbeat) onSocketHeartbeat(socket, client, clientInstance, receiver, payload)
         else {
             if (!CUtility.isServer) {
                 if (payload.client) {
