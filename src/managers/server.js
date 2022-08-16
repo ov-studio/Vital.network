@@ -150,7 +150,7 @@ CServer.public.addInstanceMethod("isConnected", (self, isSync, fetchHealth) => {
                 isServerHealthy = (isServerHealthy && (isServerHealthy.status == true)) || false
             }
             catch(error) {}
-            resolver(isServerHealthyss)
+            resolver(isServerHealthy)
         }, 1)
         return cHealth
     }
