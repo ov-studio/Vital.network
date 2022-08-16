@@ -100,6 +100,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         const private = CSocket.instance.get(self)
         if (isFlush) {
             if (!CUtility.isServer) {
+                delete private["@heartbeat"]
                 for (const i in private.room) {
                     delete private.room[i]
                 }
