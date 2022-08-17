@@ -27,6 +27,13 @@ const CUtility = {
 Object.defineProperty(CUtility, "isServer", {value: ((typeof(process) != "undefined") && !process.browser && true) || false, enumerable: true, configurable: false, writable: false})
 Object.defineProperty(CUtility, "global", {value: (CUtility.isServer && global) || window, enumerable: true, configurable: false, writable: false})
 CUtility.crypto = (CUtility.isServer && require("crypto")) || crypto
+CUtility.crypto.getRandomValues = CUtility.crypto.getRandomValues || ((buffer) => {
+    if (buffer instanceof Uint8Array) {
+        buffer.set(CUtility.crypto.randomBytes(buffer.length))
+        return buffer
+    }
+    return false
+})
 CUtility.toBase64 = (!CUtility.isServer && btoa.bind(window)) || ((data) => Buffer.from(data).toString("base64"))
 CUtility.fromBase64 = (!CUtility.isServer && atob.bind(window)) || ((data) => Buffer.from(data, "base64").toString("binary"))
 Object.defineProperty(CUtility, "identifier", {value: CUtility.toBase64(`vNetworkify-${(CUtility.isServer && "Server") || "Client"}`), enumerable: true, configurable: false, writable: false})
