@@ -29,9 +29,9 @@ const CType = [
 ]
 CType.forEach((j) => {
     CUtility[(j.handler)] = (data, ...cArgs) => {
-        var isTypeValid = CUtility.isType(data, j.type)
-        if (isTypeValid && j.middleware) isTypeValid = (j.middleware(data, ...cArgs) && isTypeValid) || false
-        return isTypeValid
+        var isValid = CUtility.isType(data, j.type)
+        if (isValid && j.middleware) isValid = (j.middleware(data, ...cArgs) && isValid) || false
+        return isValid
     }
 })
 
