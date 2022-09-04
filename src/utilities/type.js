@@ -13,6 +13,7 @@
 //////////////
 
 const CUtility = require("./")
+const CCache = new WeakMap()
 
 
 //////////////////
@@ -44,7 +45,10 @@ CUtility.isType = (data, type) => (!CUtility.isNull(data) && !CUtility.isNull(ty
 CUtility.isArray = (data) => CUtility.isObject(data, true)
 
 // @Desc: Verifies whether specified data is a class
-CUtility.isClass = (data) => (CUtility.isFunction(data, "function") && data.isClass && true) || false
+CUtility.isClass = (data) => {
+    const isType = (CCache.has(data) && CCache.get(data)) || false
+    return (isType && (isType.type == "class") && true) || false
+}
 
 CUtility.cloneObject = (parent, isRecursive) => {
     if (!CUtility.isObject(parent)) return false
@@ -57,16 +61,46 @@ CUtility.cloneObject = (parent, isRecursive) => {
     return result
 }
 
+// @Desc: Creates a new dynamic object
+CUtility.Object = () => {
+    const __R = [[], {}, new WeakMap()]
+    const __I = {
+        set: (property, value) => {
+            const propType = typeof(property)
+            if (propType == "number") {
+                __R[0][property] = value
+                return true
+            }
+            else if (propType == "object") {
+                __R[2].set(property, value)
+                return true
+            }
+            else {
+                __R[1][property] = value
+                return true
+            }
+        },
+        get: (property) => {
+            const propType = typeof(property)
+            if (propType == "number") return __R[0][property]
+            else if (propType == "object") return __R[2].get(property)
+            else return __R[1][property]
+        }
+    }
+    CCache.set(__I, {type: "object", ref: __R})
+    return __I
+}
+
 // @Desc: Creates a new dynamic class
-CUtility.createClass = (parent) => {
+CUtility.Class = (parent) => {
     const __I = new WeakMap()
     class __C {
-        static isClass = true
         constructor(...cArgs) {
             __I.set(this, {})
             CUtility.exec(__C.constructor, this, ...cArgs)
         }
     }
+    CCache.set(__C, {type: "class", ref: __C})
     if (CUtility.isObject(parent)) {
         for (const i in parent) {
             __C[i] = parent[i]

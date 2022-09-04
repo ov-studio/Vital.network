@@ -25,7 +25,7 @@ const {onSocketInitialize, onSocketHeartbeat, onSocketMessage} = require("./pars
 CNetwork.create("vNetworkify:Socket:onCreate")
 CNetwork.create("vNetworkify:Socket:onDestroy")
 CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
-    const CSocket = CUtility.createClass()
+    const CSocket = CUtility.Class()
     server.public.socket = CSocket.public
     CSocket.private.buffer = {}
     CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {

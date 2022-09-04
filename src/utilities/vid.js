@@ -19,7 +19,7 @@ const CUtility = require("./")
 // Class: VID //
 /////////////////
 
-const CVID = CUtility.createClass()
+const CVID = CUtility.Class()
 CUtility.vid = CVID.public
 CVID.private.buffer = {}
 CVID.private.counter = 0

@@ -19,7 +19,7 @@ const CUtility = require("./")
 // Class: Room //
 //////////////////
 
-const CRoom = CUtility.createClass()
+const CRoom = CUtility.Class()
 CRoom.private.buffer = {}
 
 
