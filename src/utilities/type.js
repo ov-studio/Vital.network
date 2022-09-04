@@ -13,13 +13,13 @@
 //////////////
 
 const CUtility = require("./")
-const CCache = new WeakMap()
 
 
 //////////////////
 // Class: Type //
 //////////////////
 
+const CCache = new WeakMap()
 const CType = [
     {handler: "isBool", type: "boolean"},
     {handler: "isString", type: "string"},
