@@ -14,8 +14,8 @@
 
 //const CFS = require("fs")
 const CPath = require("path")
+const vKit = require("@vstudio/vital.kit")
 const CPackage = require("./package.json")
-const CNodeExternals = require("webpack-node-externals")
 //const CUtilPath = "./src/utilities/index.js"
 //var CUtil = (CFS.readFileSync(CUtilPath)).toString()
 //CUtil = CUtil.replace(/(CUtility.version)(.*)/, `$1 = Object.defineProperty(CUtility, "version", {value: CUtility.toBase64("${CPackage.version}"), enumerable: true, configurable: false, writable: false})`)
@@ -25,6 +25,11 @@ const CNodeExternals = require("webpack-node-externals")
 //////////////
 // Exports //
 //////////////
+
+const ignore = ["cors", "http", "express", "compression", "ws"]
+ignore.forEach((i) => {
+    vKit.ignore.web[i] = false
+})
 
 module.exports = [
     ////////////////
@@ -42,16 +47,7 @@ module.exports = [
           filename: `${CPackage.name}-client.js`
         },
         resolve: {
-            alias: {
-                "querystring": false,
-                "crypto": false,
-                "cors": false,
-                "http": false,
-                "https": false,
-                "express": false,
-                "compression": false,
-                "ws": false
-            }
+            alias: vKit.ignore.web
         }
     },
 
@@ -70,6 +66,6 @@ module.exports = [
           path: CPath.resolve(__dirname, "build"),
           filename: `${CPackage.name}-server.js`
         },
-        externals: [CNodeExternals()]
+        externals: [require("webpack-node-externals")()]
     }
 ]
