@@ -26,10 +26,8 @@ const CPackage = require("./package.json")
 // Exports //
 //////////////
 
-const ignore = ["cors", "http", "https", "express", "compression", "ws"]
-ignore.forEach((i) => {
-    vKit.ignore.web[i] = false
-})
+const vIgnore = ["cors", "http", "https", "express", "compression", "ws"]
+vIgnore.forEach((i) => vKit.vIgnore.web[i] = false)
 
 module.exports = [
     {
@@ -43,7 +41,7 @@ module.exports = [
           filename: `${CPackage.name}-client.js`
         },
         resolve: {
-            alias: vKit.ignore.web
+            alias: vKit.vIgnore.web
         }
     },
 
