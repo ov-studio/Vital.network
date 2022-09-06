@@ -12,7 +12,6 @@
 // Imports //
 //////////////
 
-const CUtility = require("../../utilities")
 const CNetwork = require("../../utilities/network")
 
 CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
@@ -39,9 +38,9 @@ CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
     // @Desc: Resolves an awaiting callback network's handler
     socket.private.onResolveNetwork = (client, payload) => {
         if (!socket.public.isInstance()) return false
-        if (!CUtility.isObject(payload) || !payload.networkCB.isProcessed) return false
-        if (CUtility.isServer && !socket.public.isClient(client)) return false
-        const cReceiver = (CUtility.isServer && socket.public.client.fetch(client)) || socket.public
+        if (!vKit.isObject(payload) || !payload.networkCB.isProcessed) return false
+        if (vKit.isServer && !socket.public.isClient(client)) return false
+        const cReceiver = (vKit.isServer && socket.public.client.fetch(client)) || socket.public
         const cQueue = (cReceiver && cReceiver.queue) || false
         const queueID = vKit.vid.fetch(payload.networkCB, null, true)
         if (!cQueue || !queueID || !cQueue[queueID]) return false
@@ -53,7 +52,7 @@ CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
     // @Desc: Verifies network's validity
     socket.public.isNetwork = (name) => {
         if (!socket.public.isInstance()) return false
-        return (CUtility.isString(name) && socket.private.network[name] && true) || false
+        return (vKit.isString(name) && socket.private.network[name] && true) || false
     }
 
     // @Desc: Fetches an array of existing networks
@@ -103,9 +102,9 @@ CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
     socket.public.emit = (name, isRemote, ...cArgs) => {
         if (!socket.public.isInstance()) return false
         if (isRemote) {
-            if (CUtility.isServer && !socket.public.isClient(isRemote)) return false
-            const cReceiver = (CUtility.isServer && socket.public.client.fetch(isRemote)) || socket.public.server
-            cReceiver.socket.send(CUtility.toBase64(JSON.stringify({
+            if (vKit.isServer && !socket.public.isClient(isRemote)) return false
+            const cReceiver = (vKit.isServer && socket.public.client.fetch(isRemote)) || socket.public.server
+            cReceiver.socket.send(vKit.toBase64(JSON.stringify({
                 networkName: name,
                 networkArgs: cArgs
             })))
@@ -120,8 +119,8 @@ CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
     socket.public.emitCallback = (name, isRemote, ...cArgs) => {
         if (!socket.public.isInstance()) return false
         if (isRemote) {
-            if (CUtility.isServer && !socket.public.isClient(isRemote)) return false
-            const cReceiver = (CUtility.isServer && socket.public.client.fetch(isRemote)) || socket.public.server
+            if (vKit.isServer && !socket.public.isClient(isRemote)) return false
+            const cReceiver = (vKit.isServer && socket.public.client.fetch(isRemote)) || socket.public.server
             const cQueue = (cReceiver && cReceiver.queue) || false
             if (!cQueue) return false
             const networkCB = {}
@@ -138,7 +137,7 @@ CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
                     })
                 }
             })
-            cReceiver.socket.send(CUtility.toBase64(JSON.stringify({
+            cReceiver.socket.send(vKit.toBase64(JSON.stringify({
                 networkName: name,
                 networkArgs: cArgs,
                 networkCB: networkCB
