@@ -34,7 +34,7 @@
         "socket",
         "rest"
     ],
-    "main": "./src/importer",
+    "main": "./src",
     "scripts": {
         "debug": "node ./webpack.config && node ./debug/server",
         "build": "webpack"
