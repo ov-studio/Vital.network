@@ -13,7 +13,6 @@
 //////////////
 
 const CWS = require("ws")
-const CUtility = require("../../utilities")
 const CNetwork = require("../../utilities/network")
 const {onSocketInitialize, onSocketHeartbeat, onSocketMessage} = require("./parser")
 
@@ -25,7 +24,7 @@ const {onSocketInitialize, onSocketHeartbeat, onSocketMessage} = require("./pars
 CNetwork.create("vNetwork:Socket:onCreate")
 CNetwork.create("vNetwork:Socket:onDestroy")
 CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
-    const CSocket = CUtility.Class()
+    const CSocket = vKit.Class()
     server.public.socket = CSocket.public
     CSocket.private.buffer = {}
     CNetwork.fetch("vNetwork:Server:onDisconnect").on(function(__server) {
@@ -54,7 +53,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
     // @Desc: Verifies socket's validity
     CSocket.public.addMethod("isVoid", (route) => {
         if (CSocket.private.isUnloaded) return false
-        return (CUtility.isString(route) && !CSocket.private.buffer[route] && true) || false
+        return (vKit.isString(route) && !CSocket.private.buffer[route] && true) || false
     })
 
     // @Desc: Fetches socket instance by route
@@ -103,7 +102,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
             delete private.timer[i]
         }
         if (isFlush) {
-            if (!CUtility.isServer) {
+            if (!vKit.isServer) {
                 delete private["@heartbeat"]
                 for (const i in private.room) {
                     delete private.room[i]
@@ -111,7 +110,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
             }
         }
         else {
-            CSocket.private.onDisconnectInstance(private, `${(CUtility.isServer && "server") || "client"}-disconnected`, true)
+            CSocket.private.onDisconnectInstance(private, `${(vKit.isServer && "server") || "client"}-disconnected`, true)
             CNetwork.emit("vNetwork:Socket:onDestroy", {public: self, private: private})
             private.server.close()
             delete CSocket.private.buffer[(private.route)]
@@ -127,12 +126,12 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
         const cPointer = {public: self, private: private}
         private.onDisconnectInstance = CSocket.private.onDisconnectInstance
         onSocketInitialize(cPointer, route, options)
-        if (!CUtility.isServer) {
+        if (!vKit.isServer) {
             var cResolver = false, reconCounter = 0
             private.onConnect = (isReconnection) => {
                 if (!isReconnection && self.isConnected()) return
                 private.isAwaiting = private.isAwaiting || new Promise((resolver) => cResolver = resolver)
-                private.server = new WebSocket(`${((server.private.config.protocol == "https") && "wss") || "ws"}://${server.private.config.hostname}${(server.private.config.port && (":" + server.private.config.port)) || ""}/${private.route}?version=${CUtility.version}`)
+                private.server = new WebSocket(`${((server.private.config.protocol == "https") && "wss") || "ws"}://${server.private.config.hostname}${(server.private.config.port && (":" + server.private.config.port)) || ""}/${private.route}?version=${vKit.version}`)
                 private.server.onopen = () => {
                     reconCounter = 0
                     delete private.isAwaiting
@@ -149,10 +148,10 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
                         reason = reason || private["@disconnect"].reason
                         private.isConnected = false
                         cResolver(private.isConnected)
-                        CUtility.exec(self.onClientDisconnect, vKit.vid.fetch(private.server, null, true) || false, reason)
+                        vKit.exec(self.onClientDisconnect, vKit.vid.fetch(private.server, null, true) || false, reason)
                     }
                 }
-                private.server.onerror = (error) => CUtility.exec(self.onConnectionError, error)
+                private.server.onerror = (error) => vKit.exec(self.onConnectionError, error)
                 private.server.onmessage = (payload) => onSocketMessage(cPointer, vKit.vid.fetch(self, null, true), private, private.server, payload)
             }
             private.onReconnect = () => {
@@ -163,9 +162,9 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
                         return
                     }
                 }
-                private.timer.reconnectTimer = CUtility.scheduleExec(() => {
+                private.timer.reconnectTimer = vKit.scheduleExec(() => {
                     delete private.timer.reconnectTimer
-                    CUtility.exec(self.onClientReconnect, vKit.vid.fetch(private.server, null, true) || false, reconCounter, private.reconnection.attempts)
+                    vKit.exec(self.onClientReconnect, vKit.vid.fetch(private.server, null, true) || false, reconCounter, private.reconnection.attempts)
                     private.onConnect(true)
                 }, private.reconnection.interval)
                 return true
@@ -177,15 +176,15 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
                 noServer: true,
                 path: `/${private.route}`
             })
-            CUtility.scheduleExec(() => CUtility.exec(self.onServerConnect), 1)
+            vKit.scheduleExec(() => vKit.exec(self.onServerConnect), 1)
             private.server.onclose = () => {
                 const timestamp_start = private.timestamp, timestamp_end = new Date()
                 const deltaTick = timestamp_end.getTime() - timestamp_start.getTime()
                 self.destroy()
                 server.private.instance.http.off("upgrade", private.onUpgradeSocket)
-                CUtility.scheduleExec(() => CUtility.exec(self.onServerDisconnect, timestamp_start, timestamp_end, deltaTick), 1)
+                vKit.scheduleExec(() => vKit.exec(self.onServerDisconnect, timestamp_start, timestamp_end, deltaTick), 1)
             }
-            private.server.onerror = (error) => CUtility.exec(self.onConnectionError, error)
+            private.server.onerror = (error) => vKit.exec(self.onConnectionError, error)
             private.server.on("close", private.server.onclose)
             private.server.on("error", private.server.onerror)
             private.onUpgradeSocket = (request, socket, head) => {
@@ -198,22 +197,22 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
                     const client = vKit.vid.fetch(clientInstance, null, true)
                     private.client[client] = clientInstance
                     clientInstance.queue = {}, clientInstance.room = {}
-                    query = CUtility.queryString.parse(query)
-                    if (!query.version || (query.version != CUtility.version)) {
+                    query = vKit.query.parse(query)
+                    if (!query.version || (query.version != vKit.version)) {
                         private.onDisconnectInstance(private.client[client], "version-mismatch")
                         clientInstance.destroy()
                         return
                     }
-                    clientInstance.socket.send(CUtility.toBase64(JSON.stringify({client: client})))
+                    clientInstance.socket.send(vKit.toBase64(JSON.stringify({client: client})))
                     onSocketHeartbeat(cPointer, client, clientInstance, clientInstance.socket)
-                    CUtility.exec(self.onClientConnect, client)
+                    vKit.exec(self.onClientConnect, client)
                     clientInstance.socket.onclose = () => {
                         const reason = (clientInstance["@disconnect"] && clientInstance["@disconnect"].reason) || (private["@disconnect"] && private["@disconnect"].reason) || "client-disconnected"
                         for (const i in clientInstance.socket.room) {
                             self.leaveRoom(i, client)
                         }
                         clientInstance.destroy()
-                        CUtility.exec(self.onClientDisconnect, client, reason)
+                        vKit.exec(self.onClientDisconnect, client, reason)
                     }
                     clientInstance.socket.onmessage = (payload) => onSocketMessage(cPointer, client, clientInstance, clientInstance.socket, payload)
                 })
@@ -222,12 +221,12 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
         }
     })
 
-    if (!CUtility.isServer) {
+    if (!vKit.isServer) {
         // @Desc: Retrieves connection's status of instance
         CSocket.public.addInstanceMethod("isConnected", (self, isSync) => {
             if (CSocket.private.isUnloaded) return false
             const private = CSocket.instance.get(self)
-            if (isSync) return (CUtility.isBool(private.isConnected) && private.isConnected) || false
+            if (isSync) return (vKit.isBool(private.isConnected) && private.isConnected) || false
             return private.isAwaiting || private.isConnected || false
         })
     }
