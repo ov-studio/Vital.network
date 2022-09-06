@@ -42,7 +42,7 @@ module.exports = [
           filename: `${CPackage.name}-client.js`
         },
         resolve: {
-            alias: vKit.vIgnore.web
+            alias: vKit.ignore.web
         }
     },
     // Back-End
