@@ -12,8 +12,8 @@
 // Imports //
 //////////////
 
+require("@vstudio/vital.kit")
 const CPath = require("path")
-const vKit = require("@vstudio/vital.kit")
 const CPackage = require("./package.json")
 
 
@@ -21,10 +21,11 @@ const CPackage = require("./package.json")
 // Exports //
 //////////////
 
-//const vIgnore = ["cors", "express", "compression", "ws"]
-//vIgnore.forEach((i) => vKit.ignore.web[i] = false)
+const vIgnore = ["cors", "express", "compression", "ws"]
+vIgnore.forEach((i) => vKit.ignore.web[i] = false)
 
 module.exports = [
+    /*
     // Front-End
     {
         target: "web",
@@ -53,4 +54,5 @@ module.exports = [
         },
         externals: [require("webpack-node-externals")()]
     }
+    */
 ]
