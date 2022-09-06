@@ -16,7 +16,7 @@ const CNetwork = require("@vstudio/vital.kit/src/network")
 const CRoom = vKit.Buffer("room")
 
 CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
-    if (vKit.isServer) {
+    if (vKit.server) {
         const onSocketDestroy = function(__socket) {
             if ((socket.public != __socket.public) || (socket.private != __socket.private)) return
             CNetwork.fetch("vNetwork:Socket:onDestroy").off(onSocketDestroy)
@@ -54,7 +54,7 @@ CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
         if (!socket.public.isRoom(name)) return false
         const result = []
         for (const i in socket.private.room[name].member) {
-            if (!vKit.isServer || socket.public.isClient(i)) result.push(i)
+            if (!vKit.server || socket.public.isClient(i)) result.push(i)
         }
         return result
     }
@@ -63,14 +63,14 @@ CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
     socket.public.isInRoom = (name, client) => {
         if (!socket.public.isInstance()) return false
         if (!socket.public.isRoom(name) || !socket.public.client.fetch(client)) return false
-        if (vKit.isServer) {
+        if (vKit.server) {
             if (!socket.public.isClient(client)) return false
             return (socket.private.room[name].member[client] && true) || false   
         }
         return (socket.private.room[name].member[client] && true) || false
     }
 
-    if (vKit.isServer) {
+    if (vKit.server) {
         // @Desc: Creates a fresh room w/ specified name
         socket.public.createRoom = (name, ...cArgs) => {
             if (!socket.public.isInstance()) return false

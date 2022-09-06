@@ -102,7 +102,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
             delete private.timer[i]
         }
         if (isFlush) {
-            if (!vKit.isServer) {
+            if (!vKit.server) {
                 delete private["@heartbeat"]
                 for (const i in private.room) {
                     delete private.room[i]
@@ -110,7 +110,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
             }
         }
         else {
-            CSocket.private.onDisconnectInstance(private, `${(vKit.isServer && "server") || "client"}-disconnected`, true)
+            CSocket.private.onDisconnectInstance(private, `${(vKit.server && "server") || "client"}-disconnected`, true)
             CNetwork.emit("vNetwork:Socket:onDestroy", {public: self, private: private})
             private.server.close()
             delete CSocket.private.buffer[(private.route)]
@@ -126,7 +126,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
         const cPointer = {public: self, private: private}
         private.onDisconnectInstance = CSocket.private.onDisconnectInstance
         onSocketInitialize(cPointer, route, options)
-        if (!vKit.isServer) {
+        if (!vKit.server) {
             var cResolver = false, reconCounter = 0
             private.onConnect = (isReconnection) => {
                 if (!isReconnection && self.isConnected()) return
@@ -221,7 +221,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
         }
     })
 
-    if (!vKit.isServer) {
+    if (!vKit.server) {
         // @Desc: Retrieves connection's status of instance
         CSocket.public.addInstanceMethod("isConnected", (self, isSync) => {
             if (CSocket.private.isUnloaded) return false

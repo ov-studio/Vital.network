@@ -39,8 +39,8 @@ CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
     socket.private.onResolveNetwork = (client, payload) => {
         if (!socket.public.isInstance()) return false
         if (!vKit.isObject(payload) || !payload.networkCB.isProcessed) return false
-        if (vKit.isServer && !socket.public.isClient(client)) return false
-        const cReceiver = (vKit.isServer && socket.public.client.fetch(client)) || socket.public
+        if (vKit.server && !socket.public.isClient(client)) return false
+        const cReceiver = (vKit.server && socket.public.client.fetch(client)) || socket.public
         const cQueue = (cReceiver && cReceiver.queue) || false
         const queueID = vKit.vid.fetch(payload.networkCB, null, true)
         if (!cQueue || !queueID || !cQueue[queueID]) return false
@@ -102,8 +102,8 @@ CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
     socket.public.emit = (name, isRemote, ...cArgs) => {
         if (!socket.public.isInstance()) return false
         if (isRemote) {
-            if (vKit.isServer && !socket.public.isClient(isRemote)) return false
-            const cReceiver = (vKit.isServer && socket.public.client.fetch(isRemote)) || socket.public.server
+            if (vKit.server && !socket.public.isClient(isRemote)) return false
+            const cReceiver = (vKit.server && socket.public.client.fetch(isRemote)) || socket.public.server
             cReceiver.socket.send(vKit.toBase64(JSON.stringify({
                 networkName: name,
                 networkArgs: cArgs
@@ -119,8 +119,8 @@ CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
     socket.public.emitCallback = (name, isRemote, ...cArgs) => {
         if (!socket.public.isInstance()) return false
         if (isRemote) {
-            if (vKit.isServer && !socket.public.isClient(isRemote)) return false
-            const cReceiver = (vKit.isServer && socket.public.client.fetch(isRemote)) || socket.public.server
+            if (vKit.server && !socket.public.isClient(isRemote)) return false
+            const cReceiver = (vKit.server && socket.public.client.fetch(isRemote)) || socket.public.server
             const cQueue = (cReceiver && cReceiver.queue) || false
             if (!cQueue) return false
             const networkCB = {}

@@ -21,7 +21,7 @@ const CNetwork = require("@vstudio/vital.kit/src/network")
 ////////////////////
 
 CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
-    if (!vKit.isServer) return false
+    if (!vKit.server) return false
     const CClient = vKit.Class()
     socket.public.client = CClient.public
     CClient.private.buffer = {}

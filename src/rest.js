@@ -42,7 +42,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on((server) => {
         return server.private.instance.http[type](...cArgs)
     })
 
-    if (vKit.isServer) {
+    if (vKit.server) {
         // @Desc: Verifies whether the REST API is void
         CRest.public.addMethod("isVoid", (type, route) => {
             if (CRest.private.isUnloaded) return false

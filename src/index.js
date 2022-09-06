@@ -41,7 +41,7 @@ CServer.public.addMethod("create", (...cArgs) => CServer.public.createInstance(.
 CServer.private.onConnectionStatus = (self, state) => {
     const private = CServer.instance.get(self)
     private.isConnected = state
-    vKit.print(`━ vNetwork (${(!vKit.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || "" } [Version: ${vKit.fromBase64(vNetwork.version)}]`)
+    vKit.print(`━ vNetwork (${(!vKit.server && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || "" } [Version: ${vKit.fromBase64(vNetwork.version)}]`)
     if (private.isConnected) CNetwork.emit("vNetwork:Server:onConnect", {public: self, private: private})
     vKit.scheduleExec(() => {
         delete private.isAwaiting
@@ -83,7 +83,7 @@ CServer.private.onHTTPInitialize = (http) => {
     return true
 }
 
-if (vKit.isServer) {
+if (vKit.server) {
     // @Desc: Sets/Revokes SSL Cert
     CServer.public.addMethod("setSSLCert", (sslcert) => {
         if (sslcert && !vKit.isObject(sslcert)) return false
@@ -105,7 +105,7 @@ CServer.public.addMethod("constructor", (self, options) => {
     private.config = {}, private.instance = {}
     private.config.port = (vKit.isNumber(options.port) && options.port) || false
     private.healthpoint = "vhealth"
-    if (!vKit.isServer) {
+    if (!vKit.server) {
         private.config.protocol = (options.isSSL && "https") || "http"
         private.config.hostname = (vKit.isString(options.hostname) && options.hostname) || window.location.hostname
         private.healthpoint = `${private.config.protocol}://${private.config.hostname}${(private.config.port && (":" + private.config.port)) || ""}/${private.healthpoint}`
@@ -120,7 +120,7 @@ CServer.public.addMethod("constructor", (self, options) => {
 CServer.public.addInstanceMethod("destroy", (self) => {
     const private = CServer.instance.get(self)
     if (self.isConnected(true)) CNetwork.emit("vNetwork:Server:onDisconnect", {public: self, private: private})
-    if (vKit.isServer) private.instance.http.close()
+    if (vKit.server) private.instance.http.close()
     self.destroyInstance()
     return true
 })
@@ -135,7 +135,7 @@ CServer.public.addInstanceMethod("fetchServer", (self, index) => (index && priva
 CServer.public.addInstanceMethod("isConnected", (self, isSync, fetchHealth) => {
     const private = CServer.instance.get(self)
     if (isSync) return (vKit.isBool(private.isConnected) && private.isConnected) || false
-    if (!vKit.isServer && fetchHealth) {
+    if (!vKit.server && fetchHealth) {
         let resolver = null
         const cHealth = new Promise((__resolver) => resolver = __resolver)
         if (!private.instance.http) {
@@ -163,7 +163,7 @@ CServer.public.addInstanceMethod("connect", async (self) => {
     if (!vKit.isBool(isConnected)) return isConnected
     const private = CServer.instance.get(self)
     private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
-    if (!vKit.isServer) {
+    if (!vKit.server) {
         var isServerHealthy = await self.isConnected(null, true)
         CServer.private.onConnectionStatus(self, isServerHealthy)
     }
