@@ -32,15 +32,11 @@ ignore.forEach((i) => {
 })
 
 module.exports = [
-    ////////////////
-    // Front End //
-    ////////////////
-
     {
         target: "web",
         mode: "production",
         entry: {
-            app: ["./src"]
+            app: ["./src/"]
         },
         output: {
           path: CPath.resolve(__dirname, "build"),
@@ -50,11 +46,6 @@ module.exports = [
             alias: vKit.ignore.web
         }
     },
-
-
-    ///////////////
-    // Back End //
-    ///////////////
 
     {
         target: "node",
