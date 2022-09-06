@@ -12,7 +12,6 @@
 // Imports //
 //////////////
 
-// TODO: UPGRADE
 const CNetwork = require("@vstudio/vital.kit/src/network")
 
 
