@@ -26,7 +26,7 @@ const CPackage = require("./package.json")
 // Exports //
 //////////////
 
-const vIgnore = ["cors", "http", "https", "express", "compression", "ws"]
+const vIgnore = ["cors", "express", "compression", "ws"]
 vIgnore.forEach((i) => vKit.ignore.web[i] = false)
 
 module.exports = [
