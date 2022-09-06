@@ -21,7 +21,7 @@ Tired of using bloatwares? unnecessary dependencies? redundant codes? reinventin
 * Built-In Socket APIs
 * Built-In Socket Networks
 * Built-In Socket Rooms
-* Supports CDN Embedding (Solo embeddable script provided w/n every release `vnetwork-client`, `vnetwork-server`)
+* Supports CDN Embedding (Solo embeddable script provided w/n every release `vital.network-client`, `vital.network-server`)
 * Necessary Integration APIs
 
 ## ━ Contents
