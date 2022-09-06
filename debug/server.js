@@ -35,28 +35,28 @@ async function debug() {
             timeout: 60000 // Duration at which it should disconnect instance if no response is received
         }
     })
-    vNetwork.util.print("* Socket-list:")
-    vNetwork.util.print(Object.keys(cServer.socket.fetchSockets()))
+    vKit.util.print("* Socket-list:")
+    vKit.util.print(Object.keys(cServer.socket.fetchSockets()))
 
     cSocket.onHeartbeat = function(client, id, deltaTick) {
-        vNetwork.util.print(`* Client's [${client}] heartbeat [ID: ${id}] [ET: ${deltaTick}ms] received!`)
+        vKit.util.print(`* Client's [${client}] heartbeat [ID: ${id}] [ET: ${deltaTick}ms] received!`)
     }
     cSocket.onServerConnect = function() {
-        vNetwork.util.print("* Server successfully connected!")
+        vKit.util.print("* Server successfully connected!")
     }
     cSocket.onServerDisconnect = function(timestamp_start, timestamp_end, deltaTick) {
-        vNetwork.util.print(`* Server successfully disconnected! | Life-Span: [${deltaTick}ms]`)
+        vKit.util.print(`* Server successfully disconnected! | Life-Span: [${deltaTick}ms]`)
     }
 
 
     // @Non-Callback Network Examples
     cSocket.createNetwork("Server:MyNetwork")
     cSocket.on("Server:MyNetwork", function() {
-        vNetwork.util.print("Non-Callback network | Handler 1")
+        vKit.util.print("Non-Callback network | Handler 1")
     })
     const secondaryExec = function(...cArgs) {
-        vNetwork.util.print("Non-Callback network | Handler 2")
-        vNetwork.util.print(...cArgs)
+        vKit.util.print("Non-Callback network | Handler 2")
+        vKit.util.print(...cArgs)
     }
     cSocket.on("Server:MyNetwork", secondaryExec)
     cSocket.off("Server:MyNetwork", secondaryExec)
@@ -68,39 +68,39 @@ async function debug() {
         return argA + argB
     })
     const networkCBResult = await cSocket.emitCallback("Server:MyCBNetwork", false, 1, 4)
-    vNetwork.util.print(`Callback network | Result: ${networkCBResult}`)
-    vNetwork.util.print("* Network-list:")
-    vNetwork.util.print(cSocket.fetchNetworks())
+    vKit.util.print(`Callback network | Result: ${networkCBResult}`)
+    vKit.util.print("* Network-list:")
+    vKit.util.print(cSocket.fetchNetworks())
 
 
     // @Room Examples
     cSocket.createRoom("Server:MyRoom")
     cSocket.destroyRoom("Server:MyRoom")
     cSocket.createRoom("Server:MyRoom")
-    vNetwork.util.print("* Room-list:")
-    vNetwork.util.print(cSocket.fetchRooms())
+    vKit.util.print("* Room-list:")
+    vKit.util.print(cSocket.fetchRooms())
 
     cSocket.onClientConnect = async function(client) {
-        vNetwork.util.print(`* Client connected [${client}]`)
-        vNetwork.util.print("* Client-list:")
-        vNetwork.util.print(cSocket.fetchClients())
+        vKit.util.print(`* Client connected [${client}]`)
+        vKit.util.print("* Client-list:")
+        vKit.util.print(cSocket.fetchClients())
 
         cSocket.joinRoom("Server:MyRoom", client)
         cSocket.emitRoom("Server:MyRoom", "Client:MyNetwork")
         const networkRemoteCBResult = await cSocket.emitCallback("Client:MyCBNetwork", client, 10, 20)
-        vNetwork.util.print(`Remote-Callback network | Result: ${networkRemoteCBResult}`)
+        vKit.util.print(`Remote-Callback network | Result: ${networkRemoteCBResult}`)
     }
     cSocket.onClientDisconnect = function(client, reason) {
-        vNetwork.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
+        vKit.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
     }
 
     cSocket.onClientJoinRoom = function(room, client) {
-        vNetwork.util.print(`* Client [${client}] joined Room [${room}]`)
-        vNetwork.util.print(`* Member-list:`)
-        vNetwork.util.print(cSocket.fetchRoomMembers(room))
+        vKit.util.print(`* Client [${client}] joined Room [${room}]`)
+        vKit.util.print(`* Member-list:`)
+        vKit.util.print(cSocket.fetchRoomMembers(room))
     }
     cSocket.onClientLeaveRoom = function(room, client) {
-        vNetwork.util.print(`* Client [${client}] left Room [${room}]`)
+        vKit.util.print(`* Client [${client}] left Room [${room}]`)
     }
 
 
@@ -113,7 +113,7 @@ async function debug() {
         response.status(200).send({test: "Updated Status Message"})
     })
     var restAPIResult = await cServer.rest.fetch("get", "https://raw.githubusercontent.com/ov-studio/vNetwork/main/package.json")
-    vNetwork.util.print(JSON.parse(restAPIResult))
+    vKit.util.print(JSON.parse(restAPIResult))
 }
 debug()
 
@@ -135,16 +135,16 @@ async function debug2() {
     })
 
     cSocket.onServerConnect = function() {
-        vNetwork.util.print("* Server successfully connected!")
+        vKit.util.print("* Server successfully connected!")
     }
     cSocket.onServerDisconnect = function(timestamp_start, timestamp_end, deltaTick) {
-        vNetwork.util.print(`* Server successfully disconnected! | Life-Span: [${deltaTick}ms]`)
+        vKit.util.print(`* Server successfully disconnected! | Life-Span: [${deltaTick}ms]`)
     }
     cSocket.onClientConnect = async function(client) {
-        vNetwork.util.print(`* Client connected [${client}]`)
+        vKit.util.print(`* Client connected [${client}]`)
     }
     cSocket.onClientDisconnect = function(client, reason) {
-        vNetwork.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
+        vKit.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
     }
 }
 debug2()
