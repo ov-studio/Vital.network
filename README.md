@@ -4,7 +4,7 @@
 
 **━ Maintainer(s):** [**Aviril**](https://github.com/Aviril), [**Mario**](https://github.com/OvileAmriam), [**Tron**](https://github.com/OvileAmriam), [**Anisa**](https://github.com/Anisa-Nur)
 
-**vNetwork** is a open source lightweight yet safe, secure & reliable cross-platform (Client, Server) networking library that you can rely on without stressing about performances issues, since the library is developed with '**Performance-First**' in mind! vNetwork provides built-in REST & Socket APIs out of the box that you may usually need for any simple to complex projects.
+**Vital.network** is a open source lightweight yet safe, secure & reliable cross-platform (Client, Server) networking library that you can rely on without stressing about performances issues, since the library is developed with '**Performance-First**' in mind! vNetwork provides built-in REST & Socket APIs out of the box that you may usually need for any simple to complex projects.
 
 Tired of using bloatwares? unnecessary dependencies? redundant codes? reinventing wheels? additional/unoptimized modules? searching for single file library?; Don't worry we've got you covered! vNetwork implements networking servers & exports them along w/ addon APIs; thus letting you utilize them w/o having to import `express`, `ws` or any additional libraries separately. Nevertheless you can import them from vNetwork for any specific usecases.
 
