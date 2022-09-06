@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetworkify
+     Resource: vNetwork
      Script: managers: socket: room.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
@@ -16,16 +16,16 @@ const CUtility = require("../../utilities")
 const CNetwork = require("../../utilities/network")
 const CRoom = require("../../utilities/room")
 
-CNetwork.fetch("vNetworkify:Socket:onCreate").on((socket) => {
+CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
     if (CUtility.isServer) {
         const onSocketDestroy = function(__socket) {
             if ((socket.public != __socket.public) || (socket.private != __socket.private)) return
-            CNetwork.fetch("vNetworkify:Socket:onDestroy").off(onSocketDestroy)
+            CNetwork.fetch("vNetwork:Socket:onDestroy").off(onSocketDestroy)
             for (const i in socket.private.room) {
                 socket.private.room[i].destroy()
             }
         }
-        CNetwork.fetch("vNetworkify:Socket:onDestroy").on(onSocketDestroy)
+        CNetwork.fetch("vNetwork:Socket:onDestroy").on(onSocketDestroy)
     }
     
 

@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetworkify
+     Resource: vNetwork
      Script: managers: socket: index.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
@@ -22,13 +22,13 @@ const {onSocketInitialize, onSocketHeartbeat, onSocketMessage} = require("./pars
 // Class: Socket //
 ////////////////////
 
-CNetwork.create("vNetworkify:Socket:onCreate")
-CNetwork.create("vNetworkify:Socket:onDestroy")
-CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
+CNetwork.create("vNetwork:Socket:onCreate")
+CNetwork.create("vNetwork:Socket:onDestroy")
+CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
     const CSocket = CUtility.Class()
     server.public.socket = CSocket.public
     CSocket.private.buffer = {}
-    CNetwork.fetch("vNetworkify:Server:onDisconnect").on(function(__server) {
+    CNetwork.fetch("vNetwork:Server:onDisconnect").on(function(__server) {
         if ((server.public != __server.public) || (server.private != __server.private)) return
         for (const i in CSocket.private.buffer) {
             CSocket.private.buffer[i].destroy()
@@ -78,7 +78,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         if (CSocket.private.isUnloaded) return false
         if (!CSocket.public.isVoid(route)) return false
         CSocket.private.buffer[route] = CSocket.public.createInstance(route, ...cArgs)
-        CNetwork.emit("vNetworkify:Socket:onCreate", {public: CSocket.private.buffer[route], private: CSocket.instance.get(CSocket.private.buffer[route])})
+        CNetwork.emit("vNetwork:Socket:onCreate", {public: CSocket.private.buffer[route], private: CSocket.instance.get(CSocket.private.buffer[route])})
         return CSocket.private.buffer[route]
     })
 
@@ -112,7 +112,7 @@ CNetwork.fetch("vNetworkify:Server:onConnect").on(function(server) {
         }
         else {
             CSocket.private.onDisconnectInstance(private, `${(CUtility.isServer && "server") || "client"}-disconnected`, true)
-            CNetwork.emit("vNetworkify:Socket:onDestroy", {public: self, private: private})
+            CNetwork.emit("vNetwork:Socket:onDestroy", {public: self, private: private})
             private.server.close()
             delete CSocket.private.buffer[(private.route)]
             self.destroyInstance()

@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetworkify
+     Resource: vNetwork
      Script: managers: socket: parser.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron

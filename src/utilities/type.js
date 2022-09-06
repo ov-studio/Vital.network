@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetworkify
+     Resource: vNetwork
      Script: utilities: type.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron

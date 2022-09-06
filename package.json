@@ -5,13 +5,13 @@
     "private": false,
     "license": "GPL-3.0",
     "description": "Vital.js' Networker (Lightweight yet Reliable)",
-    "homepage": "https://github.com/ov-studio/vNetworkify#readme",
+    "homepage": "https://github.com/ov-studio/vNetwork#readme",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/ov-studio/vNetworkify.git"
+        "url": "git+https://github.com/ov-studio/vNetwork.git"
     },
     "bugs": {
-        "url": "https://github.com/ov-studio/vNetworkify/issues"
+        "url": "https://github.com/ov-studio/vNetwork/issues"
     },
     "keywords": [
         "ov",

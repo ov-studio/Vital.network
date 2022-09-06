@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetworkify
+     Resource: vNetwork
      Script: utilities: index.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
@@ -36,7 +36,7 @@ CUtility.crypto.getRandomValues = CUtility.crypto.getRandomValues || ((buffer) =
 })
 CUtility.toBase64 = (!CUtility.isServer && btoa.bind(window)) || ((data) => Buffer.from(data).toString("base64"))
 CUtility.fromBase64 = (!CUtility.isServer && atob.bind(window)) || ((data) => Buffer.from(data, "base64").toString("binary"))
-Object.defineProperty(CUtility, "identifier", {value: CUtility.toBase64(`vNetworkify-${(CUtility.isServer && "Server") || "Client"}`), enumerable: true, configurable: false, writable: false})
+Object.defineProperty(CUtility, "identifier", {value: CUtility.toBase64(`vNetwork-${(CUtility.isServer && "Server") || "Client"}`), enumerable: true, configurable: false, writable: false})
 CUtility.version = Object.defineProperty(CUtility, "version", {value: CUtility.toBase64("3.3.1"), enumerable: true, configurable: false, writable: false})
 
 // @Desc: Executes the specified handler

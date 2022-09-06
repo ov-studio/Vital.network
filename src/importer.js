@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetworkify
+     Resource: vNetwork
      Script: importer.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
@@ -19,7 +19,6 @@ const CUtility = require("./utilities")
 // Exports //
 //////////////
 
-const vNetworkify = CUtility.createAPIs(require("./managers/server"))
-vNetworkify.util = CUtility
-CUtility.global.vNetworkify = vNetworkify
-module.exports = vNetworkify
+const vNetwork = CUtility.createAPIs(require("./managers/server"))
+CUtility.global.vNetwork = vNetwork
+module.exports = vNetwork

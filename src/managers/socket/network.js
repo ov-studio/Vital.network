@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetworkify
+     Resource: vNetwork
      Script: managers: socket: network.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
@@ -15,15 +15,15 @@
 const CUtility = require("../../utilities")
 const CNetwork = require("../../utilities/network")
 
-CNetwork.fetch("vNetworkify:Socket:onCreate").on((socket) => {
+CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
     const onSocketDestroy = function(__socket) {
         if ((socket.public != __socket.public) || (socket.private != __socket.private)) return
-        CNetwork.fetch("vNetworkify:Socket:onDestroy").off(onSocketDestroy)
+        CNetwork.fetch("vNetwork:Socket:onDestroy").off(onSocketDestroy)
         for (const i in socket.private.network) {
             socket.public.destroyNetwork(i)
         }
     }
-    CNetwork.fetch("vNetworkify:Socket:onDestroy").on(onSocketDestroy)
+    CNetwork.fetch("vNetwork:Socket:onDestroy").on(onSocketDestroy)
 
 
     ///////////////////////

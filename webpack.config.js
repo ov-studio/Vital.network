@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetworkify
+     Resource: vNetwork
      Script: webpack.config.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron

@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetworkify
+     Resource: vNetwork
      Script: managers: socket: client.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
@@ -20,7 +20,7 @@ const CNetwork = require("../../utilities/network")
 // Class: Client //
 ////////////////////
 
-CNetwork.fetch("vNetworkify:Socket:onCreate").on((socket) => {
+CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
     if (!CUtility.isServer) return false
     const CClient = CUtility.Class()
     socket.public.client = CClient.public
@@ -28,14 +28,14 @@ CNetwork.fetch("vNetworkify:Socket:onCreate").on((socket) => {
 
     const onSocketDestroy = function(__socket) {
         if ((socket.public != __socket.public) || (socket.private != __socket.private)) return
-        CNetwork.fetch("vNetworkify:Socket:onDestroy").off(onSocketDestroy)
+        CNetwork.fetch("vNetwork:Socket:onDestroy").off(onSocketDestroy)
         for (const i in CClient.private.buffer) {
             CClient.private.buffer[i].destroy()
         }
         CClient.private.isUnloaded = true
         delete socket.public.client
     }
-    CNetwork.fetch("vNetworkify:Socket:onDestroy").on(onSocketDestroy)
+    CNetwork.fetch("vNetwork:Socket:onDestroy").on(onSocketDestroy)
 
 
     /////////////////////

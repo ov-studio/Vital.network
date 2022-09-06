@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetworkify
+     Resource: vNetwork
      Script: debug: client.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
@@ -13,7 +13,7 @@
 ///////////////
 
 async function debug() {
-    const cServer = vNetworkify.create({
+    const cServer = vNetwork.create({
         port: 33021,
         isSSL: false
     })
@@ -32,20 +32,20 @@ async function debug() {
             interval: 2500 // Duration b/w each attempt
         }
     })
-    vNetworkify.util.print("* Socket-list:")
-    vNetworkify.util.print(Object.keys(cServer.socket.fetchSockets()))
+    vNetwork.util.print("* Socket-list:")
+    vNetwork.util.print(Object.keys(cServer.socket.fetchSockets()))
 
     cSocket.onHeartbeat = function(id, deltaTick) {
-        vNetworkify.util.print(`* Server's heartbeat [ID: ${id}] [ET: ${deltaTick}ms] received!`)
+        vNetwork.util.print(`* Server's heartbeat [ID: ${id}] [ET: ${deltaTick}ms] received!`)
     }
     cSocket.onClientConnect = function(client) {
-        vNetworkify.util.print(`* Client connected [${client}]`)
+        vNetwork.util.print(`* Client connected [${client}]`)
     }
     cSocket.onClientReconnect = function(client, currentAttempt, maxAttempts) {
-        vNetworkify.util.print(`* Client reconnecting [${client}] | Attempts: ${currentAttempt}/${maxAttempts}`)
+        vNetwork.util.print(`* Client reconnecting [${client}] | Attempts: ${currentAttempt}/${maxAttempts}`)
     }
     cSocket.onClientDisconnect = function(client, reason) {
-        vNetworkify.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
+        vNetwork.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
     }
     const isSocketConnected = await cSocket.isConnected()
     if (!isSocketConnected) return false
@@ -54,11 +54,11 @@ async function debug() {
     // @Non-Callback Network Examples
     cSocket.createNetwork("Client:MyNetwork")
     cSocket.on("Client:MyNetwork", function() {
-        vNetworkify.util.print("Non-Callback network | Handler 1")
+        vNetwork.util.print("Non-Callback network | Handler 1")
     })
     const secondaryExec = function(...cArgs) {
-        vNetworkify.util.print("Non-Callback network | Handler 2")
-        vNetworkify.util.print(...cArgs)
+        vNetwork.util.print("Non-Callback network | Handler 2")
+        vNetwork.util.print(...cArgs)
     }
     cSocket.on("Client:MyNetwork", secondaryExec)
     cSocket.off("Client:MyNetwork", secondaryExec)
@@ -69,37 +69,37 @@ async function debug() {
     cSocket.on("Client:MyCBNetwork", function(argA, argB) {
         return argA + argB
     })
-    vNetworkify.util.print("* Network-list:")
-    vNetworkify.util.print(cSocket.fetchNetworks())
+    vNetwork.util.print("* Network-list:")
+    vNetwork.util.print(cSocket.fetchNetworks())
 
     const networkCBResult = await cSocket.emitCallback("Client:MyCBNetwork", false, 1, 4)
-    vNetworkify.util.print(`Callback network | Result: ${networkCBResult}`)
+    vNetwork.util.print(`Callback network | Result: ${networkCBResult}`)
     const networkRemoteCBResult = await cSocket.emitCallback("Server:MyCBNetwork", true, 100, 200)
-    vNetworkify.util.print(`Remote-Callback network | Result: ${networkRemoteCBResult}`)
+    vNetwork.util.print(`Remote-Callback network | Result: ${networkRemoteCBResult}`)
 
 
     //@Room Examples
     cSocket.onClientJoinRoom = function(room, client) {
-        vNetworkify.util.print(`* Client [${client}] joined Room [${room}]`)
-        vNetworkify.util.print(`* Member-list:`)
-        vNetworkify.util.print(cSocket.fetchRoomMembers(room))
+        vNetwork.util.print(`* Client [${client}] joined Room [${room}]`)
+        vNetwork.util.print(`* Member-list:`)
+        vNetwork.util.print(cSocket.fetchRoomMembers(room))
     }
     cSocket.onClientLeaveRoom = function(room, client) {
-        vNetworkify.util.print(`* Client [${client}] left Room [${room}]`)
+        vNetwork.util.print(`* Client [${client}] left Room [${room}]`)
     }
 
 
     // @Rest API Examples
     var restAPIResult = await cServer.rest.fetch("get", "http://localhost:33021/")
-    vNetworkify.util.print(JSON.parse(restAPIResult))
+    vNetwork.util.print(JSON.parse(restAPIResult))
     var restAPIResult = await cServer.rest.fetch("get", "http://localhost:33021/invalid")
-    vNetworkify.util.print(JSON.parse(restAPIResult))
+    vNetwork.util.print(JSON.parse(restAPIResult))
 }
 debug()
 
 
 async function debug2() {
-    const cServer = vNetworkify.create({
+    const cServer = vNetwork.create({
         port: 33022,
         isSSL: false
     })
@@ -119,10 +119,10 @@ async function debug2() {
     })
 
     cSocket.onClientConnect = function(client) {
-        vNetworkify.util.print(`* Client connected [${client}]`)
+        vNetwork.util.print(`* Client connected [${client}]`)
     }
     cSocket.onClientDisconnect = function(client, reason) {
-        vNetworkify.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
+        vNetwork.util.print(`* Client disconnected [${client}] | Reason: ${reason}`)
     }
 }
 debug2()

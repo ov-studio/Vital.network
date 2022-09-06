@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetworkify
+     Resource: vNetwork
      Script: managers: server.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
@@ -26,8 +26,8 @@ const CNetwork = require("../utilities/network")
 ///////////////////
 
 const CServer = CUtility.Class()
-CNetwork.create("vNetworkify:Server:onConnect")
-CNetwork.create("vNetworkify:Server:onDisconnect")
+CNetwork.create("vNetwork:Server:onConnect")
+CNetwork.create("vNetwork:Server:onDisconnect")
 
 
 /////////////////////
@@ -41,8 +41,8 @@ CServer.public.addMethod("create", (...cArgs) => CServer.public.createInstance(.
 CServer.private.onConnectionStatus = (self, state) => {
     const private = CServer.instance.get(self)
     private.isConnected = state
-    CUtility.print(`━ vNetworkify (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || "" } [Version: ${CUtility.fromBase64(CUtility.version)}]`)
-    if (private.isConnected) CNetwork.emit("vNetworkify:Server:onConnect", {public: self, private: private})
+    CUtility.print(`━ vNetwork (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || "" } [Version: ${CUtility.fromBase64(CUtility.version)}]`)
+    if (private.isConnected) CNetwork.emit("vNetwork:Server:onConnect", {public: self, private: private})
     CUtility.scheduleExec(() => {
         delete private.isAwaiting
         CUtility.exec(private.resolver, private.isConnected)
@@ -119,7 +119,7 @@ CServer.public.addMethod("constructor", (self, options) => {
 // @Desc: Destroys the instance
 CServer.public.addInstanceMethod("destroy", (self) => {
     const private = CServer.instance.get(self)
-    if (self.isConnected(true)) CNetwork.emit("vNetworkify:Server:onDisconnect", {public: self, private: private})
+    if (self.isConnected(true)) CNetwork.emit("vNetwork:Server:onDisconnect", {public: self, private: private})
     if (CUtility.isServer) private.instance.http.close()
     self.destroyInstance()
     return true

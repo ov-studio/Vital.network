@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetworkify
+     Resource: vNetwork
      Script: managers: rest.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
@@ -20,12 +20,12 @@ const CNetwork = require("../utilities/network")
 // Class: Rest //
 //////////////////
 
-CNetwork.fetch("vNetworkify:Server:onConnect").on((server) => {
+CNetwork.fetch("vNetwork:Server:onConnect").on((server) => {
     const CRest = CUtility.Class()
     server.public.rest = CRest.public
     CRest.private.post = {}, CRest.private.get = {}, CRest.private.put = {}, CRest.private.delete = {}
 
-    CNetwork.fetch("vNetworkify:Server:onDisconnect").on((__server) => {
+    CNetwork.fetch("vNetwork:Server:onDisconnect").on((__server) => {
         if ((server.public != __server.public) || (server.private != __server.private)) return
         CRest.private.isUnloaded = true
         delete server.public.rest
