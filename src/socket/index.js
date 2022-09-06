@@ -131,7 +131,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
             private.onConnect = (isReconnection) => {
                 if (!isReconnection && self.isConnected()) return
                 private.isAwaiting = private.isAwaiting || new Promise((resolver) => cResolver = resolver)
-                private.server = new WebSocket(`${((server.private.config.protocol == "https") && "wss") || "ws"}://${server.private.config.hostname}${(server.private.config.port && (":" + server.private.config.port)) || ""}/${private.route}?version=${vKit.version}`)
+                private.server = new WebSocket(`${((server.private.config.protocol == "https") && "wss") || "ws"}://${server.private.config.hostname}${(server.private.config.port && (":" + server.private.config.port)) || ""}/${private.route}?version=${vNetwork.version}`)
                 private.server.onopen = () => {
                     reconCounter = 0
                     delete private.isAwaiting
@@ -198,7 +198,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
                     private.client[client] = clientInstance
                     clientInstance.queue = {}, clientInstance.room = {}
                     query = vKit.query.parse(query)
-                    if (!query.version || (query.version != vKit.version)) {
+                    if (!query.version || (query.version != vNetwork.version)) {
                         private.onDisconnectInstance(private.client[client], "version-mismatch")
                         clientInstance.destroy()
                         return

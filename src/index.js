@@ -41,7 +41,7 @@ CServer.public.addMethod("create", (...cArgs) => CServer.public.createInstance(.
 CServer.private.onConnectionStatus = (self, state) => {
     const private = CServer.instance.get(self)
     private.isConnected = state
-    vKit.print(`━ vNetwork (${(!vKit.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || "" } [Version: ${vKit.fromBase64(vKit.version)}]`)
+    vKit.print(`━ vNetwork (${(!vKit.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || "" } [Version: ${vKit.fromBase64(vNetwork.version)}]`)
     if (private.isConnected) CNetwork.emit("vNetwork:Server:onConnect", {public: self, private: private})
     vKit.scheduleExec(() => {
         delete private.isAwaiting
@@ -191,7 +191,8 @@ CServer.public.addInstanceMethod("connect", async (self) => {
 //////////////
 
 const vNetwork = vKit.createAPIs(CServer.public)
-module.exports = vNetwork
+vNetwork.version = Object.defineProperty(vNetwork, "version", {value: vKit.toBase64(require("../package.json").version), enumerable: true, configurable: false, writable: false})
 vKit.global.vNetwork = vNetwork
+module.exports = vNetwork
 require("./rest")
 require("./socket")
