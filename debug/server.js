@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetwork
+     Resource: Vital.network
      Script: debug: server.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron

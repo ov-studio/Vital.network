@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetwork
+     Resource: Vital.network
      Script: importer.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron

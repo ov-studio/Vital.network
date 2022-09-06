@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------
-     Resource: vNetwork
+     Resource: Vital.network
      Script: webpack.config.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
