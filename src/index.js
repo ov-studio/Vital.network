@@ -190,8 +190,8 @@ CServer.public.addInstanceMethod("connect", async (self) => {
 // Exports //
 //////////////
 
-require("./rest")
-require("./socket")
 const vNetwork = vKit.createAPIs(CServer.public)
 module.exports = vNetwork
 vKit.global.vNetwork = vNetwork
+require("./rest")
+require("./socket")
