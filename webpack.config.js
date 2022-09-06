@@ -30,6 +30,7 @@ const vIgnore = ["cors", "http", "https", "express", "compression", "ws"]
 vIgnore.forEach((i) => vKit.vIgnore.web[i] = false)
 
 module.exports = [
+    // Front-End
     {
         target: "web",
         mode: "production",
@@ -44,7 +45,7 @@ module.exports = [
             alias: vKit.vIgnore.web
         }
     },
-
+    // Back-End
     {
         target: "node",
         mode: "production",
