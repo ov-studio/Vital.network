@@ -8,18 +8,11 @@
 ----------------------------------------------------------------*/
 
 
-//////////////
-// Imports //
-//////////////
-
-const CUtility = require("./")
-
-
 /////////////////////
 // Class: Network //
 /////////////////////
 
-const CNetwork = CUtility.Class()
+const CNetwork = vKit.Class()
 CNetwork.private.buffer = {}
 
 
@@ -28,7 +21,7 @@ CNetwork.private.buffer = {}
 /////////////////////
 
 // @Desc: Verifies whether the network is void
-CNetwork.public.addMethod("isVoid", (name) => (CUtility.isString(name) && !CNetwork.private.buffer[name] && true) || false)
+CNetwork.public.addMethod("isVoid", (name) => (vKit.isString(name) && !CNetwork.private.buffer[name] && true) || false)
 
 // @Desc: Fetches network instance by name
 CNetwork.public.addMethod("fetch", (name) => (!CNetwork.public.isVoid(name) && CNetwork.private.buffer[name]) || false)
@@ -76,7 +69,7 @@ CNetwork.public.addMethod("emit", (name, ...cArgs) => {
 CNetwork.public.addMethod("constructor", (self, name, isCallback) => {
     const private = CNetwork.instance.get(self)
     private.name = name
-    private.isCallback = (CUtility.isBool(isCallback) && true) || false
+    private.isCallback = (vKit.isBool(isCallback) && true) || false
     self.isCallback = private.isCallback
     private.handler = (!private.isCallback && {}) || false
 })
@@ -92,7 +85,7 @@ CNetwork.public.addInstanceMethod("destroy", (self) => {
 // @Desc: Attaches a handler on instance
 CNetwork.public.addInstanceMethod("on", (self, exec) => {
     const private = CNetwork.instance.get(self)
-    if (!CUtility.isFunction(exec)) return false
+    if (!vKit.isFunction(exec)) return false
     if (!private.isCallback) {
         const execVID = vKit.vid.fetch(exec)
         if (private.handler[execVID]) return false
@@ -108,7 +101,7 @@ CNetwork.public.addInstanceMethod("on", (self, exec) => {
 // @Desc: Detaches a handler from instance
 CNetwork.public.addInstanceMethod("off", (self, exec) => {
     const private = CNetwork.instance.get(self)
-    if (!CUtility.isFunction(exec)) return false
+    if (!vKit.isFunction(exec)) return false
     if (!private.isCallback) {
         const execVID = vKit.vid.fetch(exec, null, true)
         if (!execVID || !private.handler[execVID]) return false
