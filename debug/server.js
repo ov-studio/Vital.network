@@ -112,7 +112,7 @@ async function debug() {
         response.status(200).send({test: "Updated Status Message"})
     })
     var restAPIResult = await cServer.rest.fetch("get", "https://raw.githubusercontent.com/ov-studio/vNetworkify/main/package.json")
-    //vKit.print(JSON.parse(restAPIResult))
+    vKit.print(JSON.parse(restAPIResult))
 }
 debug()
 
