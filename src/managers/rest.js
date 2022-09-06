@@ -12,7 +12,7 @@
 // Imports //
 //////////////
 
-const CNetwork = require("../utilities/network")
+const CNetwork = require("@vstudio/vital.kit/src/network")
 
 
 //////////////////

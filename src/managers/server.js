@@ -17,7 +17,7 @@ const CHTTP = require("http")
 const CHTTPS = require("https")
 const CExpress = require("express")
 const CCompression = require("compression")
-const CNetwork = require("../utilities/network")
+const CNetwork = require("@vstudio/vital.kit/src/network")
 
 
 ////////////////////

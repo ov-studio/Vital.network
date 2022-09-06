@@ -13,7 +13,7 @@
 //////////////
 
 const CWS = require("ws")
-const CNetwork = require("../../utilities/network")
+const CNetwork = require("@vstudio/vital.kit/src/network")
 const {onSocketInitialize, onSocketHeartbeat, onSocketMessage} = require("./parser")
 
 
