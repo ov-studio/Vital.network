@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------
      Resource: Vital.network
-     Script: managers: rest.js
+     Script: rest.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
      DOC: 22/07/2022

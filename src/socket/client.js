@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------
      Resource: Vital.network
-     Script: managers: socket: client.js
+     Script: socket: client.js
      Author: vStudio
      Developer(s): Aviril, Mario, Tron
      DOC: 22/07/2022
