@@ -74,6 +74,7 @@ async function debug() {
 
 
     // @Room Examples
+    /*
     cSocket.createRoom("Server:MyRoom")
     cSocket.destroyRoom("Server:MyRoom")
     cSocket.createRoom("Server:MyRoom")
@@ -102,7 +103,7 @@ async function debug() {
     cSocket.onClientLeaveRoom = function(room, client) {
         vKit.print(`* Client [${client}] left Room [${room}]`)
     }
-
+    */
 
     // @Rest API Examples
     cServer.rest.create("get", "", function(request, response) {
