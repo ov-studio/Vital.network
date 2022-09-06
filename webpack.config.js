@@ -35,7 +35,7 @@ module.exports = [
         target: "web",
         mode: "production",
         entry: {
-            app: ["./src/importer.js"]
+            app: ["./src"]
         },
         output: {
           path: CPath.resolve(__dirname, "build"),
@@ -64,7 +64,7 @@ module.exports = [
         target: "node",
         mode: "production",
         entry: {
-          app: ["./src/importer.js"]
+          app: ["./src/"]
         },
         output: {
           path: CPath.resolve(__dirname, "build"),

@@ -12,7 +12,7 @@
 // Imports //
 //////////////
 
-require("../src/importer")
+require("../src/")
 
 
 ///////////////
