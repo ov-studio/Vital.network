@@ -25,7 +25,6 @@ const vIgnore = ["cors", "express", "compression", "ws"]
 vIgnore.forEach((i) => vKit.ignore.web[i] = false)
 
 module.exports = [
-    /*
     // Front-End
     {
         target: "web",
@@ -38,7 +37,7 @@ module.exports = [
           filename: `${CPackage.name}-client.js`
         },
         resolve: {
-            //alias: vKit.ignore.web
+            alias: vKit.ignore.web
         }
     },
     // Back-End
@@ -54,5 +53,4 @@ module.exports = [
         },
         externals: [require("webpack-node-externals")()]
     }
-    */
 ]
