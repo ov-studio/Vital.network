@@ -105,6 +105,5 @@ CUtility.createAPIs = (buffer, blacklist) => {
 
 module.exports = CUtility
 require("./type")
-require("./vid")
 require("./network")
 require("./room")

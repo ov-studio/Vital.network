@@ -149,11 +149,11 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
                         reason = reason || private["@disconnect"].reason
                         private.isConnected = false
                         cResolver(private.isConnected)
-                        CUtility.exec(self.onClientDisconnect, CUtility.vid.fetch(private.server, null, true) || false, reason)
+                        CUtility.exec(self.onClientDisconnect, vKit.vid.fetch(private.server, null, true) || false, reason)
                     }
                 }
                 private.server.onerror = (error) => CUtility.exec(self.onConnectionError, error)
-                private.server.onmessage = (payload) => onSocketMessage(cPointer, CUtility.vid.fetch(self, null, true), private, private.server, payload)
+                private.server.onmessage = (payload) => onSocketMessage(cPointer, vKit.vid.fetch(self, null, true), private, private.server, payload)
             }
             private.onReconnect = () => {
                 reconCounter += 1
@@ -165,7 +165,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
                 }
                 private.timer.reconnectTimer = CUtility.scheduleExec(() => {
                     delete private.timer.reconnectTimer
-                    CUtility.exec(self.onClientReconnect, CUtility.vid.fetch(private.server, null, true) || false, reconCounter, private.reconnection.attempts)
+                    CUtility.exec(self.onClientReconnect, vKit.vid.fetch(private.server, null, true) || false, reconCounter, private.reconnection.attempts)
                     private.onConnect(true)
                 }, private.reconnection.interval)
                 return true
@@ -195,7 +195,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
                 private.server.handleUpgrade(request, socket, head, (socket) => {
                     if (!CSocket.public.fetch(path)) return
                     const clientInstance = self.client.create(socket)
-                    const client = CUtility.vid.fetch(clientInstance, null, true)
+                    const client = vKit.vid.fetch(clientInstance, null, true)
                     private.client[client] = clientInstance
                     clientInstance.queue = {}, clientInstance.room = {}
                     query = CUtility.queryString.parse(query)

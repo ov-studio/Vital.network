@@ -9,16 +9,9 @@
 
 
 //////////////
-// Imports //
-//////////////
-
-const CUtility = require("./utilities")
-
-
-//////////////
 // Exports //
 //////////////
 
-const vNetwork = CUtility.createAPIs(require("./managers/server"))
-CUtility.global.vNetwork = vNetwork
+const vNetwork = vKit.createAPIs(require("./managers/server"))
+vKit.global.vNetwork = vNetwork
 module.exports = vNetwork

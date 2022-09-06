@@ -76,7 +76,7 @@ CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
         socket.public.createRoom = (name, ...cArgs) => {
             if (!socket.public.isInstance()) return false
             if (socket.public.isRoom(name)) return false
-            socket.private.room[name] = CRoom.create(`Socket:${CUtility.vid.fetch(socket.public)}:${name}`, ...cArgs)
+            socket.private.room[name] = CRoom.create(`Socket:${vKit.vid.fetch(socket.public)}:${name}`, ...cArgs)
             socket.private.room[name].member = {}
             return true
         }

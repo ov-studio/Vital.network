@@ -43,7 +43,7 @@ CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
         if (CUtility.isServer && !socket.public.isClient(client)) return false
         const cReceiver = (CUtility.isServer && socket.public.client.fetch(client)) || socket.public
         const cQueue = (cReceiver && cReceiver.queue) || false
-        const queueID = CUtility.vid.fetch(payload.networkCB, null, true)
+        const queueID = vKit.vid.fetch(payload.networkCB, null, true)
         if (!cQueue || !queueID || !cQueue[queueID]) return false
         if (payload.networkCB.isErrored) cQueue[queueID].reject(...payload.networkArgs)
         else cQueue[queueID].resolve(...payload.networkArgs)
@@ -70,7 +70,7 @@ CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
     socket.public.createNetwork = (name, ...cArgs) => {
         if (!socket.public.isInstance()) return false
         if (socket.public.isNetwork(name)) return false
-        socket.private.network[name] = CNetwork.create(`Socket:${CUtility.vid.fetch(socket.public)}:${name}`, ...cArgs)
+        socket.private.network[name] = CNetwork.create(`Socket:${vKit.vid.fetch(socket.public)}:${name}`, ...cArgs)
         return true
     }
 
@@ -125,7 +125,7 @@ CNetwork.fetch("vNetwork:Socket:onCreate").on((socket) => {
             const cQueue = (cReceiver && cReceiver.queue) || false
             if (!cQueue) return false
             const networkCB = {}
-            const networkVID = CUtility.vid.fetch(networkCB)
+            const networkVID = vKit.vid.fetch(networkCB)
             const cPromise = new Promise((resolve, reject) => {
                 cQueue[networkVID] = {
                     resolve: ((...cArgs) => {

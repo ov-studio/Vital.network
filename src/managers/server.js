@@ -17,7 +17,6 @@ const CHTTP = require("http")
 const CHTTPS = require("https")
 const CExpress = require("express")
 const CCompression = require("compression")
-const CUtility = require("../utilities")
 const CNetwork = require("../utilities/network")
 
 
@@ -25,7 +24,7 @@ const CNetwork = require("../utilities/network")
 // Class: Server //
 ///////////////////
 
-const CServer = CUtility.Class()
+const CServer = vKit.Class()
 CNetwork.create("vNetwork:Server:onConnect")
 CNetwork.create("vNetwork:Server:onDisconnect")
 
@@ -41,11 +40,11 @@ CServer.public.addMethod("create", (...cArgs) => CServer.public.createInstance(.
 CServer.private.onConnectionStatus = (self, state) => {
     const private = CServer.instance.get(self)
     private.isConnected = state
-    CUtility.print(`━ vNetwork (${(!CUtility.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || "" } [Version: ${CUtility.fromBase64(CUtility.version)}]`)
+    vKit.print(`━ vNetwork (${(!vKit.isServer && "Client") || "Server"}) | ${(state && "Launched") || "Launch failed"} ${(private.config.port && ("[Port: " + private.config.port + "]")) || "" } [Version: ${vKit.fromBase64(vKit.version)}]`)
     if (private.isConnected) CNetwork.emit("vNetwork:Server:onConnect", {public: self, private: private})
-    CUtility.scheduleExec(() => {
+    vKit.scheduleExec(() => {
         delete private.isAwaiting
-        CUtility.exec(private.resolver, private.isConnected)
+        vKit.exec(private.resolver, private.isConnected)
     }, 1)
     return true
 }
@@ -53,40 +52,40 @@ CServer.private.onConnectionStatus = (self, state) => {
 // @Desc: Initializes a HTTP instance
 CServer.private.onHTTPInitialize = (http) => {
     http.post = (route, data) => {
-        if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
-        return CUtility.fetch(route, {
+        if (!vKit.isString(route) || !vKit.isObject(data)) return false
+        return vKit.fetch(route, {
             method: "POST",
             headers: {["Content-Type"]: "application/json"},
             body: JSON.stringify(data)
         })
     }
     http.get = (route) => {
-        if (!CUtility.isString(route)) return false
-        return CUtility.fetch(route, {
+        if (!vKit.isString(route)) return false
+        return vKit.fetch(route, {
             method: "GET"
         })
     }
     http.put = (route, data) => {
-        if (!CUtility.isString(route) || !CUtility.isObject(data)) return false
-        return CUtility.fetch(route, {
+        if (!vKit.isString(route) || !vKit.isObject(data)) return false
+        return vKit.fetch(route, {
             method: "PUT",
             headers: {["Content-Type"]: "application/json"},
             body: JSON.stringify(data)
         })
     }
     http.delete = (route) => {
-        if (!CUtility.isString(route)) return false
-        return CUtility.fetch(route, {
+        if (!vKit.isString(route)) return false
+        return vKit.fetch(route, {
             method: "DELETE"
         })
     }
     return true
 }
 
-if (CUtility.isServer) {
+if (vKit.isServer) {
     // @Desc: Sets/Revokes SSL Cert
     CServer.public.addMethod("setSSLCert", (sslcert) => {
-        if (sslcert && !CUtility.isObject(sslcert)) return false
+        if (sslcert && !vKit.isObject(sslcert)) return false
         if (!sslcert) delete CServer.private.sslcert
         else CServer.private.sslcert = sslcert
         return true
@@ -101,18 +100,18 @@ if (CUtility.isServer) {
 // @Desc: Instance constructor
 CServer.public.addMethod("constructor", (self, options) => {
     const private = CServer.instance.get(self)
-    options = (CUtility.isObject(options) && options) || {}
+    options = (vKit.isObject(options) && options) || {}
     private.config = {}, private.instance = {}
-    private.config.port = (CUtility.isNumber(options.port) && options.port) || false
+    private.config.port = (vKit.isNumber(options.port) && options.port) || false
     private.healthpoint = "vhealth"
-    if (!CUtility.isServer) {
+    if (!vKit.isServer) {
         private.config.protocol = (options.isSSL && "https") || "http"
-        private.config.hostname = (CUtility.isString(options.hostname) && options.hostname) || window.location.hostname
+        private.config.hostname = (vKit.isString(options.hostname) && options.hostname) || window.location.hostname
         private.healthpoint = `${private.config.protocol}://${private.config.hostname}${(private.config.port && (":" + private.config.port)) || ""}/${private.healthpoint}`
     }
     else {
         private.config.isCaseSensitive = (options.isCaseSensitive && true) || false
-        private.config.cors = (CUtility.isObject(options.cors) && options.cors) || false
+        private.config.cors = (vKit.isObject(options.cors) && options.cors) || false
     }
 })
 
@@ -120,7 +119,7 @@ CServer.public.addMethod("constructor", (self, options) => {
 CServer.public.addInstanceMethod("destroy", (self) => {
     const private = CServer.instance.get(self)
     if (self.isConnected(true)) CNetwork.emit("vNetwork:Server:onDisconnect", {public: self, private: private})
-    if (CUtility.isServer) private.instance.http.close()
+    if (vKit.isServer) private.instance.http.close()
     self.destroyInstance()
     return true
 })
@@ -134,15 +133,15 @@ CServer.public.addInstanceMethod("fetchServer", (self, index) => (index && priva
 // @Desc: Retrieves connection's status
 CServer.public.addInstanceMethod("isConnected", (self, isSync, fetchHealth) => {
     const private = CServer.instance.get(self)
-    if (isSync) return (CUtility.isBool(private.isConnected) && private.isConnected) || false
-    if (!CUtility.isServer && fetchHealth) {
+    if (isSync) return (vKit.isBool(private.isConnected) && private.isConnected) || false
+    if (!vKit.isServer && fetchHealth) {
         let resolver = null
         const cHealth = new Promise((__resolver) => resolver = __resolver)
         if (!private.instance.http) {
             private.instance.http = {}
             CServer.private.onHTTPInitialize(private.instance.http)
         }
-        CUtility.scheduleExec(async () => {
+        vKit.scheduleExec(async () => {
             var isServerHealthy = false
             try {
                 isServerHealthy = await private.instance.http.get(private.healthpoint)
@@ -160,10 +159,10 @@ CServer.public.addInstanceMethod("isConnected", (self, isSync, fetchHealth) => {
 // @Desc: Connects the server
 CServer.public.addInstanceMethod("connect", async (self) => {
     const isConnected = self.isConnected()
-    if (!CUtility.isBool(isConnected)) return isConnected
+    if (!vKit.isBool(isConnected)) return isConnected
     const private = CServer.instance.get(self)
     private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
-    if (!CUtility.isServer) {
+    if (!vKit.isServer) {
         var isServerHealthy = await self.isConnected(null, true)
         CServer.private.onConnectionStatus(self, isServerHealthy)
     }

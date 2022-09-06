@@ -94,7 +94,7 @@ CNetwork.public.addInstanceMethod("on", (self, exec) => {
     const private = CNetwork.instance.get(self)
     if (!CUtility.isFunction(exec)) return false
     if (!private.isCallback) {
-        const execVID = CUtility.vid.fetch(exec)
+        const execVID = vKit.vid.fetch(exec)
         if (private.handler[execVID]) return false
         private.handler[execVID] = {exec: exec}
     }
@@ -110,7 +110,7 @@ CNetwork.public.addInstanceMethod("off", (self, exec) => {
     const private = CNetwork.instance.get(self)
     if (!CUtility.isFunction(exec)) return false
     if (!private.isCallback) {
-        const execVID = CUtility.vid.fetch(exec, null, true)
+        const execVID = vKit.vid.fetch(exec, null, true)
         if (!execVID || !private.handler[execVID]) return false
         delete private.handler[execVID]
     }

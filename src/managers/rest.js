@@ -12,7 +12,6 @@
 // Imports //
 //////////////
 
-const CUtility = require("../utilities")
 const CNetwork = require("../utilities/network")
 
 
@@ -21,7 +20,7 @@ const CNetwork = require("../utilities/network")
 //////////////////
 
 CNetwork.fetch("vNetwork:Server:onConnect").on((server) => {
-    const CRest = CUtility.Class()
+    const CRest = vKit.Class()
     server.public.rest = CRest.public
     CRest.private.post = {}, CRest.private.get = {}, CRest.private.put = {}, CRest.private.delete = {}
 
@@ -39,23 +38,23 @@ CNetwork.fetch("vNetwork:Server:onConnect").on((server) => {
     // @Desc: Requests a fetch on specified REST API 
     CRest.public.addMethod("fetch", (type, ...cArgs) => {
         if (CRest.private.isUnloaded) return false
-        if (!CUtility.isObject(CRest.private[type])) return false
+        if (!vKit.isObject(CRest.private[type])) return false
         return server.private.instance.http[type](...cArgs)
     })
 
-    if (CUtility.isServer) {
+    if (vKit.isServer) {
         // @Desc: Verifies whether the REST API is void
         CRest.public.addMethod("isVoid", (type, route) => {
             if (CRest.private.isUnloaded) return false
-            return (CUtility.isString(type) && CUtility.isString(route) && CUtility.isObject(CRest.private[type]) && (!CRest.private[type][route] || !CRest.private[type][route].handler) && true) || false
+            return (vKit.isString(type) && vKit.isString(route) && vKit.isObject(CRest.private[type]) && (!CRest.private[type][route] || !CRest.private[type][route].handler) && true) || false
         })
         
         // @Desc: Creates a fresh REST API
         CRest.public.addMethod("create", (type, route, exec) => {
             if (CRest.private.isUnloaded) return false
-            if (!CRest.public.isVoid(type, route) || !CUtility.isFunction(exec)) return false
+            if (!CRest.public.isVoid(type, route) || !vKit.isFunction(exec)) return false
             CRest.private[type][route] = CRest.private[type][route] || {}
-            CRest.private[type][route].manager = CRest.private[type][route].manager || ((...cArgs) => CUtility.exec(CRest.private[type][route].handler, ...cArgs))
+            CRest.private[type][route].manager = CRest.private[type][route].manager || ((...cArgs) => vKit.exec(CRest.private[type][route].handler, ...cArgs))
             CRest.private[type][route].handler = exec
             server.private.instance.express[type](`/${route}`, CRest.private[type][route].manager)
             return true

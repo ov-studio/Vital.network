@@ -21,7 +21,7 @@ const CUtility = require("../../utilities")
 
 // @Desc: Handles socket's initialization
 const onSocketInitialize = (socket, route, options) => {
-    CUtility.vid.fetch(socket.public)
+    vKit.vid.fetch(socket.public)
     options = (CUtility.isObject(options) && options) || false
     socket.private.timestamp = new Date()
     socket.private.heartbeat = {interval: 10000, timeout: 60000}
@@ -84,7 +84,7 @@ const onSocketMessage = async (socket, client, instance, receiver, payload) => {
         else {
             if (!CUtility.isServer) {
                 if (payload.client) {
-                    CUtility.vid.fetch(socket.public, payload.client)
+                    vKit.vid.fetch(socket.public, payload.client)
                     CUtility.exec(socket.public.onClientConnect, payload.client)
                 }
                 else if (payload.disconnect) socket.private.onDisconnectInstance(socket.private, payload.disconnect, true)
