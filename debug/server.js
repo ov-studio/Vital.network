@@ -74,8 +74,8 @@ async function debug() {
 
 
     // @Room Examples
-    /*
     cSocket.createRoom("Server:MyRoom")
+    /*
     cSocket.destroyRoom("Server:MyRoom")
     cSocket.createRoom("Server:MyRoom")
     vKit.print("* Room-list:")
@@ -103,7 +103,6 @@ async function debug() {
     cSocket.onClientLeaveRoom = function(room, client) {
         vKit.print(`* Client [${client}] left Room [${room}]`)
     }
-    */
 
     // @Rest API Examples
     cServer.rest.create("get", "", function(request, response) {
@@ -114,7 +113,8 @@ async function debug() {
         response.status(200).send({test: "Updated Status Message"})
     })
     var restAPIResult = await cServer.rest.fetch("get", "https://raw.githubusercontent.com/ov-studio/vNetworkify/main/package.json")
-    vKit.print(JSON.parse(restAPIResult))
+    //vKit.print(JSON.parse(restAPIResult))
+    */
 }
 debug()
 
