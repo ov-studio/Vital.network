@@ -26,6 +26,6 @@ Tired of using bloatwares? unnecessary dependencies? redundant codes? reinventin
 
 ## ━ Contents
 
-* [**Official Releases**](https://github.com/ov-studio/vNetwork/releases)
-* [**Installation Guide**](https://github.com/ov-studio/vNetwork/wiki)
+* [**Official Releases**](https://github.com/ov-studio/Vital.network/releases)
+* [**Installation Guide**](https://github.com/ov-studio/Vital.network/wiki)
 * [**Discord Community**](http://discord.gg/sVCnxPW)
