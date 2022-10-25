@@ -5,13 +5,13 @@
     "private": false,
     "license": "GPL-3.0",
     "description": "Vital.js' Networker (Lightweight yet Reliable)",
-    "homepage": "https://github.com/ov-studio/vNetwork#readme",
+    "homepage": "https://github.com/ov-studio/Vital.network#readme",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/ov-studio/vNetwork.git"
+        "url": "git+https://github.com/ov-studio/Vital.network.git"
     },
     "bugs": {
-        "url": "https://github.com/ov-studio/vNetwork/issues"
+        "url": "https://github.com/ov-studio/Vital.network/issues"
     },
     "keywords": [
         "ov",
