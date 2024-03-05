@@ -175,6 +175,7 @@ CServer.public.addInstanceMethod("connect", async (self) => {
         private.instance.express.use(CCompression())
         private.instance.express.use(CExpress.json())
         private.instance.express.use(CExpress.urlencoded({extended: true}))
+        private.instance.express.set("trust proxy", true)
         private.instance.express.set("case sensitive routing", private.config.isCaseSensitive)
         private.instance.http.listen(private.config.port, () => {
             CServer.private.onConnectionStatus(self, true)
