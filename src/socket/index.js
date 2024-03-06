@@ -127,7 +127,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
         private.onDisconnectInstance = CSocket.private.onDisconnectInstance
         onSocketInitialize(cPointer, route, options)
         if (!vKit.server) {
-            var cResolver = false, reconCounter = 0
+            let cResolver = false, reconCounter = 0
             private.onConnect = (isReconnection) => {
                 if (!isReconnection && self.isConnected()) return
                 private.isAwaiting = private.isAwaiting || new Promise((resolver) => cResolver = resolver)
@@ -188,7 +188,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on(function(server) {
             private.server.on("close", private.server.onclose)
             private.server.on("error", private.server.onerror)
             private.onUpgradeSocket = (request, socket, head) => {
-                var [path, query] = request.url.split("?")
+                let [path, query] = request.url.split("?")
                 path = path.slice(1)
                 if (path != route) return
                 private.server.handleUpgrade(request, socket, head, (socket) => {

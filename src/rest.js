@@ -72,7 +72,7 @@ CNetwork.fetch("vNetwork:Server:onConnect").on((server) => {
         CRest.public.addMethod("onMiddleware", (request, response, next) => {
             if (CRest.private.isUnloaded) return false
             const type = request.method.toLowerCase()
-            const route = request.url.slice(1)
+            const route = request.url.split("?")[0].slice(1)
             if (CRest.public.isVoid(type, route)) return response.status(404).send({isAuthorized: false, type: type, route: route})
             next()
         })

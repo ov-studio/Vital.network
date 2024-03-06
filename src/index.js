@@ -143,7 +143,7 @@ CServer.public.addInstanceMethod("isConnected", (self, isSync, fetchHealth) => {
             CServer.private.onHTTPInitialize(private.instance.http)
         }
         vKit.scheduleExec(async () => {
-            var isServerHealthy = false
+            let isServerHealthy = false
             try {
                 isServerHealthy = await private.instance.http.get(private.healthpoint)
                 isServerHealthy = JSON.parse(isServerHealthy)
@@ -164,7 +164,7 @@ CServer.public.addInstanceMethod("connect", async (self) => {
     const private = CServer.instance.get(self)
     private.isAwaiting = new Promise((resolver) => private.resolver = resolver)
     if (!vKit.server) {
-        var isServerHealthy = await self.isConnected(null, true)
+        let isServerHealthy = await self.isConnected(null, true)
         CServer.private.onConnectionStatus(self, isServerHealthy)
     }
     else {

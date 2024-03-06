@@ -90,9 +90,9 @@ async function debug() {
 
 
     // @Rest API Examples
-    var restAPIResult = await cServer.rest.fetch("get", "http://localhost:33021/")
+    let restAPIResult = await cServer.rest.fetch("get", "http://localhost:33021/")
     vKit.print(JSON.parse(restAPIResult))
-    var restAPIResult = await cServer.rest.fetch("get", "http://localhost:33021/invalid")
+    let restAPIResult = await cServer.rest.fetch("get", "http://localhost:33021/invalid")
     vKit.print(JSON.parse(restAPIResult))
 }
 debug()
