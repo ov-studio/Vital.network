@@ -12,6 +12,7 @@
 // Imports //
 //////////////
 
+const CBusBoy = require("busboy")
 const CNetwork = require("@vstudio/vital.kit/src/network")
 
 
@@ -54,7 +55,13 @@ CNetwork.fetch("vNetwork:Server:onConnect").on((server) => {
             if (CRest.private.isUnloaded) return false
             if (!CRest.public.isVoid(type, route) || !vKit.isFunction(exec)) return false
             CRest.private[type][route] = CRest.private[type][route] || {}
-            CRest.private[type][route].manager = CRest.private[type][route].manager || ((...cArgs) => vKit.exec(CRest.private[type][route].handler, ...cArgs))
+            CRest.private[type][route].manager = CRest.private[type][route].manager || ((...cArgs) => {
+                if (type == "post") {
+                    cArgs.push(CBusBoy({headers: cArgs[0].headers}))
+                    cArgs[0].pipe(cArgs[2]);
+                }
+                vKit.exec(CRest.private[type][route].handler, ...cArgs)
+            })
             CRest.private[type][route].handler = exec
             server.private.instance.express[type](`/${route}`, CRest.private[type][route].manager)
             return true
