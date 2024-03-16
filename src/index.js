@@ -104,6 +104,7 @@ CServer.public.addMethod("constructor", (self, options) => {
     options = (vKit.isObject(options) && options) || {}
     private.config = {}, private.instance = {}
     private.config.port = (vKit.isNumber(options.port) && options.port) || false
+    private.config.bandwidth = (vKit.isNumber(options.bandwidth) && options.bandwidth) || 1
     private.healthpoint = "vhealth"
     if (!vKit.server) {
         private.config.protocol = (options.isSSL && "https") || "http"
@@ -173,8 +174,8 @@ CServer.public.addInstanceMethod("connect", async (self) => {
         CServer.private.onHTTPInitialize(private.instance.http)
         private.instance.express.use(CCors(private.config.cors))
         private.instance.express.use(CCompression())
-        private.instance.express.use(CExpress.json())
-        private.instance.express.use(CExpress.urlencoded({extended: true}))
+        private.instance.express.use(CExpress.json({limit: `${private.config.bandwidth}mb`}))
+        private.instance.express.use(CExpress.urlencoded({limit: `${private.config.bandwidth}mb`, extended: true}))
         private.instance.express.set("trust proxy", true)
         private.instance.express.set("case sensitive routing", private.config.isCaseSensitive)
         private.instance.http.listen(private.config.port, () => {
