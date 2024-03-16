@@ -57,8 +57,8 @@ CNetwork.fetch("vNetwork:Server:onConnect").on((server) => {
             CRest.private[type][route] = CRest.private[type][route] || {}
             CRest.private[type][route].manager = CRest.private[type][route].manager || ((...cArgs) => {
                 if (type == "post") {
-                    cArgs.push(CBusBoy({headers: cArgs[0].headers}))
-                    cArgs[0].pipe(cArgs[2]);
+                    cArgs.splice(2, 0, CBusBoy({headers: cArgs[0].headers}))
+                    cArgs[0].pipe(cArgs[2])
                 }
                 vKit.exec(CRest.private[type][route].handler, ...cArgs)
             })
